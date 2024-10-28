@@ -1,27 +1,15 @@
 'use client';
 
-import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from "react-hook-form"
 import Link from "next/link";
 
 type Inputs = {
-  castName: string
-  castImage: any
+  castName: string,
 }
 
 export default function CastAdd() {
   const router = useRouter();
-  const [imagePreview, setImagePreview] = useState('');
-
-  const handleImageChange = (event: any) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      console.log(imageUrl)
-      setImagePreview(imageUrl);
-    }
-  };
 
 
   const {
@@ -29,7 +17,7 @@ export default function CastAdd() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async () => {
     router.push('/shops/list');
   }
 

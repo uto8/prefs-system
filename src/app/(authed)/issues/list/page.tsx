@@ -11,8 +11,7 @@ const issues = [
   {no: 9999, clientName: 'Iさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Iさん'},
 ]
 import { useState } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { CheckIcon } from '@heroicons/react/24/outline'
+import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/20/solid'
 
 export default function IssueList() {

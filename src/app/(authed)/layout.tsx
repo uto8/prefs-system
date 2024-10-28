@@ -1,5 +1,4 @@
 'use client'
-import { Inter } from "next/font/google";
 import { useEffect, useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react'
 import {
@@ -16,8 +15,6 @@ import { useRouter } from "next/navigation";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
-
-const inter = Inter({ subsets: ["latin"] });
 
 
 export default function RootLayout({

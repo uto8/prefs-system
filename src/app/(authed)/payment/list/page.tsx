@@ -1,14 +1,14 @@
 'use client'
 
 import { Fragment } from "react"
-import { BuildingOfficeIcon, CreditCardIcon, UserIcon, UsersIcon } from '@heroicons/react/20/solid'
+import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/20/solid'
 
 const tabs = [
   { name: '入金一覧', href: '#', icon: UserIcon, current: true },
   { name: '出金一覧', href: '#', icon: BuildingOfficeIcon, current: false },
 ]
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
@@ -19,7 +19,7 @@ export default function ReceiptPage() {
     { name: 'トータル売上', stat: `1000円`, sub: '利益', price: `${1000 - 100 * 0.2 - 100 * 0.5}円` },
   ]
 
-  const value = []
+  // const value: unknown[] = []
 
   return (
     <>
@@ -70,7 +70,7 @@ export default function ReceiptPage() {
           Select a tab
         </label>
         {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-        <select
+        {/* <select
           id="tabs"
           name="tabs"
           defaultValue={tabs.find((tab) => tab.current).name}
@@ -79,7 +79,7 @@ export default function ReceiptPage() {
           {tabs.map((tab) => (
             <option key={tab.name}>{tab.name}</option>
           ))}
-        </select>
+        </select> */}
       </div>
       <div className="hidden sm:block">
         <div className="border-b border-gray-200">
@@ -129,7 +129,7 @@ export default function ReceiptPage() {
                 </th>
               </tr>
             </Fragment>
-            {value.map((receipt, index) => (
+            {/* {value.map((receipt, index) => (
               <tr key={index}>
                 <td className="relative py-5 pr-6">
                   <div className="flex gap-x-6">
@@ -166,7 +166,7 @@ export default function ReceiptPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>

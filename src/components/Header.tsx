@@ -4,7 +4,6 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router';
 
 const navigation = [
   { name: 'キャスト一覧', href: '/casts/list' },
@@ -13,13 +12,6 @@ const navigation = [
 
 
 export default function Header() {
-
-  const router = useRouter();
-  const pathSegments = router.asPath.split('/');
-
-  // castsを取得
-  const dynamicSegment = pathSegments[1];
-
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   useEffect(() => {
