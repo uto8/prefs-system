@@ -12,34 +12,25 @@ const issues = [
 ]
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
-import { XCircleIcon } from '@heroicons/react/20/solid'
 
 export default function IssueList() {
 
   const [open, setOpen] = useState(false)
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="rounded-md bg-red-50 p-4 mb-12">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <XCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-bold font-medium text-red-800">予定日を超えている未入金の支払いがあります</h3>
-
-          </div>
-        </div>
-      </div>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6 text-gray-900">案件一覧</h1>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
-            onClick={()=>{setOpen(true)}}
-            className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-sm bg-[#0054ac] focus-visible:outline focus-visible:outline-2"
+            onClick={()=>setOpen(true)}
+            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            案件検索
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+
           </button>
         </div>
       </div>
@@ -70,22 +61,28 @@ export default function IssueList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {issues.map((issue) => (
+                {issues.map((issue, index) => (
                   <tr key={issue.no}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                       {issue.no}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientName}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientAddress}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.status}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {index != 3?<span className="rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset">
+                        契約金入金
+                      </span>:<span className="rounded-md py-1 px-2 text-xs bg-red-50 text-red-700 ring-red-600/20 font-medium ring-1 ring-inset">
+                      完工金未入金
+                      </span>}
+                    </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.sales}</td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                      <a href="/payment/list?type=deposit" className="text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                      <a href="/list?type=payment" className="text-indigo-600 hover:text-indigo-900">
                         発注
                       </a>
                     </td>

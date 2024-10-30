@@ -5,11 +5,12 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Link from "next/link";
 
 type Inputs = {
-  castName: string
+  castName: string,
 }
 
-export default function CastAdd() {
+export default function EditSales() {
   const router = useRouter();
+
 
   const {
     register,
@@ -24,7 +25,7 @@ export default function CastAdd() {
     <>
       <div className="sm:flex sm:items-center mb-8">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">店舗追加</h1>
+          <h1 className="text-base font-semibold leading-6 text-gray-900">営業編集</h1>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <Link
@@ -32,13 +33,13 @@ export default function CastAdd() {
             onClick={router.back}
             className="block rounded-md bg-[#0054ac] px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-          店舗一覧に戻る
+          営業一覧に戻る
           </Link>
         </div>
       </div>
-      <form className='relative z-[-1]' onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
       <div className="relative mb-4">
-        <label htmlFor="text" className="leading-7 text-sm text-gray-600">店舗名</label>
+        <label htmlFor="text" className="leading-7 text-sm text-gray-600">営業名</label>
         <input
           type="text"
           id="text"
@@ -51,7 +52,7 @@ export default function CastAdd() {
           </svg>
           <span className="sr-only">Info</span>
           <div>
-            <span className="font-medium">店舗名を登録してください</span>
+            <span className="font-medium">営業名を登録してください</span>
           </div>
         </div>}
       </div>
@@ -110,7 +111,7 @@ export default function CastAdd() {
         </div>}
       </div>
       <button type="submit" className="text-white bg-[#0054ac] border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-        店舗追加
+        営業編集
       </button>
       </form>
     </>

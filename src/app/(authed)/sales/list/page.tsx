@@ -20,11 +20,12 @@ export default function IssueList() {
           <h1 className="text-base font-semibold leading-6 text-gray-900">営業一覧</h1>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <button
+          <a
+            href="/sales/add"
             className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-sm bg-[#0054ac] focus-visible:outline focus-visible:outline-2"
           >
             営業追加
-          </button>
+          </a>
         </div>
       </div>
       <div className="mt-8 flow-root">
@@ -60,7 +61,7 @@ export default function IssueList() {
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientAddress}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.status}</td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                      <a href="/sales/1/edit" className="text-indigo-600 hover:text-indigo-900">
                         編集
                       </a>
                     </td>

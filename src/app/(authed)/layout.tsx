@@ -7,9 +7,11 @@ import {
   FolderIcon,
   HomeIcon,
   UsersIcon,
+  XCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Transition } from '@headlessui/react'
 
 
 function classNames(...classes: string[]) {
@@ -35,13 +37,17 @@ export default function RootLayout({
     }
   }, []);
 
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
+  const [show, setShow] = useState(true)
+
   const navigation = [
     { name: 'トップページ', href: '/', icon: HomeIcon, current: dynamicSegment == '' },
     { name: '店舗管理', href: '/shops/list', icon: UsersIcon, current: dynamicSegment == 'shops' },
     { name: '案件管理', href: '/issues/list', icon: FolderIcon, current: dynamicSegment == 'issues' },
     { name: '営業管理', href: '/sales/list', icon: DocumentDuplicateIcon, current: dynamicSegment == 'sales' },
-    { name: '入金一覧', href: '/payment/list', icon: FolderIcon, current: dynamicSegment == 'payment' },
-    { name: '発注一覧', href: '/order/list', icon: DocumentDuplicateIcon, current: dynamicSegment == 'order' },
+    { name: '入金一覧', href: '/payment/list?type=deposit', icon: FolderIcon, current: (dynamicSegment == 'payment')&& (type=='deposit') },
+    { name: '発注一覧', href: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: (dynamicSegment == 'payment')&& (type=='payment') },
   ]
   const handleLogout = async () => {
     router.push('/auth/sign_in')
@@ -49,6 +55,51 @@ export default function RootLayout({
   return (
 
       <div>
+        {/* アラート　状態管理で閉じたら閉じたっきりにする */}
+        <div
+        aria-live="assertive"
+        className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+      >
+        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+          {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
+          <Transition show={show}>
+            <div className="bg-red-50 ring-red-600/20 pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-opacity-5 transition data-[closed]:data-[enter]:translate-y-2 data-[enter]:transform data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-100 data-[enter]:ease-out data-[leave]:ease-in data-[closed]:data-[enter]:sm:translate-x-2 data-[closed]:data-[enter]:sm:translate-y-0">
+              <div className="p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                  <XCircleIcon aria-hidden="true" className="h-5 w-5 text-red-400" />
+                  </div>
+                  <div className="ml-3 w-0 flex-1 pt-0.5">
+                    <p className="text-sm text-red-700 font-bold mb-4">未入金の支払いがあります</p>
+                    <div>
+                      <a href="/payment/list?type=deposit" className='text-sm font-medium text-red-700'>案件番号#1111　→</a>
+                    </div>
+                    <div>
+                      <a href="/payment/list?type=deposit" className='text-sm font-medium text-red-700'>案件番号#2222　→</a>
+                    </div>
+                    <div>
+                      <a href="/payment/list?type=deposit" className='text-sm font-medium text-red-700'>案件番号#3333　→</a>
+                    </div>
+                  </div>
+                  <div className="ml-4 flex flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShow(false)
+                      }}
+                      className="inline-flex rounded-md bg-white bg-red-200 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    >
+                      <span className="sr-only">Close</span>
+                      <XMarkIcon aria-hidden="true" className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Transition>
+        </div>
+      </div>
+      {/* アラート */}
         <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
           <DialogBackdrop
             transition
