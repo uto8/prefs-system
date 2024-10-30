@@ -10,7 +10,7 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Transition } from '@headlessui/react'
 
 
@@ -27,6 +27,7 @@ export default function RootLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const router = useRouter();
   const [dynamicSegment, setDynamicSegment] = useState('');
+  const [type, setType] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,8 +38,11 @@ export default function RootLayout({
     }
   }, []);
 
-  const searchParams = useSearchParams();
-  const type = searchParams.get("type");
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setType(searchParams.get("type"));
+  }, []);
+
   const [show, setShow] = useState(true)
 
   const navigation = [

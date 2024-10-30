@@ -1,9 +1,8 @@
 'use client'
 
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/20/solid'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
-import { useSearchParams } from "next/navigation"
 
 
 function classNames(...classes: string[]) {
@@ -11,8 +10,12 @@ function classNames(...classes: string[]) {
 }
 
 export default function ReceiptPage() {
-  const searchParams = useSearchParams();
-  const type = searchParams.get("type");
+  const [type, setType] = useState<string | null>(null);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setType(searchParams.get("type"));
+  }, []);
 
 
   const tabs = [
