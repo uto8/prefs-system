@@ -26,6 +26,7 @@ export default function ReceiptPage() {
 
 
   const [open, setOpen] = useState(false)
+  const [repairOpen, setRepairOpen] = useState(false)
   const [depositOpen, setDepositOpen] = useState(false)
   const [addPaymentOpen, setaddPaymentOpen] = useState(false)
   const [paymentOpen, setPaymenttOpen] = useState(false)
@@ -156,7 +157,7 @@ export default function ReceiptPage() {
           </button>}
           {type=='repair'&&
           <button
-            onClick={()=>{setaddPaymentOpen(true)}}
+            onClick={()=>{setRepairOpen(true)}}
             className="block inline rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
           補修追加
@@ -472,6 +473,7 @@ export default function ReceiptPage() {
                   <option value="">中間金2</option>
                   <option value="">中間金3</option>
                   <option value="">完工金</option>
+                  <option value="">追加工事金</option>
                 </select>
               </div>
             </div>
@@ -542,6 +544,15 @@ export default function ReceiptPage() {
                 <label htmlFor="text" className="leading-7 text-sm text-gray-600">入金確認日</label>
                 <input
                   type="date"
+                  id="text"
+                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                />
+              </div>
+            </div>
+            <div>
+              <div className="relative mb-4">
+                <label htmlFor="text" className="leading-7 text-sm text-gray-600">備考</label>
+                <textarea
                   id="text"
                   className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                 />
@@ -624,6 +635,15 @@ export default function ReceiptPage() {
                 </select>
               </div>
             </div>
+            <div>
+              <div className="relative mb-4">
+                <label htmlFor="text" className="leading-7 text-sm text-gray-600">備考</label>
+                <textarea
+                  id="text"
+                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                />
+              </div>
+            </div>
             <div className="mt-5 sm:mt-6">
               <button
                 type="button"
@@ -637,8 +657,8 @@ export default function ReceiptPage() {
         </div>
       </div>
     </Dialog>
-    {/* 発注追加ポップアップ */}
-    <Dialog open={addPaymentOpen} onClose={setaddPaymentOpen} className="relative z-10">
+    {/* 補修追加ポップアップ */}
+    <Dialog open={repairOpen} onClose={setRepairOpen} className="relative z-10">
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
@@ -699,6 +719,15 @@ export default function ReceiptPage() {
                   <option value="">自社</option>
                   <option value="">現金</option>
                 </select>
+              </div>
+            </div>
+            <div>
+              <div className="relative mb-4">
+                <label htmlFor="text" className="leading-7 text-sm text-gray-600">備考</label>
+                <textarea
+                  id="text"
+                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                />
               </div>
             </div>
             <div className="mt-5 sm:mt-6">

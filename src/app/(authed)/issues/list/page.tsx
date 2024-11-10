@@ -12,11 +12,14 @@ const issues = [
 ]
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
+import { Router } from 'next/router'
+import { useRouter } from "next/navigation";
 
 export default function IssueList() {
 
   const [open, setOpen] = useState(false)
   const [editModal, setEditModal] = useState(false)
+  const router = useRouter();
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -92,7 +95,7 @@ export default function IssueList() {
                       </a>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="/list?type=payment" className="text-indigo-600 hover:text-indigo-900">
+                      <a href="/payment/list?type=payment" className="text-indigo-600 hover:text-indigo-900">
                         発注
                       </a>
                     </td>
@@ -100,6 +103,11 @@ export default function IssueList() {
                       <button onClick={()=>{setEditModal(true)}} className="text-indigo-600 hover:text-indigo-900">
                         契約
                       </button>
+                    </td>
+                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                      <a href={`/issues/${1}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                        編集
+                      </a>
                     </td>
                   </tr>
                 ))}
@@ -200,27 +208,27 @@ export default function IssueList() {
           >
             <div>
               <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">お客様名</label>
-                <input
-                  type="text"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">工事住所</label>
-                <input
-                  type="text"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
                 <label htmlFor="text" className="leading-7 text-sm text-gray-600">契約日</label>
+                <input
+                  type="date"
+                  id="text"
+                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                />
+              </div>
+            </div>
+            <div>
+              <div className="relative mb-4">
+                <label htmlFor="text" className="leading-7 text-sm text-gray-600">着手日</label>
+                <input
+                  type="date"
+                  id="text"
+                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                />
+              </div>
+            </div>
+            <div>
+              <div className="relative mb-4">
+                <label htmlFor="text" className="leading-7 text-sm text-gray-600">完了日</label>
                 <input
                   type="date"
                   id="text"
@@ -231,10 +239,13 @@ export default function IssueList() {
             <div className="mt-5 sm:mt-6">
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  router.push('/payment/list?type=deposit')
+                }}
                 className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                案件編集
+                契約確定
               </button>
             </div>
           </DialogPanel>
