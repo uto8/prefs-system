@@ -12,7 +12,6 @@ const issues = [
 ]
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
-import { Router } from 'next/router'
 import { useRouter } from "next/navigation";
 
 export default function IssueList() {
