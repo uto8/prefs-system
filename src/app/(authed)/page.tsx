@@ -1,5 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
+import {ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 const people = [
   { type: '案件数',name: '1000000円', title: '2000000円', email: '3000000円', role: '4000000円' },
   { type: '契約数',name: '1000000円', title: '2000000円', email: '3000000円', role: '4000000円' },
