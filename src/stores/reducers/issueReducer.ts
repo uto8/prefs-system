@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Issue,issueConfirmed,issueSale } from "@/types/Issue";  // 仮に`Issu`型を定義したファイル
+import { Issue,issueConfirmed,issueSale } from "@/types/Issue";  
 
 export type IssueState = {
   issues: Issue[];
