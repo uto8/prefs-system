@@ -5,7 +5,9 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { combineReducers } from "@reduxjs/toolkit";
 import { officeReducer } from "./reducers/officeReducer";
 import { saleReducer } from "./reducers/saleReducer";
-
+import { paymentReducer } from "./reducers/paymentReducer";
+import { orderReducer } from "./reducers/orderSlice";
+import { issueReducer } from "./reducers/issueReducer";
 // Configuration for redux-persist
 const persistConfig = {
   key: "root",
@@ -16,6 +18,9 @@ const persistConfig = {
 const rootReducer = {
   office: officeReducer,
   sale: saleReducer,
+  payment: paymentReducer,
+  order: orderReducer,
+  issue: issueReducer
 };
 
 // Persist reducers
