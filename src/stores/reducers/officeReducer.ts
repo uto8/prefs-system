@@ -12,8 +12,13 @@ const officeSlice = createSlice({
   name: 'office',
   initialState,
   reducers: {
-    setValue:(state, action: PayloadAction<Office>) => {
+    setValue:(state, action: PayloadAction<Office[]>) => {
+      state.value = action.payload;
+    },
+    addValue:(state, action: PayloadAction<Office>) => {
+      console.log(action.payload)
       state.value.push(action.payload);
+      console.log(state)
     },
     removeValue:(state, action: PayloadAction<Office>) => {
       state.value = state.value.filter(item => item.id !== action.payload.id)
@@ -27,5 +32,5 @@ const officeSlice = createSlice({
   }
 })
 
-export const { setValue, removeValue} = officeSlice.actions;
+export const { setValue, removeValue, addValue} = officeSlice.actions;
 export const officeReducer = officeSlice.reducer;

@@ -1,5 +1,5 @@
 import { Sale } from "@/types/Sale";
-import { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface ISaleState {
   value: Sale[]
@@ -13,11 +13,8 @@ const saleSlice = createSlice({
   name: "sale",
   initialState,
   reducers: {
-    setVaue:(state, action: PayloadAction<Sale>) => {
-
-    }
   }
 })
 
-export const { setValue } = saleSlice.actions;
+// export const { setValue } = saleSlice.actions;
 export const saleReducer = saleSlice.reducer;

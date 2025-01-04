@@ -1,0 +1,18 @@
+import ApiPost from "@/lib/useApi/post";
+
+export const createOffices = async (office: {
+  name: string,
+  email: string,
+  password: string,
+  phoneNumber: string,
+  address: string,
+  cognito_id: string,
+  companyId: number
+}) => {
+  try{
+    const offices = await ApiPost('/offices', office);
+    return offices
+  }catch(e){
+    throw e;
+  }
+}

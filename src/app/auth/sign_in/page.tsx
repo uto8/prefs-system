@@ -1,10 +1,31 @@
 "use client";
 
+import { setCookie } from '@/lib/useCookie/setCookie';
 import { useRouter } from 'next/navigation';
+import { SubmitHandler, useForm } from 'react-hook-form';
+
+type Inputs = {
+  email: string,
+  password: string,
+}
 
 export default function Example() {
 
   const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>()
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    try{
+      setCookie('accessToken')
+      router.push('/');
+    }catch(e){
+      throw e;
+    }
+  }
 
   return (
     <>
@@ -17,7 +38,7 @@ export default function Example() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="sm:col-span-2">
               <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
                    メールアドレス
@@ -26,12 +47,13 @@ export default function Example() {
                 <input
                   id="email"
                   type="email"
+                  {...register("email", { required: true })}
                   autoComplete="email"
                   className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                  {/* {errors.email && <div className="mt-4 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                  {errors.email && <div className="mt-4 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                     <span className="font-medium">メールアドレスを入力してください</span>
-                  </div>} */}
+                  </div>}
                 </div>
               </div>
 
@@ -44,12 +66,12 @@ export default function Example() {
                     id="password"
                     type="password"
                     autoComplete="email"
-                    // {...register("password", { required: true })}
+                    {...register("password", { required: true })}
                     className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                  {/* {errors.password && <div className="mt-4 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                  {errors.password && <div className="mt-4 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                     <span className="font-medium">パスワードを入力してください</span>
-                  </div>} */}
+                  </div>}
                 </div>
               </div>
 
