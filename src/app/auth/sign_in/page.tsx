@@ -20,7 +20,7 @@ export default function Example() {
   } = useForm<Inputs>()
   const onSubmit: SubmitHandler<Inputs> = async () => {
     try{
-      setCookie('accessToken')
+      await setCookie('accessToken')
       router.push('/');
     }catch(e){
       throw e;
@@ -88,7 +88,6 @@ export default function Example() {
               <div className="mt-8 flex justify-end">
                 <button
                   type="submit"
-                  onClick={()=>{router.push('/');}}
                   className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 rounded-md w-full bg-primary-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                   ログイン
