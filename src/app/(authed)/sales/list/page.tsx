@@ -1,17 +1,27 @@
 'use client'
-const issues = [
-  {no: 1111, clientName: 'Aさん', clientAddress: '愛知県名古屋市中川区', status: '大阪店', sales: '営業Aさん'},
-  {no: 2222, clientName: 'Bさん', clientAddress: '愛知県名古屋市中川区', status: '名古屋店', sales: '営業Bさん'},
-  {no: 3333, clientName: 'Cさん', clientAddress: '愛知県名古屋市中川区', status: '横浜店', sales: '営業Cさん'},
-  {no: 4444, clientName: 'Dさん', clientAddress: '愛知県名古屋市中川区', status: '東京店', sales: '営業Dさん'},
-  {no: 5555, clientName: 'Eさん', clientAddress: '愛知県名古屋市中川区', status: '大阪店', sales: '営業Eさん'},
-  {no: 6666, clientName: 'Fさん', clientAddress: '愛知県名古屋市中川区', status: '大阪店', sales: '営業Fさん'},
-  {no: 7777, clientName: 'Gさん', clientAddress: '愛知県名古屋市中川区', status: '横浜店', sales: '営業Gさん'},
-  {no: 8888, clientName: 'Hさん', clientAddress: '愛知県名古屋市中川区', status: '名古屋店', sales: '営業Hさん'},
-  {no: 9999, clientName: 'Iさん', clientAddress: '愛知県名古屋市中川区', status: '大阪店', sales: '営業Iさん'},
-]
+
+import { getSales } from "@/features/sales/list";
+import { useAppDispatch, useAppSelector } from "@/stores";
+import { setSalesValue } from "@/stores/reducers/saleReducer";
+import { useEffect } from "react";
 
 export default function IssueList() {
+  const { value: sales } = useAppSelector((state) => state.sales);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (sales.length === 0) {
+      const fetchSales = async () => {
+        try {
+          const salesData = await getSales();
+          dispatch(setSalesValue(salesData));
+        } catch (error) {
+          console.error('Error fetching sales data:', error);
+        }
+      };
+      fetchSales();
+    }
+  }, [sales, dispatch]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -52,16 +62,16 @@ export default function IssueList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {issues.map((issue) => (
-                  <tr key={issue.no}>
+                {sales.map((sale) => (
+                  <tr key={sale.id}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      {issue.no}
+                      {sale.id}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientName}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientAddress}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.status}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.clientName}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.clientAddress}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.status}</td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="/sales/1/edit" className="text-indigo-600 hover:text-indigo-900">
+                      <a href={`/sales/${sale.id}/edit`} className="text-indigo-600 hover:text-indigo-900">
                         編集
                       </a>
                     </td>
@@ -73,5 +83,6 @@ export default function IssueList() {
         </div>
       </div>
     </div>
-  )
+  );
 }
+

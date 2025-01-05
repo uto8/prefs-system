@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "@/stores";
 import { setValue } from "@/stores/reducers/officeReducer";
 import { useEffect } from "react";
 
-
 export default function ShopList() {
   const { value } = useAppSelector((state) => state.offices);
   const dispatch = useAppDispatch();
