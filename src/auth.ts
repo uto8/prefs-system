@@ -6,12 +6,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     jwt({token, user}){
       if(user){
-        token.id = user.id
+        token.id = user.id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.role = (user as any).role;
       }
       return token
     },
     session({session, token}){
       session.user.id= token.id as string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (session as any).user.role = token.role as string;
       return {...session, token}
     }
   },
@@ -29,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           })
           return {
             id: "1",
-            email: "yuyutonomura@gmail,com",
+            email: `${credentials.email}`,
             role: user.accountType,
           }
         }catch(e) {

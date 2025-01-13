@@ -30,9 +30,11 @@ export default function SignIn() {
         email: data.email,
         password: data.password,
       });
-      console.log('response');
+      console.log("response")
       console.log(response)
+      router.push('/')
     }catch(e){
+      console.log('error')
       throw e;
     }
   }

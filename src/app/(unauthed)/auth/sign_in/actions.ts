@@ -7,10 +7,6 @@ export const loginWithCredentials = async({email, password}:{
   password: string;
 }) => {
   try{
-    console.log('email');
-    console.log(email);
-    console.log("password")
-    console.log(password)
     const response = await signIn("credentials", {
       email,
       password,
