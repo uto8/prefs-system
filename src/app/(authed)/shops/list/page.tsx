@@ -1,27 +1,27 @@
 "use client"
 
-import { getOffices } from "@/features/offices/list";
-import { useAppDispatch, useAppSelector } from "@/stores";
-import { setValue } from "@/stores/reducers/officeReducer";
-import { useEffect } from "react";
+// import { getOffices } from "@/features/offices/list";
+// import { useAppDispatch, useAppSelector } from "@/stores";
+// import { setValue } from "@/stores/reducers/officeReducer";
+// import { useEffect } from "react";
 
 
 export default function ShopList() {
-  const { value } = useAppSelector((state) => state.offices);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (value.length === 0) {
-      const fetch = async () => {
-          try{
-            const offices = await getOffices();
-            dispatch(setValue(offices));
-          }  catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-      fetch()
-    }
-  },[value, dispatch])
+  // const { value } = useAppSelector((state) => state.offices);
+  // const dispatch = useAppDispatch();
+  // useEffect(() => {
+  //   if (value.length === 0) {
+  //     const fetch = async () => {
+  //         try{
+  //           const offices = await getOffices();
+  //           dispatch(setValue(offices));
+  //         }  catch (error) {
+  //         console.error('Error fetching data:', error);
+  //       }
+  //     }
+  //     fetch()
+  //   }
+  // },[value, dispatch])
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -61,20 +61,18 @@ export default function ShopList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {value.map((office, index) => (
-                  <tr key={index}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      {office.name}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.email}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.phoneNumber}</td>
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="/shops/1/edit" className="text-indigo-600 hover:text-indigo-900">
-                        編集<span className="sr-only">, {office.name}</span>
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                <tr>
+                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                    名古屋店
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">nagoya@gmail.com</td>
+                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">09012345678</td>
+                  <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                    <a href="/shops/1/edit" className="text-indigo-600 hover:text-indigo-900">
+                      編集<span className="sr-only">, 名前</span>
+                    </a>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
