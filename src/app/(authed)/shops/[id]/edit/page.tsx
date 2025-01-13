@@ -3,22 +3,34 @@
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from "react-hook-form"
 import Link from "next/link";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
-type Inputs = {
-  castName: string,
-}
+const formSchema = z.object({
+  name: z.string().nonempty("名前は必須項目です"),
+  email: z.string().email("メールアドレスの形式が無効です").nonempty("メールアドレスは必須項目です"),
+  phoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  address: z.string().nonempty("住所は必須項目です"),
+})
 
 export default function CastAdd() {
   const router = useRouter();
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      address: "",
+      phoneNumber: ""
+    },
+  })
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = async () => {
-    router.push('/shops/list');
+  const handleSubmit = () => {
+
   }
 
   return (
@@ -37,83 +49,78 @@ export default function CastAdd() {
           </Link>
         </div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="relative mb-4">
-        <label htmlFor="text" className="leading-7 text-sm text-gray-600">店舗名</label>
-        <input
-          type="text"
-          id="text"
-          {...register("castName", { required: true })}
-          className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-        />
-        {errors.castName && <div className="mt-4 flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-          <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">店舗名を登録してください</span>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="flex flex-col gap-4"
+        >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                店舗名
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                メールアドレス
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                住所
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                電話番号
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="mt-4">
+            <Button type="submit">
+              登録
+            </Button>
           </div>
-        </div>}
-      </div>
-      <div className="relative mb-4">
-        <label htmlFor="text" className="leading-7 text-sm text-gray-600">住所</label>
-        <input
-          type="text"
-          id="text"
-          {...register("castName", { required: true })}
-          className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-        />
-        {errors.castName && <div className="mt-4 flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-          <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">住所を登録してください</span>
-          </div>
-        </div>}
-      </div>
-      <div className="relative mb-4">
-        <label htmlFor="text" className="leading-7 text-sm text-gray-600">メールアドレス</label>
-        <input
-          type="text"
-          id="text"
-          {...register("castName", { required: true })}
-          className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-        />
-        {errors.castName && <div className="mt-4 flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-          <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">メールアドレスを登録してください</span>
-          </div>
-        </div>}
-      </div>
-      <div className="relative mb-4">
-        <label htmlFor="text" className="leading-7 text-sm text-gray-600">パスワード</label>
-        <input
-          type="text"
-          id="text"
-          {...register("castName", { required: true })}
-          className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-        />
-        {errors.castName && <div className="mt-4 flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-          <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">パスワードを登録してください</span>
-          </div>
-        </div>}
-      </div>
-      <button type="submit" className="text-white bg-[#0054ac] border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-        店舗編集
-      </button>
-      </form>
+        </form>
+      </Form>
     </>
   )
 }
