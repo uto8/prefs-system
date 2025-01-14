@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form"
 import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
@@ -8,29 +8,75 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { editOffice, getOffice } from './actions';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   email: z.string().email("メールアドレスの形式が無効です").nonempty("メールアドレスは必須項目です"),
+  password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
-  address: z.string().nonempty("住所は必須項目です"),
 })
 
-export default function CastAdd() {
+export default function EditOffice() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id;
+  const idString: string = id as string;
+  const [office, setOffice] = useState({
+    name: "",
+    email: "",
+    id: "",
+    phoneNumber: ""
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      address: "",
-      phoneNumber: ""
-    },
+      name: office.name,
+      email: office.email,
+      phoneNumber: office.phoneNumber,
+    }
   })
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if(id){
+      const idString: string = id as string;
+      const fetchData = async () => {
+        try{
+          const data = await getOffice(idString)
+          console.log('data')
+          console.log(data)
+          setOffice(data)
+          console.log("office")
+          console.log(office)
+        }catch(e) {
+          throw e;
+        }
+      }
+      fetchData()
+    }
+  }, [])
 
+  useEffect(() => {
+    if (office.name) {
+      form.setValue('name', office.name); // 名前をフォームのフィールドに設定
+      form.setValue('email', office.email); // メールを設定
+      form.setValue('phoneNumber', office.phoneNumber); // 電話番号を設定
+    }
+  }, [office, form]);
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    await editOffice({
+      id: idString,
+      office: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber
+      }
+    })
+    router.push("/shops/list")
   }
 
   return (
@@ -86,14 +132,14 @@ export default function CastAdd() {
           />
           <FormField
             control={form.control}
-            name="address"
+            name="password"
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                住所
+                パスワード
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" />
+                  <Input {...field} type="password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

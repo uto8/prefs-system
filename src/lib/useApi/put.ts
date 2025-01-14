@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ApiPut = async (url: string, body: any) => {
+const ApiPut = async (url: string, body: object) => {
   const header = {
     //Todo companyIdを変更
     "companyId": "1"
@@ -10,7 +10,7 @@ const ApiPut = async (url: string, body: any) => {
     const response = await fetch(request_url, {
       method: 'PUT',
       headers: header,
-      body,
+      body: JSON.stringify(body)
     });
 
     if (!response) {
