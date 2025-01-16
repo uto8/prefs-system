@@ -5,6 +5,7 @@ export type Order = {
     withdrawal_plan_date: string;
     type: string;
     description: string;
+    orderCheck: OrderCheck;
   }
   
   export type OrderCheck = {

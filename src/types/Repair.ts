@@ -7,7 +7,8 @@ export interface Repair {
     type: string;                  
     description?: string;           
     created_at: string;            
-    updated_at: string;           
+    updated_at: string;   
+    repair: RepairCheck;        
   }
   
   // 補修確認の型定義

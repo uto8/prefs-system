@@ -4,6 +4,7 @@ export type Payment = {
   payment_plan_value: string;
   payment_plan_date: string;
   description: string;
+  paymentCheck: PaymentCheck;
 }
 
 export type PaymentCheck = {
