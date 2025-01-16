@@ -9,15 +9,17 @@ export type Issue = {
   budget: string;
   constructionSite: string;
   confirmComplete: ConfirmComplete;
-  // sale: Sale;
+
 }
 
 export type ConfirmComplete = {
-  date: string; 
+  id: string,
+  issueId: string,
+  confirmDate: string,
+  startDate: string,
+  completeDate: string,
+  contractValue: string,
+
 }
 
-// export type Sale = {
-//   date: string;
-//   amount: number;
-// }
 

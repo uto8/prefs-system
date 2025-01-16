@@ -13,4 +13,5 @@ export type PaymentCheck = {
   payment_check_value: string;
   payment_check_date: string;
   description: string;
+  created_at: string;           
 }
