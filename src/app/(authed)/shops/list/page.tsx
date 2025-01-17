@@ -1,26 +1,27 @@
 "use client"
 
-import { getOffices } from "@/features/offices/list";
 import { useAppDispatch, useAppSelector } from "@/stores";
 import { setValue } from "@/stores/reducers/officeReducer";
 import { useEffect } from "react";
+import { getOffices } from "./actions";
+import Link from "next/link";
 
 export default function ShopList() {
   const { value } = useAppSelector((state) => state.offices);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if (value.length === 0) {
-      const fetch = async () => {
-          try{
-            const offices = await getOffices();
-            dispatch(setValue(offices));
-          }  catch (error) {
-          console.error('Error fetching data:', error);
-        }
+    const fetch = async () => {
+      try{
+        const offices = await getOffices();
+        console.log('offices data')
+        console.log(offices)
+        dispatch(setValue(offices));
+      }  catch (error) {
+        console.error('Error fetching data:', error);
       }
-      fetch()
     }
-  },[value, dispatch])
+    fetch()
+  },[])
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -49,7 +50,7 @@ export default function ShopList() {
                     メールアドレス
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    住所
+                    電話番号
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     Role
@@ -60,20 +61,22 @@ export default function ShopList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {value.map((office, index) => (
-                  <tr key={index}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      {office.name}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.email}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.phoneNumber}</td>
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="/shops/1/edit" className="text-indigo-600 hover:text-indigo-900">
-                        編集<span className="sr-only">, {office.name}</span>
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                {
+                  value.map((office) => (
+                    <tr key={office.id}>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                        {office.name}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.email}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.phoneNumber}</td>
+                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                        <Link href={`/shops/${office.id}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                          編集<span className="sr-only">, 名前</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                }
               </tbody>
             </table>
           </div>
