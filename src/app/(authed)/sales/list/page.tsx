@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/stores";
 import { setSalesValue } from "@/stores/reducers/saleReducer";
 import { useEffect } from "react";
 
-export default function IssueList() {
+export default function SaleList() {
   const { value: sales } = useAppSelector((state) => state.sales);
   const dispatch = useAppDispatch();
 
@@ -22,6 +22,14 @@ export default function IssueList() {
       fetchSales();
     }
   }, [sales, dispatch]);
+
+  // デバッグ用にデータ構造を確認
+  console.log('Sales data:', sales);
+
+  const getUniqueKey = (sale: any, index: number) => {
+    // idが存在しない場合はインデックスを使用
+    return sale.id ? `sale-${sale.id}` : `sale-index-${index}`;
+  };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -62,8 +70,8 @@ export default function IssueList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {sales.map((sale) => (
-                  <tr key={sale.id}>
+                {sales.map((sale, index) => (
+                  <tr key={getUniqueKey(sale, index)}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                       {sale.id}
                     </td>
@@ -85,4 +93,3 @@ export default function IssueList() {
     </div>
   );
 }
-

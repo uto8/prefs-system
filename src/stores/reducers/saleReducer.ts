@@ -23,10 +23,14 @@ export const salesSlice = createSlice({
     setSalesValue: (state, action: PayloadAction<Sale[]>) => {
       state.value = action.payload;
     },
+    addValue:(state, action: PayloadAction<Sale>) => {
+          console.log(action.payload)
+          state.value.push(action.payload);
+          console.log(state)
+        },
   },
 });
 
-export const { setSalesValue } = salesSlice.actions;
+export const { setSalesValue, addValue } = salesSlice.actions;
 
-export default salesSlice.reducer;
-
+export const saleReducer = salesSlice.reducer;
