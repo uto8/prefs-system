@@ -1,6 +1,5 @@
 "use server";
 
-import ApiGet from "@/lib/useApi/get";
 import ApiPost from "@/lib/useApi/post";
 
 export const createSale = async (body: {
