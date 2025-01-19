@@ -1,4 +1,5 @@
 'use client'
+
 const issues = [
   {no: 1111, clientName: 'Aさん', clientAddress: '愛知県名古屋市中川区', status: '大阪店', sales: '営業Aさん'},
   {no: 2222, clientName: 'Bさん', clientAddress: '愛知県名古屋市中川区', status: '名古屋店', sales: '営業Bさん'},
@@ -10,8 +11,40 @@ const issues = [
   {no: 8888, clientName: 'Hさん', clientAddress: '愛知県名古屋市中川区', status: '名古屋店', sales: '営業Hさん'},
   {no: 9999, clientName: 'Iさん', clientAddress: '愛知県名古屋市中川区', status: '大阪店', sales: '営業Iさん'},
 ]
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAppDispatch, useAppSelector } from "@/stores";
+import { useEffect } from "react"
+import { getOffices, getSales } from "./actions";
+import { setValue } from "@/stores/reducers/officeReducer";
+import { useRouter } from "next/navigation";
 
 export default function IssueList() {
+  const { value: offices } = useAppSelector((state) => state.offices);
+  const { value: sales } = useAppSelector((state) => state.sales);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetch = async () => {
+      try{
+        const offices = await getOffices();
+        const sales = await getSales();
+
+        dispatch(setValue(offices));
+        // dispatch(setValue(sales))
+      }  catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetch()
+  }, [])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -20,12 +53,23 @@ export default function IssueList() {
           <h1 className="text-base font-semibold leading-6 text-gray-900">営業一覧</h1>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <a
-            href="/sales/add"
-            className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-sm bg-[#0054ac] focus-visible:outline focus-visible:outline-2"
-          >
-            営業追加
-          </a>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-sm bg-[#0054ac] focus-visible:outline focus-visible:outline-2"
+            >営業追加</DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>店舗を選択してください</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {
+                offices.map((office, index) => (
+                  <DropdownMenuItem
+                    key={index}
+                    onClick={() => router.push(`/sales/add?office_id=${office.id}`)}
+                  >{office.name}</DropdownMenuItem>
+                ))
+              }
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="mt-8 flow-root">
