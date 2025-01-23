@@ -19,26 +19,6 @@ export const getSaleById = async (id: string): Promise<Sale> => {
   }
 }
 
-export const updateSale = async ({id: id, body: sale}: {
-  id: string,
-  sale: {
-    name: string;
-    email: string;
-    password: string;
-    phoneNumber: string;
-    companyId: number;
-  }
-}) => {
-  try{
-    console.log('====apiput前')
-    const sale = await ApiPut(`/sales/${id}`, body);
-    console.log('====apiput後')
-    return sale;
-  }catch(e) {
-    throw e;
-  }
-}
-
 export const editSale = async ({id: id, sale: sale}:{
   id: string,
   sale: {

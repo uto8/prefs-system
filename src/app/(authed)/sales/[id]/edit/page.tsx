@@ -9,7 +9,7 @@ import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { editSale, getSaleById, updateSale } from './actions';
+import { editSale, getSaleById } from './actions';
 
 
 const formSchema = z.object({
