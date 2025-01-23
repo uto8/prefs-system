@@ -1,20 +1,26 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
-import { useRouter } from "next/navigation";
-import { getIssues } from './actions';
+import { createIssueConfirmed, getIssues } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { setValue } from '@/stores/reducers/issueReducer';
-import { Link } from 'lucide-react';
 import ContractModal from '@/components/issues/contract_modal';
+import { format } from 'date-fns';
 
 export default function IssueList() {
   const { value } = useAppSelector((state) => state.issues);
   const dispatch = useAppDispatch();
 
   const [open, setOpen] = useState(false)
+  const [issueId, setIssueId] = useState(0)
   const [editModal, setEditModal] = useState(false)
-  const router = useRouter();
+  const [issueConfirmed, setIssueConfirmed] = useState({
+    id: null,
+    confirmDate: null,
+    startDate: null,
+    completeDate: null,
+    contractValue: null,
+  })
 
   useEffect(() => {
     const fetch = async () => {
@@ -29,6 +35,30 @@ export default function IssueList() {
     }
     fetch()
   }, [])
+
+  const handleContract = async ({issueId: issueId, input: input}: {
+    issueId: number,
+    input: {
+      confirmDate: string;
+      startDate: string;
+      completeDate: string;
+      contractValue: string
+    }
+  }) => {
+    try{
+      console.log('hakka')
+      setEditModal(false)
+      await createIssueConfirmed({
+        issueId: issueId,
+        confirmDate: input.confirmDate,
+        startDate: input.startDate,
+        completeDate: input.completeDate,
+        contractValue: input.contractValue,
+      })
+    }catch(e) {
+      throw e;
+    }
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -115,8 +145,11 @@ export default function IssueList() {
                       </a>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <button onClick={()=>{setEditModal(true)}} className="text-indigo-600 hover:text-indigo-900">
-                        契約
+                      <button onClick={()=>{
+                        setEditModal(true)
+                        setIssueId(issue.id)
+                      }} className="text-indigo-600 hover:text-indigo-900">
+                      契約
                       </button>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
@@ -208,8 +241,12 @@ export default function IssueList() {
       </div>
     </Dialog>
     {/* 検索ポップアップ */}
-    <ContractModal editModal={editModal} setEditModal={()=>setEditModal(false)}/>
-    {/* 案件編集ポップアップ */}
+    <ContractModal
+      editModal={editModal}
+      setEditModal={()=>setEditModal(false)}
+      handleContract={handleContract}
+      issueId={issueId}
+    />
     </div>
   )
 }

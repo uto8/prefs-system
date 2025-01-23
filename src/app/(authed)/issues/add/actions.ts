@@ -17,8 +17,6 @@ export const createIssue = async (body: {
   clientPhoneNumber: string;
 }) => {
   try{
-    console.log("body.preferredDate")
-    console.log(body.preferredDate)
     await ApiPost('/issues' ,body)
   }catch(e) {
     throw e;

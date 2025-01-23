@@ -17,7 +17,7 @@ const ApiPut = async (url: string, body: object) => {
       throw new Error('Network response was not ok.');
     }
 
-    const data = await response;
+    const data = response.json();
     return data;
   } catch (error) {
     throw error;

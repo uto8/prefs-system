@@ -1,6 +1,6 @@
 import { Sale } from "./Sale";
 
-interface Client {
+export type Client = {
   id: number;
   name: string;
   nameKana: string;
@@ -8,15 +8,12 @@ interface Client {
   phoneNumber: string;
 }
 
-interface IssueConfirmed {
+export type IssueConfirmed = {
   id: number | null;
-  issueId: number | null;
   confirmDate: string | null;
   startDate: string | null;
   completeDate: string | null;
   contractValue: string | null;
-  createdAt: string | null;
-  updatedAt: string | null;
 }
 
 export type Issue = {
