@@ -5,7 +5,6 @@ import { createIssueConfirmed, getIssues } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { setValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
-import { format } from 'date-fns';
 
 export default function IssueList() {
   const { value } = useAppSelector((state) => state.issues);
@@ -14,13 +13,13 @@ export default function IssueList() {
   const [open, setOpen] = useState(false)
   const [issueId, setIssueId] = useState(0)
   const [editModal, setEditModal] = useState(false)
-  const [issueConfirmed, setIssueConfirmed] = useState({
-    id: null,
-    confirmDate: null,
-    startDate: null,
-    completeDate: null,
-    contractValue: null,
-  })
+  // const [issueConfirmed, setIssueConfirmed] = useState({
+  //   id: null,
+  //   confirmDate: null,
+  //   startDate: null,
+  //   completeDate: null,
+  //   contractValue: null,
+  // })
 
   useEffect(() => {
     const fetch = async () => {
