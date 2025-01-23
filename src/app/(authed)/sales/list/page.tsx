@@ -1,35 +1,40 @@
 'use client'
 
-import { getSales } from "@/features/sales/list";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useAppDispatch, useAppSelector } from "@/stores";
-import { setSalesValue } from "@/stores/reducers/saleReducer";
-import { useEffect } from "react";
+import { useEffect } from "react"
+import { getOffices, getSales } from "./actions";
+import { setValue as setOfficeValue } from "@/stores/reducers/officeReducer";
+import { setValue as setSaleValue } from "@/stores/reducers/saleReducer";
+import { useRouter } from "next/navigation";
 
-export default function SaleList() {
+export default function IssueList() {
+  const { value: offices } = useAppSelector((state) => state.offices);
   const { value: sales } = useAppSelector((state) => state.sales);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
-    if (sales.length === 0) {
-      const fetchSales = async () => {
-        try {
-          const salesData = await getSales();
-          dispatch(setSalesValue(salesData));
-        } catch (error) {
-          console.error('Error fetching sales data:', error);
-        }
-      };
-      fetchSales();
+    const fetch = async () => {
+      try{
+        const offices = await getOffices();
+        const sales = await getSales();
+
+        dispatch(setOfficeValue(offices));
+        dispatch(setSaleValue(sales))
+      }  catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
-  }, [sales, dispatch]);
-
-  // デバッグ用にデータ構造を確認
-  console.log('Sales data:', sales);
-
-  const getUniqueKey = (sale: any, index: number) => {
-    // idが存在しない場合はインデックスを使用
-    return sale.id ? `sale-${sale.id}` : `sale-index-${index}`;
-  };
+    fetch()
+  }, [])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -38,12 +43,23 @@ export default function SaleList() {
           <h1 className="text-base font-semibold leading-6 text-gray-900">営業一覧</h1>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <a
-            href="/sales/add"
-            className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-sm bg-[#0054ac] focus-visible:outline focus-visible:outline-2"
-          >
-            営業追加
-          </a>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-white shadow-sm bg-[#0054ac] focus-visible:outline focus-visible:outline-2"
+            >営業追加</DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>店舗を選択してください</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {
+                offices.map((office, index) => (
+                  <DropdownMenuItem
+                    key={index}
+                    onClick={() => router.push(`/sales/add?office_id=${office.id}`)}
+                  >{office.name}</DropdownMenuItem>
+                ))
+              }
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="mt-8 flow-root">
@@ -71,13 +87,13 @@ export default function SaleList() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {sales.map((sale, index) => (
-                  <tr key={getUniqueKey(sale, index)}>
+                  <tr key={index}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                       {sale.id}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.clientName}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.clientAddress}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.status}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.name}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.email}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.phoneNumber}</td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <a href={`/sales/${sale.id}/edit`} className="text-indigo-600 hover:text-indigo-900">
                         編集

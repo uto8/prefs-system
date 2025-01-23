@@ -13,6 +13,7 @@ export const getOffice = async (id: string): Promise<Office> => {
       name: "response.name",
       email: "string",
       phoneNumber: "string",
+      companyId: 1
     }
   }catch(e) {
     throw e;
@@ -36,6 +37,7 @@ export const editOffice = async ({id: id, office: office}:{
       name: "response.name",
       email: "string",
       phoneNumber: "string",
+      companyId: 1
     }
   }catch(e) {
     throw e;
