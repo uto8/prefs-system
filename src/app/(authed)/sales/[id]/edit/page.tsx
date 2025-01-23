@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form"
 import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { editSale, getSaleById, updateSale } from './actions';
 
 
 const formSchema = z.object({
@@ -19,23 +21,65 @@ const formSchema = z.object({
 
 export default function EditSales() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id;
+  const idString: string = id as string;
+  const [sale, setSale] = useState({
+    id: "",
+    name: "",
+    email: "",
+    phoneNumber: ""
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: sale.name,
+      email: sale.email,
       password: "",
-      phoneNumber: "",
+      phoneNumber: sale.phoneNumber,
     },
   })
 
+  useEffect(() => {
+    if(id){
+      const idString: string = id as string;
+      const fetchData = async () => {
+        try{
+          const data = await getSaleById(idString)
+          console.log('data')
+          console.log(data)
+          setSale({
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            phoneNumber: data.phoneNumber
+          })
+        }catch(e) {
+          throw e;
+        }
+      }
+      fetchData()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (sale.name) {
+      form.setValue('name', sale.name); // 名前をフォームのフィールドに設定
+      form.setValue('email', sale.email); // メールを設定
+      form.setValue('phoneNumber', sale.phoneNumber); // 電話番号を設定
+    }
+  }, [sale, form]);
+
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-
     try{
-      console.log("data")
-      console.log(data)
+      await editSale({id: idString, sale:{
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+      }})
       router.push('/sales/list')
     }catch(e) {
       throw e;

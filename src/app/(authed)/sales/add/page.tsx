@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from "react-hook-form"
 import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
@@ -25,7 +25,8 @@ const formSchema = z.object({
 export default function AddSales() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
+  const searchParams = useSearchParams();
+  const officeId = Number(searchParams.get('office_id'));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,16 +57,16 @@ export default function AddSales() {
   // }, [value])
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-
     try{
       console.log("data")
       console.log(data)
-      createSale({
+      await createSale({
         name: data.name,
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
-        companyId: 1
+        companyId: 1,
+        officeId: officeId,
       });
       dispatch(addValue({
         id: "2",
@@ -75,6 +76,7 @@ export default function AddSales() {
       }));
       router.push('/sales/list');
     } catch (e) {
+      throw e;
       console.error("Error creating sales representative:", e);
       // Handle error (e.g., show error message to user)
     }

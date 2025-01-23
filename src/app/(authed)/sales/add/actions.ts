@@ -8,7 +8,12 @@ export const createSale = async (body: {
   password: string;
   phoneNumber: string;
   companyId: number;
+  officeId: number
 }) => {
-  const sale = await ApiPost('/sales', body);
-  return sale;
+  try{
+    const sale = await ApiPost('/sales', body);
+    return sale;
+  }catch(e) {
+    throw e;
+  }
 }
