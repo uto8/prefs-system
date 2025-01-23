@@ -4,3 +4,4 @@ export type Sale = {
   email: string,
   phoneNumber: string,
 }
+

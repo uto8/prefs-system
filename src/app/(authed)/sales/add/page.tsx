@@ -4,21 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form"
 import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { createSale } from './actions';
-import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue } from '@/stores/reducers/officeReducer';
+import { useEffect } from 'react';
+import { useAppDispatch } from '@/stores';
+import { addValue } from '@/stores/reducers/saleReducer';
+
 
 
 const formSchema = z.object({
@@ -30,7 +24,6 @@ const formSchema = z.object({
 
 export default function AddSales() {
   const router = useRouter();
-  const { value } = useAppSelector((state) => state.offices);
   const dispatch = useAppDispatch();
 
 
@@ -72,11 +65,18 @@ export default function AddSales() {
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
-        companyId: 1,
-      })
-      router.push('/sales/list')
-    }catch(e) {
-      throw e;
+        companyId: 1
+      });
+      dispatch(addValue({
+        id: "2",
+        name: data.name,
+        email: data.email,
+        phoneNumber: data.phoneNumber
+      }));
+      router.push('/sales/list');
+    } catch (e) {
+      console.error("Error creating sales representative:", e);
+      // Handle error (e.g., show error message to user)
     }
   }
 
@@ -92,7 +92,7 @@ export default function AddSales() {
             onClick={router.back}
             className="block rounded-md bg-[#0054ac] px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-          営業一覧に戻る
+            営業一覧に戻る
           </Link>
         </div>
       </div>
@@ -170,3 +170,4 @@ export default function AddSales() {
     </>
   )
 }
+

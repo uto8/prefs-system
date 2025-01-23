@@ -3,4 +3,5 @@ export type Office = {
   name: string,
   email: string,
   phoneNumber: string,
+  companyId: number;
 }

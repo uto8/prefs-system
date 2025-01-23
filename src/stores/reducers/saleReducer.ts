@@ -1,16 +1,16 @@
 import { Sale } from "@/types/Sale";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface ISaleState {
-  value: Sale[]
+interface SalesState {
+  value: Sale[];
 }
 
-const initialState: ISaleState = {
-  value: []
-}
+const initialState: SalesState = {
+  value: [],
+};
 
-const saleSlice = createSlice({
-  name: "sale",
+export const salesSlice = createSlice({
+  name: 'sales',
   initialState,
   reducers: {
     setValue:(state, action: PayloadAction<Sale[]>) => {
@@ -33,5 +33,5 @@ const saleSlice = createSlice({
   }
 })
 
-export const { setValue, removeValue, addValue} = saleSlice.actions;
-export const saleReducer = saleSlice.reducer;
+export const { setValue, removeValue, addValue} = salesSlice.actions;
+export const saleReducer = salesSlice.reducer;

@@ -3,8 +3,10 @@ const ApiPost = async (url: string, body: object) => {
   try{
     const header: HeadersInit = {
       //Todo companyIdを変更
-      "companyId": "1"
+      "companyId": "1",
+
     };
+    // process.env.NEXT_PUBLIC_API_BASE_URL
     const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
     console.log(request_url)
 

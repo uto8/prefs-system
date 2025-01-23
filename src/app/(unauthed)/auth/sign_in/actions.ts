@@ -12,7 +12,6 @@ export const loginWithCredentials = async({email, password}:{
       password,
       redirect: false
     })
-    console.log("login with credential")
     return response;
   }catch(e){
     throw e;

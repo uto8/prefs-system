@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { getOffices } from "./actions";
 import Link from "next/link";
 
-
 export default function ShopList() {
   const { value } = useAppSelector((state) => state.offices);
   const dispatch = useAppDispatch();
