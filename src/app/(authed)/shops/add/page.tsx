@@ -41,7 +41,8 @@ export default function CastAdd() {
         id: "",
         name: data.name,
         email: data.email,
-        phoneNumber: data.phoneNumber
+        phoneNumber: data.phoneNumber,
+        companyId: 0
       }));
       await createOffices({
         address: data.address,

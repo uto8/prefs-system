@@ -7,6 +7,7 @@ import { officeReducer } from "./reducers/officeReducer";
 import { saleReducer } from "./reducers/saleReducer";
 import { paymentReducer } from "./reducers/paymentReducer";
 import { orderReducer } from "./reducers/orderSlice";
+import { issueReducer } from "./reducers/issueReducer";
 // Configuration for redux-persist
 const persistConfig = {
   key: "root",
@@ -19,7 +20,7 @@ const rootReducer = {
   sales: saleReducer,
   payments: paymentReducer,
   orders: orderReducer,
-  // issues: issueReducer
+  issues: issueReducer
 };
 
 // Persist reducers

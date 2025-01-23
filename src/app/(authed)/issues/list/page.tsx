@@ -1,24 +1,34 @@
 'use client'
-const issues = [
-  {no: 1111, clientName: 'Aさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Aさん'},
-  {no: 2222, clientName: 'Bさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Bさん'},
-  {no: 3333, clientName: 'Cさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Cさん'},
-  {no: 4444, clientName: 'Dさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Dさん'},
-  {no: 5555, clientName: 'Eさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Eさん'},
-  {no: 6666, clientName: 'Fさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Fさん'},
-  {no: 7777, clientName: 'Gさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Gさん'},
-  {no: 8888, clientName: 'Hさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Hさん'},
-  {no: 9999, clientName: 'Iさん', clientAddress: '愛知県名古屋市中川区', status: 'contact', sales: '営業Iさん'},
-]
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
 import { useRouter } from "next/navigation";
+import { getIssues } from './actions';
+import { useAppDispatch, useAppSelector } from '@/stores';
+import { setValue } from '@/stores/reducers/issueReducer';
+import { Link } from 'lucide-react';
+import ContractModal from '@/components/issues/contract_modal';
 
 export default function IssueList() {
+  const { value } = useAppSelector((state) => state.issues);
+  const dispatch = useAppDispatch();
 
   const [open, setOpen] = useState(false)
   const [editModal, setEditModal] = useState(false)
   const router = useRouter();
+
+  useEffect(() => {
+    const fetch = async () => {
+      try{
+        const issues = await getIssues();
+        dispatch(setValue(issues));
+        console.log(value)
+      }  catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+      }
+    }
+    fetch()
+  }, [])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -73,29 +83,35 @@ export default function IssueList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {issues.map((issue, index) => (
-                  <tr key={issue.no}>
+                {value.map((issue, index) => (
+                  <tr key={index}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      {issue.no}
+                      {issue.id}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientName}</td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.clientAddress}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.client.name}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.constructionSite}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {index != 3?<span className="rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset">
-                        契約金入金
-                      </span>:<span className="rounded-md py-1 px-2 text-xs bg-red-50 text-red-700 ring-red-600/20 font-medium ring-1 ring-inset">
+                      {/* {index != 3?:<span className="rounded-md py-1 px-2 text-xs bg-red-50 text-red-700 ring-red-600/20 font-medium ring-1 ring-inset">
                       完工金未入金
-                      </span>}
+                      </span>} */}
+                      <span className="rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset">
+                        契約未金入金
+                      </span>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.sales}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.sale.name}</td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="/payment/list?type=deposit" className="text-indigo-600 hover:text-indigo-900">
+                      <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <a href="/payment/list?type=payment" className="text-indigo-600 hover:text-indigo-900">
+                      <a href={`/payment/list?type=payment&issue_id=${issue.id}`} className="text-indigo-600 hover:text-indigo-900">
                         発注
+                      </a>
+                    </td>
+                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                      <a href={`/payment/list?type=repair&issue_id=${issue.id}`} className="text-indigo-600 hover:text-indigo-900">
+                        補修
                       </a>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
@@ -192,65 +208,7 @@ export default function IssueList() {
       </div>
     </Dialog>
     {/* 検索ポップアップ */}
-    {/* 案件編集ポップアップ */}
-    <Dialog open={editModal} onClose={setEditModal} className="relative z-10">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
-      />
-
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <DialogPanel
-            transition
-            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-sm sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
-          >
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">契約日</label>
-                <input
-                  type="date"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">着手日</label>
-                <input
-                  type="date"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">完了日</label>
-                <input
-                  type="date"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div className="mt-5 sm:mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  router.push('/payment/list?type=deposit')
-                }}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                契約確定
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
-      </div>
-    </Dialog>
+    <ContractModal editModal={editModal} setEditModal={()=>setEditModal(false)}/>
     {/* 案件編集ポップアップ */}
     </div>
   )
