@@ -87,7 +87,7 @@ export const createOrderCheck = async (body: {
   orderCheckDate: string;
 }) => {
   try{
-    const orderCheck = await ApiPost("/order_checks", body)
+    await ApiPost("/order_checks", body)
   }catch(e) {
     throw e;
   }

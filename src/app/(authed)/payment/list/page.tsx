@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/20/solid'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
 import Order from "./Order"
@@ -160,8 +160,6 @@ export default function ReceiptPage() {
 
 
         {type=='payment'&&<Order
-          setAddPaymentOpen={setPaymenttOpen}
-          setPaymentOpen={setaddPaymentOpen}
           handleOpenOrderCheckForm={handleOpenOrderCheckForm}
         />}
 

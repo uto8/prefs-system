@@ -16,8 +16,7 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { ja } from "date-fns/locale";
-import { Textarea } from '../ui/textarea';
-import { createOrderCheck, createPaymentCheck } from '@/app/(authed)/payment/list/actions';
+import { createOrderCheck } from '@/app/(authed)/payment/list/actions';
 
 const formSchema = z.object({
   orderCheckValue: z.string().nonempty("入金予定額は必須項目です"),

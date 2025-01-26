@@ -6,9 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/stores';
 import { setOrder } from '@/stores/reducers/orderSlice';
 import { format } from 'date-fns';
 
-export default function Order({ setAddPaymentOpen, setPaymentOpen, handleOpenOrderCheckForm }: {
-  setAddPaymentOpen: (open: boolean) => void;
-  setPaymentOpen: (open: boolean) => void;
+export default function Order({ handleOpenOrderCheckForm }: {
   handleOpenOrderCheckForm: (orderId: number) => void;
 }) {
 
