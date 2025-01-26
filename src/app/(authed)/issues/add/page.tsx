@@ -41,7 +41,6 @@ const formSchema = z.object({
   }),
   constructionSite: z.string().nonempty("現住所は必須項目です"),
   budget: z.string(),
-  // saleId: z.number().nullable(),
   clientName: z.string().nonempty("顧客名は必須項目です"),
   clientNameKana: z.string().nonempty("顧客名かなは必須項目です"),
   clientEmail: z.string().email().nonempty("メールアドレスは必須項目です"),

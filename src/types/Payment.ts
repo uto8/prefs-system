@@ -1,17 +1,17 @@
 export type Payment = {
-  id: string;
+  id: number;
   type: string;
-  payment_plan_value: string;
-  payment_plan_date: string;
+  paymentPlanValue: string;
+  paymentPlanDate: string;
   description: string;
-  paymentCheck: PaymentCheck;
+  paymentChecks: PaymentCheck[];
 }
 
 export type PaymentCheck = {
   id: string;
-  payment_id: string;
-  payment_check_value: string;
-  payment_check_date: string;
+  paymentId: string;
+  paymentCheckValue: string;
+  paymentCheckDate: string;
   description: string;
-  created_at: string;           
+  createdAt: string;
 }

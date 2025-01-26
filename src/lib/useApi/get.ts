@@ -1,9 +1,12 @@
-const ApiGet = async (url: string) => {
+const ApiGet = async (url: string, reqHeader: Record<string, string> = {}) => {
   try{
     const header: HeadersInit = {
       //Todo companyIdを変更
-      "companyId": "1"
+      "companyId": "1",
+      ...reqHeader
     };
+    console.log("reqHeader")
+    console.log(reqHeader)
     const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
     console.log(request_url)
 
@@ -11,9 +14,10 @@ const ApiGet = async (url: string) => {
       method: 'GET',
       headers: header,
     });
-
-    console.log("======apiget")
-    console.log(response)
+    // ステータスコードを確認
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
     const data = response.json();
     return data;
