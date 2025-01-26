@@ -12,6 +12,9 @@ const ApiGet = async (url: string) => {
       headers: header,
     });
 
+    console.log("======apiget")
+    console.log(response)
+
     const data = response.json();
     return data;
   }catch(e) {
