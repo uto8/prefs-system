@@ -18,6 +18,8 @@ import { cn } from '@/lib/utils';
 import { ja } from "date-fns/locale";
 import { Textarea } from '../ui/textarea';
 import { createPaymentCheck } from '@/app/(authed)/payment/list/actions';
+import { useAppDispatch } from '@/stores';
+import { addPaymentCheck } from '@/stores/reducers/paymentReducer';
 
 const formSchema = z.object({
   paymentCheckValue: z.string().nonempty("入金予定額は必須項目です"),
@@ -41,17 +43,26 @@ export default function PaymentCheckForm({depositOpen, setDepositOpen, paymentId
     },
   })
 
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       setDepositOpen(false)
-      console.log(data);
-      console.log(paymentId);
-      await createPaymentCheck({
+      const paymentCheck = await createPaymentCheck({
         paymentId: paymentId,
         paymentCheckValue: Number(data.paymentCheckValue),
         paymentCheckDate: format(data.paymentCheckDate, "yyyy-MM-dd"),
         description: data.description
       })
+
+      dispatch(addPaymentCheck({
+        id: paymentCheck.id,
+        paymentCheckValue: data.paymentCheckValue,
+        paymentCheckDate: format(data.paymentCheckDate, "yyyy-MM-dd"),
+        description: data.description,
+        createdAt: '',
+        paymentId: paymentId
+      }))
 
     }catch(e) {
       throw e;

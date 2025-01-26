@@ -3,7 +3,7 @@
 import React, { Fragment, useEffect } from 'react'
 import { deleteOrder, getOrders } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setOrder } from '@/stores/reducers/orderSlice';
+import { removeOrder, setOrder } from '@/stores/reducers/orderSlice';
 import { format } from 'date-fns';
 
 export default function Order({ handleOpenOrderCheckForm }: {
@@ -17,6 +17,7 @@ export default function Order({ handleOpenOrderCheckForm }: {
     const result: boolean = confirm("本当に削除しますか？")
     if(result){
       await deleteOrder(id)
+      dispatch(removeOrder(id))
     }
   }
 

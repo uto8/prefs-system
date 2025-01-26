@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from '../ui/textarea';
 import { createPayment } from '@/app/(authed)/payment/list/actions';
+import { useAppDispatch } from '@/stores';
+import { addPayment } from '@/stores/reducers/paymentReducer';
 
 const formSchema = z.object({
   type: z.string().nonempty("タイプは必須項目です"),
@@ -45,6 +47,7 @@ export default function PaymentForm({open, setOpen}: {
 }) {
 
   const [issueId, setIssueId] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,13 +65,21 @@ export default function PaymentForm({open, setOpen}: {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      await createPayment({
+      const payment = await createPayment({
         issueId: Number(issueId) ?? 0,
         type: data.type,
         paymentPlanValue: Number(data.paymentPlanValue),
         paymentPlanDate:  format(data.paymentPlanDate, "yyyy-MM-dd"),
         description: data.description,
       })
+      dispatch(addPayment({
+        type: data.type,
+        paymentPlanValue: data.paymentPlanValue,
+        paymentPlanDate: format(data.paymentPlanDate, "yyyy-MM-dd"),
+        description: data.description,
+        id: payment.id,
+        paymentChecks: []
+      }));
       setOpen(false)
 
     }catch(e) {

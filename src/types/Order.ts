@@ -10,7 +10,7 @@ export type Order = {
 
 export type OrderCheck = {
   id: string;
-  orderId: string;
+  orderId: number;
   orderCheckValue: number;  // 数値に変更
   orderCheckDate: Date;  // 日付文字列で保持
   description: string;

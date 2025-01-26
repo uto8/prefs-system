@@ -3,7 +3,7 @@
 import React, { Fragment, useEffect } from 'react'
 import { format } from 'date-fns';
 import { deletePayment, getPayments } from './actions';
-import { setPayment } from '@/stores/reducers/paymentReducer';
+import { removePayment, setPayment } from '@/stores/reducers/paymentReducer';
 import { useAppDispatch, useAppSelector } from '@/stores';
 
 export default function Deposit({handleOpenPaymentCheckForm}:{
@@ -34,6 +34,7 @@ export default function Deposit({handleOpenPaymentCheckForm}:{
     const result: boolean = confirm('削除しますか');
     if(result){
       await deletePayment(paymentId)
+      dispatch(removePayment(paymentId))
     }
   }
 

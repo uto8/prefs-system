@@ -48,6 +48,7 @@ export default function ReceiptPage() {
   const handleOpenPaymentCheckForm = (paymentId: number) => {
     setPaymentId(paymentId)
     setDepositOpen(true)
+    console.log(paymentId)
   }
 
   const handleOpenOrderCheckForm = (orderId: number) => {

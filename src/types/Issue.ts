@@ -31,5 +31,5 @@ export type Issue = {
   updatedAt: string;
   sale: Sale;
   client: Client;
-  issue_confirmed: IssueConfirmed;
+  issueConfirmed: IssueConfirmed;
 }

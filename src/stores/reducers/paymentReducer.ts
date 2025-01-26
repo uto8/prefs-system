@@ -1,6 +1,6 @@
 // store/paymentSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Payment } from "@/types/Payment";
+import { Payment, PaymentCheck } from "@/types/Payment";
 
 export interface IPaymentState {
   value: Payment[],
@@ -28,13 +28,16 @@ const paymentSlice = createSlice({
       }
     },
     // 入金予定の削除
-    // removePayment: (state, action: PayloadAction<string>) => {
-    //   state.value = state.value.filter(item => item.id !== action.payload);
-    // },
+    removePayment: (state, action: PayloadAction<number>) => {
+      state.value = state.value.filter(item => item.id !== action.payload);
+    },
     // 入金確認の追加
-    // addPaymentCheck: (state, action: PayloadAction<PaymentCheck>) => {
-    //   state.value.payment.push(action.payload);
-    // },
+    addPaymentCheck: (state, action: PayloadAction<PaymentCheck>) => {
+      const index = state.value.findIndex(item => item.id === action.payload.paymentId);
+      console.log("index")
+      console.log(index)
+      state.value[index].paymentChecks.push(action.payload);
+    },
     // // 入金確認の更新
     // updatePaymentCheck: (state, action: PayloadAction<PaymentCheck>) => {
     //   const index = state.paymentChecks.findIndex(item => item.id === action.payload.id);
@@ -53,8 +56,9 @@ export const {
   setPayment,
   addPayment,
   updatePayment,
-  // removePayment,
+  removePayment,
   // removePaymentCheck
+  addPaymentCheck
 } = paymentSlice.actions;
 
 export const paymentReducer = paymentSlice.reducer;

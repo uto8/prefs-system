@@ -17,6 +17,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { ja } from "date-fns/locale";
 import { createOrderCheck } from '@/app/(authed)/payment/list/actions';
+import { useAppDispatch } from '@/stores';
+import { addOrderCheck } from '@/stores/reducers/orderSlice';
 
 const formSchema = z.object({
   orderCheckValue: z.string().nonempty("入金予定額は必須項目です"),
@@ -38,16 +40,26 @@ export default function OrderCheckForm({depositOpen, setDepositOpen, orderId}: {
     },
   })
 
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       console.log(data);
       console.log(orderId)
-      await createOrderCheck({
+      const orderCheck = await createOrderCheck({
         orderId: orderId,
         orderCheckValue: Number(data.orderCheckValue),
         orderCheckDate: format(data.orderCheckDate, "yyyy-MM-dd"),
       })
       setDepositOpen(false)
+      dispatch(addOrderCheck({
+        id: orderCheck.id,
+        orderCheckValue: Number(data.orderCheckValue),
+        orderCheckDate: data.orderCheckDate,
+        createdAt: '',
+        orderId: orderId,
+        description: ''
+      }))
     }catch(e) {
       throw e;
     }

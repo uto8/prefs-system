@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from '../ui/textarea';
 import { createOrder } from '@/app/(authed)/payment/list/actions';
+import { useAppDispatch } from '@/stores';
+import { addOrder } from '@/stores/reducers/orderSlice';
 
 const formSchema = z.object({
   supplier: z.string().nonempty("発注先は必須項目です"),
@@ -60,9 +62,11 @@ export default function OrderForm({addPaymentOpen, setaddPaymentOpen}: {
     },
   })
 
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      await createOrder({
+      const order = await createOrder({
         issueId: Number(issueId) ?? 0,
         supplier: data.supplier,
         orderPlanValue: Number(data.orderPlanValue),
@@ -70,6 +74,17 @@ export default function OrderForm({addPaymentOpen, setaddPaymentOpen}: {
         type: data.type,
         description: data.description,
       });
+
+      dispatch(addOrder({
+        supplier: data.supplier,
+        orderPlanValue: Number(data.orderPlanValue),
+        withdrawalPlanDate: data.withdrawalPlanDate,
+        type: data.type,
+        description: data.description,
+        orderChecks: [],
+        id: order.id
+      }))
+
       setaddPaymentOpen(false)
     }catch(e) {
       throw e;

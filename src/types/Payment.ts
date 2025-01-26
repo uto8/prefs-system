@@ -9,7 +9,7 @@ export type Payment = {
 
 export type PaymentCheck = {
   id: string;
-  paymentId: string;
+  paymentId: number;
   paymentCheckValue: string;
   paymentCheckDate: string;
   description: string;
