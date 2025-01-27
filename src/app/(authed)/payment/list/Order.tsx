@@ -28,7 +28,7 @@ export default function Order({ handleOpenOrderCheckForm }: {
       try{
         const orders = await getOrders(searchParams.get("issue_id") ?? "");
 
-        dispatch(setOrder(orders))
+        dispatch(setOrder([]))
         console.log(orders)
 
       }  catch (error) {
@@ -78,10 +78,10 @@ export default function Order({ handleOpenOrderCheckForm }: {
               <div className="mt-1 text-xs leading-5 text-gray-500">{format(order.withdrawalPlanDate, "yyyy年MM月dd日")}</div>
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
-            {[].map((orderCheck, index) => (
+            {order.orderChecks?.map((orderCheck, index) => (
                 <div className="mb-5" key={index}>
-                  {/* <div className="text-sm leading-6 text-gray-900">{Number(orderCheck.orderCheckValue)}円</div>
-                  <div className="mt-1 text-xs leading-5 text-gray-500">{format(orderCheck.orderCheckDate, "yyyy年MM月dd日")}</div> */}
+                  <div className="text-sm leading-6 text-gray-900">{Number(orderCheck.orderCheckValue)}円</div>
+                  <div className="mt-1 text-xs leading-5 text-gray-500">{format(orderCheck.orderCheckDate, "yyyy年MM月dd日")}</div>
                 </div>
               ))}
             </td>
