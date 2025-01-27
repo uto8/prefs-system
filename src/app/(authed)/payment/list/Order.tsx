@@ -2,7 +2,7 @@
 
 import React, { Fragment, useEffect } from 'react'
 import { deleteOrder, getOrders } from './actions';
-import { useAppDispatch, useAppSelector } from '@/stores';
+import { useAppDispatch } from '@/stores';
 import { removeOrder, setOrder } from '@/stores/reducers/orderSlice';
 import { format } from 'date-fns';
 
@@ -10,7 +10,7 @@ export default function Order({ handleOpenOrderCheckForm }: {
   handleOpenOrderCheckForm: (orderId: number) => void;
 }) {
 
-  const { value: orders } = useAppSelector((state) => state.orders);
+  // const { value: orders } = useAppSelector((state) => state.orders);
   const dispatch = useAppDispatch();
 
   const handleDelete = async (id: number) => {
