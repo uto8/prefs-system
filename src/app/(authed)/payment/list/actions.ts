@@ -101,3 +101,43 @@ export const deleteOrder = async (orderId: number) => {
     throw e;
   }
 }
+
+export const getRepairs = async (issueId: string) => {
+  try{
+    const repairs = await ApiGet("/repairs", {"issueId": issueId})
+    console.log("getrepairs")
+    console.log(repairs)
+    return repairs;
+  }catch(e) {
+    throw e;
+  }
+}
+
+export const createRepair = async (body: {
+  issueId: number;
+  supplier: string;
+  repairPlanValue: number;
+  withdrawalPlanDate: string;
+  type: string;
+  description: string;
+}) => {
+  try{
+    const repair = await ApiPost("/repairs", body)
+    return repair;
+  }catch(e) {
+    throw e;
+  }
+}
+
+export const createRepairCheck = async (body: {
+  repairId: number;
+  repairCheckValue: number;
+  repairCheckDate: string;
+}) => {
+  try{
+    const repairCheck = await ApiPost("/repair_checks", body)
+    return repairCheck
+  }catch(e) {
+    throw e;
+  }
+}

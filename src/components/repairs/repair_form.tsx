@@ -25,13 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from '../ui/textarea';
-import { createOrder } from '@/app/(authed)/payment/list/actions';
+import { createRepair } from '@/app/(authed)/payment/list/actions';
 import { useAppDispatch } from '@/stores';
-import { addOrder } from '@/stores/reducers/orderReducer';
+import { addRepair } from '@/stores/reducers/repairReducer';
 
 const formSchema = z.object({
   supplier: z.string().nonempty("発注先は必須項目です"),
-  orderPlanValue: z.string().nonempty("発注予定額は必須項目です"),
+  repairPlanValue: z.string().nonempty("発注予定額は必須項目です"),
   withdrawalPlanDate:  z.date({
     required_error: '必須',
     message: '発注予定日を入力してください',
@@ -40,9 +40,9 @@ const formSchema = z.object({
   description: z.string().nonempty("備考欄は必須項目です"),
 })
 
-export default function OrderForm({paymentOpen, setPaymentOpen}: {
-  paymentOpen: boolean;
-  setPaymentOpen: Dispatch<SetStateAction<boolean>>;
+export default function RepairForm({repairOpen, setRepairOpen}: {
+  repairOpen: boolean;
+  setRepairOpen: Dispatch<SetStateAction<boolean>>;
 }) {
 
   const [issueId, setIssueId] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
     defaultValues: {
       supplier: "",
       type: "",
-      orderPlanValue: "",
+      repairPlanValue: "",
       description: "",
     },
   })
@@ -66,26 +66,25 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      const order = await createOrder({
+      const repair = await createRepair({
         issueId: Number(issueId) ?? 0,
         supplier: data.supplier,
-        orderPlanValue: Number(data.orderPlanValue),
+        repairPlanValue: Number(data.repairPlanValue),
         withdrawalPlanDate: format(data.withdrawalPlanDate, "yyyy-MM-dd"),
         type: data.type,
         description: data.description,
-      });
-
-      dispatch(addOrder({
+      })
+      dispatch(addRepair({
         supplier: data.supplier,
-        orderPlanValue: Number(data.orderPlanValue),
+        repairPlanValue: Number(data.repairPlanValue),
         withdrawalPlanDate: data.withdrawalPlanDate,
         type: data.type,
         description: data.description,
-        orderChecks: [],
-        id: order.id
+        repairChecks: [],
+        id: repair.id
       }))
 
-      setPaymentOpen(false)
+      setRepairOpen(false)
     }catch(e) {
       throw e;
     }
@@ -93,7 +92,7 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
 
 
   return (
-    <Dialog open={paymentOpen} onClose={setPaymentOpen} className="relative z-10">
+    <Dialog open={repairOpen} onClose={setRepairOpen} className="relative z-10">
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
@@ -127,7 +126,7 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
                 />
                 <FormField
                   control={form.control}
-                  name="orderPlanValue"
+                  name="repairPlanValue"
                   render={({field}) => (
                     <FormItem>
                       <FormLabel>

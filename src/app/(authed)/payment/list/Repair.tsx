@@ -1,53 +1,35 @@
 "use client"
 
-import React, { Fragment } from 'react'
+import { useAppDispatch, useAppSelector } from '@/stores';
+import React, { Fragment, useEffect } from 'react'
+import { getRepairs } from './actions';
+import { setRepair } from '@/stores/reducers/repairReducer';
+import { format } from 'date-fns';
 
-export default function Repair({ setAddPaymentOpen, setPaymentOpen }: {
-  setAddPaymentOpen: (open: boolean) => void;
-  setPaymentOpen: (open: boolean) => void;
+export default function Repair({ handleOpenRepairCheckForm }: {
+  handleOpenRepairCheckForm: (repairId: number) => void;
 }) {
-  const payments = [
-    {
-      id: '11112',
-      supplier: "塗装業者2",
-      estimated_price: '5000000',
-      scheduled_date: '2022年3月20日',
-      deposits: [
-        {
-          deposit_amount: '5000000',
-          deposit_date: '2022年3月20日'
-        },
-      ],
-    },
-    {
-      id: '1111',
-      supplier: "床工事業者",
-      estimated_price: '5000000',
-      scheduled_date: '2022年3月20日',
-      deposits: [
-        {
-          deposit_amount: '4900000',
-          deposit_date: '2022年3月20日'
-        },
-        {
-          deposit_amount: '100000',
-          deposit_date: '2022年3月21日'
-        },
-      ],
-    },
-    {
-      id: '1111',
-      supplier: "建築ホール",
-      estimated_price: '6000000',
-      scheduled_date: '2022年5月20日',
-      deposits: [
-        {
-          deposit_amount: '4900000',
-          deposit_date: '2022年5月20日'
-        },
-      ],
+  const { value: repairs=[] } = useAppSelector((state) => state.repairs);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const fetch = async () => {
+      try{
+        const ordersRes = await getRepairs(searchParams.get("issue_id") ?? "");
+
+        dispatch(setRepair(ordersRes));
+        console.log("orederRes")
+        console.log(repairs)
+
+      }  catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
-  ]
+    fetch()
+  }, [])
+
   return (
     <table className="w-full text-left">
       <thead className="sr-only">
@@ -62,22 +44,20 @@ export default function Repair({ setAddPaymentOpen, setPaymentOpen }: {
           <tr className="text-sm leading-6 text-gray-900">
             <th scope="colgroup" className="relative isolate py-2 font-semibold">
               委託業者
-              {/* <div className="absolute inset-y-0 right-full -z-10 w-screen border-b border-gray-200 bg-gray-50" />
-              <div className="absolute inset-y-0 left-0 -z-10 w-screen border-b border-gray-200 bg-gray-50" /> */}
             </th>
             <th>発注予定</th>
             <th>発注確認</th>
             <th>ステータス</th>
           </tr>
         </Fragment>
-        {payments.map((receipt, index) => (
+        {repairs.map((repair, index) => (
           <tr key={index}>
             <td className="align-baseline relative py-5 pr-6">
               <div className="flex gap-x-6">
                 <div className="flex-auto">
                   <div className="gap-x-3">
                     <div className="text-x font-medium leading-4 text-gray-900">
-                      {receipt.supplier}
+                      {repair.supplier}
                     </div>
                   </div>
                 </div>
@@ -86,14 +66,14 @@ export default function Repair({ setAddPaymentOpen, setPaymentOpen }: {
               <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
-              <div className="text-sm leading-6 text-gray-900">{receipt.estimated_price}円</div>
-              <div className="mt-1 text-xs leading-5 text-gray-500">{receipt.scheduled_date}</div>
+              <div className="text-sm leading-6 text-gray-900">{repair.repairPlanValue}円</div>
+              <div className="mt-1 text-xs leading-5 text-gray-500">{format(repair.withdrawalPlanDate, 'yyyy年MM月dd日')}</div>
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
-            {receipt.deposits.map((deposit, index) => (
+            {repair.repairChecks.map((deposit, index) => (
                 <div className="mb-5" key={index}>
-                  <div className="text-sm leading-6 text-gray-900">{deposit.deposit_amount}円</div>
-                  <div className="mt-1 text-xs leading-5 text-gray-500">{deposit.deposit_date}</div>
+                  <div className="text-sm leading-6 text-gray-900">{deposit.repairCheckValue}円</div>
+                  <div className="mt-1 text-xs leading-5 text-gray-500">{format(deposit.repairCheckDate, 'yyyy年MM月dd日')}</div>
                 </div>
               ))}
             </td>
@@ -105,12 +85,12 @@ export default function Repair({ setAddPaymentOpen, setPaymentOpen }: {
             <td className="align-baseline py-5 text-right">
               <div className="flex justify-end">
                 <button
-                  onClick={()=>{setPaymentOpen(true)}}
+                  onClick={()=>{handleOpenRepairCheckForm(repair.id)}}
                   className="text-sm font-medium mr-2 leading-6 text-indigo-600 hover:text-indigo-500"
                 >
                   支払い完了
                 </button>
-                <button
+                {/* <button
                   onClick={()=>{setAddPaymentOpen(true)}}
                   className="text-sm mr-2 font-medium leading-6 text-indigo-600 hover:text-indigo-500"
                 >
@@ -118,14 +98,14 @@ export default function Repair({ setAddPaymentOpen, setPaymentOpen }: {
                   <span className="sr-only">
                     , invoice #{receipt.id}
                   </span>
-                </button>
+                </button> */}
                 <button
                   onClick={()=>{alert("本当に削除しますか？")}}
                   className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
                 >
                   削除
                   <span className="sr-only">
-                    , invoice #{receipt.id}
+                    , invoice #{repair.id}
                   </span>
                 </button>
               </div>

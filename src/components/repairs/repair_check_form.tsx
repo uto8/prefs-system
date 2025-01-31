@@ -16,27 +16,27 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { ja } from "date-fns/locale";
-import { createOrderCheck } from '@/app/(authed)/payment/list/actions';
 import { useAppDispatch } from '@/stores';
-import { addOrderCheck } from '@/stores/reducers/orderReducer';
+import { createRepairCheck } from '@/app/(authed)/payment/list/actions';
+import { addRepairCheck } from '@/stores/reducers/repairReducer';
 
 const formSchema = z.object({
-  orderCheckValue: z.string().nonempty("入金予定額は必須項目です"),
-  orderCheckDate:  z.date({
+  repairCheckValue: z.string().nonempty("入金予定額は必須項目です"),
+  repairCheckDate:  z.date({
     required_error: '必須',
     message: '入金予定日を入力してください',
   }),
 })
 
-export default function OrderCheckForm({depositOpen, setDepositOpen, orderId}: {
-  depositOpen: boolean;
-  setDepositOpen: Dispatch<SetStateAction<boolean>>;
-  orderId: number;
+export default function RepairCheckForm({repairConfirmOpen, setRepairConfirmOpen, repairId}: {
+  repairConfirmOpen: boolean;
+  setRepairConfirmOpen: Dispatch<SetStateAction<boolean>>;
+  repairId: number;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      orderCheckValue: "",
+      repairCheckValue: "",
     },
   })
 
@@ -44,29 +44,29 @@ export default function OrderCheckForm({depositOpen, setDepositOpen, orderId}: {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log(data);
-      console.log(orderId)
-      const orderCheck = await createOrderCheck({
-        orderId: orderId,
-        orderCheckValue: Number(data.orderCheckValue),
-        orderCheckDate: format(data.orderCheckDate, "yyyy-MM-dd"),
+      console.log("repair check form")
+      console.log(data)
+      const repairCheck = await createRepairCheck({
+        repairId: repairId,
+        repairCheckValue: Number(data.repairCheckValue),
+        repairCheckDate: format(data.repairCheckDate, "yyyy-MM-dd"),
       })
-      setDepositOpen(false)
-      dispatch(addOrderCheck({
-        id: orderCheck.id,
-        orderCheckValue: Number(data.orderCheckValue),
-        orderCheckDate: data.orderCheckDate,
+      dispatch(addRepairCheck({
+        id: repairCheck.id,
+        repairCheckValue: Number(data.repairCheckValue),
+        repairCheckDate: data.repairCheckDate,
         createdAt: '',
-        orderId: orderId,
+        repairId: repairId,
         description: ''
       }))
+      setRepairConfirmOpen(false)
     }catch(e) {
       throw e;
     }
   }
 
   return (
-    <Dialog open={depositOpen} onClose={setDepositOpen} className="relative z-10">
+    <Dialog open={repairConfirmOpen} onClose={setRepairConfirmOpen} className="relative z-10">
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
@@ -85,7 +85,7 @@ export default function OrderCheckForm({depositOpen, setDepositOpen, orderId}: {
               >
                 <FormField
                   control={form.control}
-                  name="orderCheckValue"
+                  name="repairCheckValue"
                   render={({field}) => (
                     <FormItem>
                       <FormLabel>
@@ -100,7 +100,7 @@ export default function OrderCheckForm({depositOpen, setDepositOpen, orderId}: {
                 />
                 <FormField
                   control={form.control}
-                  name="orderCheckDate"
+                  name="repairCheckDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>入金予定額</FormLabel>

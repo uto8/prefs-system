@@ -2,15 +2,15 @@
 
 import React, { Fragment, useEffect } from 'react'
 import { deleteOrder, getOrders } from './actions';
-import { useAppDispatch } from '@/stores';
-import { removeOrder, setOrder } from '@/stores/reducers/orderSlice';
+import { useAppDispatch, useAppSelector } from '@/stores';
+import { removeOrder, setOrder } from '@/stores/reducers/orderReducer';
 import { format } from 'date-fns';
 
 export default function Order({ handleOpenOrderCheckForm }: {
   handleOpenOrderCheckForm: (orderId: number) => void;
 }) {
 
-  // const { value: orders } = useAppSelector((state) => state.orders);
+  const { value: orders } = useAppSelector((state) => state.orders);
   const dispatch = useAppDispatch();
 
   const handleDelete = async (id: number) => {
@@ -21,88 +21,14 @@ export default function Order({ handleOpenOrderCheckForm }: {
     }
   }
 
-  const ordersTest = [
-    {
-      id: 1,
-      supplier: "Supplier A",
-      orderPlanValue: 100000,
-      withdrawalPlanDate: new Date("2024-02-15"),
-      type: "Type A",
-      description: "First order description",
-      orderChecks: [
-        {
-          id: "check1",
-          orderId: 1,
-          orderCheckValue: 50000,
-          orderCheckDate: new Date("2024-02-10"),
-          description: "First order check",
-          createdAt: "2024-02-05T10:00:00Z",
-        },
-        {
-          id: "check2",
-          orderId: 1,
-          orderCheckValue: 50000,
-          orderCheckDate: new Date("2024-02-12"),
-          description: "Second order check",
-          createdAt: "2024-02-07T12:30:00Z",
-        },
-      ],
-    },
-    {
-      id: 2,
-      supplier: "Supplier B",
-      orderPlanValue: 200000,
-      withdrawalPlanDate: new Date("2024-03-01"),
-      type: "Type B",
-      description: "Second order description",
-      orderChecks: [
-        {
-          id: "check3",
-          orderId: 2,
-          orderCheckValue: 100000,
-          orderCheckDate: new Date("2024-02-28"),
-          description: "First order check for Supplier B",
-          createdAt: "2024-02-20T09:15:00Z",
-        },
-        {
-          id: "check4",
-          orderId: 2,
-          orderCheckValue: 100000,
-          orderCheckDate: new Date("2024-02-25"),
-          description: "Second order check for Supplier B",
-          createdAt: "2024-02-22T14:45:00Z",
-        },
-      ],
-    },
-    {
-      id: 3,
-      supplier: "Supplier C",
-      orderPlanValue: 150000,
-      withdrawalPlanDate: new Date("2024-04-10"),
-      type: "Type C",
-      description: "Third order description",
-      orderChecks: [
-        {
-          id: "check5",
-          orderId: 3,
-          orderCheckValue: 150000,
-          orderCheckDate: new Date("2024-04-08"),
-          description: "Full payment for Supplier C",
-          createdAt: "2024-04-01T16:00:00Z",
-        },
-      ],
-    },
-  ];
-
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
 
     const fetch = async () => {
       try{
-        const orders = await getOrders(searchParams.get("issue_id") ?? "");
+        const ordersRes = await getOrders(searchParams.get("issue_id") ?? "");
 
-        dispatch(setOrder([]))
-        console.log(orders)
+        dispatch(setOrder(ordersRes))
 
       }  catch (error) {
         console.error('Error fetching data:', error);
@@ -131,7 +57,7 @@ export default function Order({ handleOpenOrderCheckForm }: {
             <th>ステータス</th>
           </tr>
         </Fragment>
-        {ordersTest.map((order, index) => (
+        {orders.map((order, index) => (
           <tr key={index}>
             <td className="align-baseline relative py-5 pr-6">
               <div className="flex gap-x-6">

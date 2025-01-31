@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/20/solid'
-import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
 import Order from "./Order"
 import Deposit from "./Deposit"
 import Repair from "./Repair"
@@ -13,6 +12,8 @@ import PaymentForm from "@/components/payments/payment_form"
 import PaymentCheckForm from "@/components/payments/payment_check_form"
 import OrderForm from "@/components/orders/order_form"
 import OrderCheckForm from "@/components/orders/order_check_form"
+import RepairCheckForm from "@/components/repairs/repair_check_form"
+import RepairForm from "@/components/repairs/repair_form"
 
 
 function classNames(...classes: string[]) {
@@ -24,6 +25,7 @@ export default function ReceiptPage() {
   const [issueId, setIssueId] = useState<string | null>("0");
   const [paymentId, setPaymentId] = useState<number | null>(null);
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [repairId, setRepairId] = useState<number | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -56,6 +58,11 @@ export default function ReceiptPage() {
     setOrderConfirmOpen(true)
   }
 
+  const handleOpenRepairCheckForm = (repairId: number) => {
+    setRepairId(repairId)
+    setRepairConfirmOpen(true)
+  }
+
 
   const tabs = [
     { name: '入金一覧', href: `/payment/list?type=deposit&issue_id=${issueId}`, icon: UserIcon, current: type=='deposit' },
@@ -67,9 +74,9 @@ export default function ReceiptPage() {
   const [open, setOpen] = useState(false)
   const [repairOpen, setRepairOpen] = useState(false)
   const [depositOpen, setDepositOpen] = useState(false)
-  const [addPaymentOpen, setaddPaymentOpen] = useState(false)
-  const [paymentOpen, setPaymenttOpen] = useState(false)
+  const [paymentOpen, setPaymentOpen] = useState(false)
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false)
+  const [repairConfirmOpen, setRepairConfirmOpen] = useState(false)
 
 
   const stats = [
@@ -104,7 +111,7 @@ export default function ReceiptPage() {
           </button>}
           {type=='payment'&&
           <button
-            onClick={()=>{setaddPaymentOpen(true)}}
+            onClick={()=>{setPaymentOpen(true)}}
             className="block inline rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
           発注追加
@@ -165,167 +172,36 @@ export default function ReceiptPage() {
         />}
 
         {type=='repair'&&<Repair
-          setAddPaymentOpen={setPaymenttOpen}
-          setPaymentOpen={setaddPaymentOpen}
+          handleOpenRepairCheckForm={handleOpenRepairCheckForm}
         />}
 
       </div>
-    <PaymentCheckForm
-      depositOpen={depositOpen}
-      setDepositOpen={setDepositOpen}
-      paymentId={paymentId?? 0}
-    />
-
-    <OrderCheckForm
-      depositOpen={orderConfirmOpen}
-      setDepositOpen={setOrderConfirmOpen}
-      orderId={orderId ?? 0}
-    />
-
-    {/* 入金フォームポップアップ */}
-    <PaymentForm open={open} setOpen={setOpen}/>
-
-    {/* 発注追加ポップアップ */}
-    <OrderForm addPaymentOpen={addPaymentOpen} setaddPaymentOpen={setaddPaymentOpen}/>
-
-    {/* 補修追加ポップアップ */}
-    <Dialog open={repairOpen} onClose={setRepairOpen} className="relative z-10">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+      <PaymentCheckForm
+        depositOpen={depositOpen}
+        setDepositOpen={setDepositOpen}
+        paymentId={paymentId?? 0}
       />
 
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <DialogPanel
-            transition
-            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-sm sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
-          >
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">発注先</label>
-                <input
-                  type="text"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">発注額</label>
-                <input
-                  type="text"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">入金予定日</label>
-                <input
-                  type="date"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">種別</label>
-                <select
-                  name=""
-                  id=""
-                  className="w-full py-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                >
-                  <option value="">未処理</option>
-                  <option value="">打診中</option>
-                  <option value="">エビ待</option>
-                  <option value="">依頼中</option>
-                  <option value="">依頼済</option>
-                  <option value="">発注済</option>
-                  <option value="">請求済</option>
-                  <option value="">済IV無</option>
-                  <option value="">自社</option>
-                  <option value="">現金</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">備考</label>
-                <textarea
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div className="mt-5 sm:mt-6">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                発注追加
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
-      </div>
-    </Dialog>
-    {/* 発注確認ポップアップ */}
-    <Dialog open={paymentOpen} onClose={setPaymenttOpen} className="relative z-10">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+      <OrderCheckForm
+        depositOpen={orderConfirmOpen}
+        setDepositOpen={setOrderConfirmOpen}
+        orderId={orderId ?? 0}
       />
 
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <DialogPanel
-            transition
-            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-sm sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
-          >
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">発注先</label>
-                <div>塗装業者</div>
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">入金確認額</label>
-                <input
-                  type="text"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="relative mb-4">
-                <label htmlFor="text" className="leading-7 text-sm text-gray-600">入金確認日</label>
-                <input
-                  type="date"
-                  id="text"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                />
-              </div>
-            </div>
-            <div className="mt-5 sm:mt-6">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                入金確認
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
-      </div>
-    </Dialog>
+      <RepairCheckForm
+        repairConfirmOpen={repairConfirmOpen}
+        setRepairConfirmOpen={setRepairConfirmOpen}
+        repairId={repairId ?? 0}
+      />
+
+      {/* 入金フォームポップアップ */}
+      <PaymentForm open={open} setOpen={setOpen}/>
+
+      {/* 発注追加ポップアップ */}
+      <OrderForm paymentOpen={paymentOpen} setPaymentOpen={setPaymentOpen}/>
+
+      {/* 補修追加ポップアップ */}
+      <RepairForm repairOpen={repairOpen} setRepairOpen={setRepairOpen}/>
     </>
   )
 }

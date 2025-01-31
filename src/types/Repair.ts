@@ -1,24 +1,19 @@
-// 補修予定の型定義
-export interface Repair {
-    id: string;
-    supplier: string;               
-    repair_plan_value: number;      
-    withdrawal_plan_date: string;  
-    type: string;                  
-    description?: string;           
-    created_at: string;            
-    updated_at: string;   
-    repair: RepairCheck;        
-  }
-  
-  // 補修確認の型定義
-  export interface RepairCheck {
-    id: string;
-    repair_id: string;             
-    repair_check_value: number;    
-    repair_check_date: string;     
-    description?: string;         
-    created_at: string;           
-  }
-  
-  
+export type Repair = {
+  id: number;
+  supplier: string;
+  repairPlanValue: number;  // 数値に変更
+  withdrawalPlanDate: Date;  // 日付文字列で保持
+  type: string;
+  description: string;
+  repairChecks: RepairCheck[];  // 複数の OrderCheck を持つ場合、配列に変更
+};
+
+export type RepairCheck = {
+  id: string;
+  repairId: number;
+  repairCheckValue: number;  // 数値に変更
+  repairCheckDate: Date;  // 日付文字列で保持
+  description: string;
+  createdAt: string;  // 日付文字列で保持
+};
+
