@@ -9,6 +9,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         token.role = (user as any).role;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.companyId = (user as any).companyId || null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.officeId = (user as any).officeId || null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.saleId = (user as any).saleId || null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.idToken = (user as any).idToken || null;
       }
       return token
     },
@@ -31,10 +39,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: credentials.email,
             password: credentials.password
           })
+
           return {
             id: "1",
             email: `${credentials.email}`,
             role: user.accountType,
+            idToken: user.idToken,
+            companyId: user.companyId || null,
+            officeId: user.officeId || null,
+            saleId: user.saleId || null,
           }
         }catch(e) {
           throw e;

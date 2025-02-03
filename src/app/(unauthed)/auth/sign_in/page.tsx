@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { loginWithCredentials } from './actions';
 import { Input } from '@/components/ui/input';
+import { Loader2 } from "lucide-react"
+import { useState } from 'react';
 
 const formSchema = z.object({
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
@@ -15,6 +17,8 @@ const formSchema = z.object({
 })
 
 export default function SignIn() {
+
+  const [disabled, setDisabled] = useState(false);
 
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -26,6 +30,7 @@ export default function SignIn() {
   })
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
+      setDisabled(true)
       const response = await loginWithCredentials({
         email: data.email,
         password: data.password,
@@ -34,6 +39,7 @@ export default function SignIn() {
       console.log(response)
       router.push('/')
     }catch(e){
+      setDisabled(false)
       console.log('error')
       throw e;
     }
@@ -86,7 +92,8 @@ export default function SignIn() {
                 )}
               />
               <div className="mt-4 flex">
-                <Button type="submit">
+                <Button disabled={disabled} type="submit" className='w-full'>
+                  {disabled&&<Loader2 className="animate-spin" />}
                   ログイン
                 </Button>
               </div>
