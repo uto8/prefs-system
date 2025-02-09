@@ -37,11 +37,9 @@ export function AppSidebar() {
   useEffect(() => {
     const fetchSession = async () => {
       const res = await getSession();
-      console.log("res")
-      // @ts-expect-error
       console.log(res?.user.role)
       // @ts-expect-error
-      setRole(res?.user?.role);
+      setRole(res?.token?.role);
     };
     fetchSession();
   }, []);

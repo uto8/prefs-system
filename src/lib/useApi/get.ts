@@ -1,20 +1,26 @@
+"use server";
+import { getCookieSession } from "../auth/get-cookie-session";
+import { Session } from "@/types/Session";
+
 const ApiGet = async (url: string, reqHeader: Record<string, string> = {}) => {
   try{
-    const header: HeadersInit = {
-      //Todo companyIdを変更
-      "companyId": "1",
-      ...reqHeader
-    };
-    console.log("reqHeader")
-    console.log(reqHeader)
     const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
     console.log(request_url)
 
+    const cookie: Session = await getCookieSession()
+    const header: HeadersInit = {
+      ...(cookie.role && { "role": cookie.role }),
+      ...(cookie.companyId && { "companyId": cookie.companyId }),
+      ...(cookie.officeId && { "officeId": cookie.officeId }),
+      ...(cookie.saleId && { "saleId": cookie.saleId }),
+      ...reqHeader
+    };
+
     const response = await fetch(request_url, {
       method: 'GET',
-      headers: header,
+      headers: header
     });
-    // ステータスコードを確認
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
