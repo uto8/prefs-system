@@ -65,9 +65,9 @@ export default function ReceiptPage() {
 
 
   const tabs = [
-    { name: '入金一覧', href: `/payment/list?type=deposit&issue_id=${issueId}`, icon: UserIcon, current: type=='deposit' },
-    { name: '発注一覧', href: `/payment/list?type=payment&issue_id=${issueId}`, icon: BuildingOfficeIcon, current: type=='payment' },
-    { name: '補修一覧', href: `/payment/list?type=repair&issue_id=${issueId}`, icon: BuildingOfficeIcon, current: type=='repair' },
+    { name: '入金一覧', href: issueId ?`/payment/list?type=deposit&issue_id=${issueId}`: `/payment/list?type=deposit` , icon: UserIcon, current: type=='deposit' },
+    { name: '発注一覧', href: issueId ?`/payment/list?type=payment&issue_id=${issueId}`: `/payment/list?type=payment`, icon: BuildingOfficeIcon, current: type=='payment' },
+    { name: '補修一覧', href: issueId ?`/payment/list?type=repair&issue_id=${issueId}`: `/payment/list?type=repair`, icon: BuildingOfficeIcon, current: type=='repair' },
   ]
 
 

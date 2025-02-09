@@ -1,22 +1,28 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { getSession } from 'next-auth/react'
+import AppSidebar from '@/components/layout/app-sidebar'
+import ApiGet from '@/lib/useApi/get';
+import { getCookieSession } from '@/lib/auth/get-cookie-session';
+
+export type NavigationItem = {
+  name: string;
+  url: string;
+  icon: React.ElementType;
+  current: boolean;
+};
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-  console.log("session")
-  console.log(session)
-  if(!session?.user?.id){
-    redirect("/auth/sign_in");
-  }
+  const {role} = await getCookieSession();
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="w-full px-4">
-        <SidebarTrigger />
-        {children}
-      </main>
-    </SidebarProvider>
+    <>
+      <div>
+        <AppSidebar role={role}/>
+
+        <div className="lg:pl-72">
+          <main className="py-10">
+            <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+          </main>
+        </div>
+      </div>
+    </>
   )
 }
