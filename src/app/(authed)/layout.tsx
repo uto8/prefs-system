@@ -1,6 +1,4 @@
-import { getSession } from 'next-auth/react'
 import AppSidebar from '@/components/layout/app-sidebar'
-import ApiGet from '@/lib/useApi/get';
 import { getCookieSession } from '@/lib/auth/get-cookie-session';
 
 export type NavigationItem = {

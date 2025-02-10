@@ -45,7 +45,6 @@ export default function IssueListPage() {
     }
   }) => {
     try{
-      console.log('hakka')
       setEditModal(false)
       await createIssueConfirmed({
         issueId: issueId,
@@ -115,9 +114,15 @@ export default function IssueListPage() {
                 {value.map((issue, index) => (
                   <tr key={index}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                      <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       {issue.id}
+                      </a>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.client.name}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <a href={`/issues/client/${issue.clientId}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      {issue.client.name}
+                      </a>
+                    </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.constructionSite}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       {/* {index != 3?:<span className="rounded-md py-1 px-2 text-xs bg-red-50 text-red-700 ring-red-600/20 font-medium ring-1 ring-inset">

@@ -4,21 +4,11 @@ import { useEffect, useState } from "react";
 import SidebarDesktop from "./sidebar-desktop"
 import SidebarMobile from "./sidebar-mobile"
 import {
-  Bars3Icon,
-  BellIcon,
-  ChevronDownIcon,
   DocumentDuplicateIcon,
   FolderIcon,
   HomeIcon,
-  MagnifyingGlassIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from '@headlessui/react'
 import TopBar from "./top-bar";
 import { logout } from "../actions";
 import { useRouter } from "next/navigation";
@@ -33,30 +23,34 @@ export type NavigationItem = {
 export default function AppSidebar ({role: role}:{role: string | null}){
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [navigation, setNavigations] = useState<NavigationItem[]>([]);
+  const currentUrl = document.location.pathname + document.location.search;
 
   useEffect(() => {
     if(role === "ADMIN"){
       setNavigations([
-        { name: 'トップページ', url: '/', icon: HomeIcon, current: false },
-        { name: '店舗管理', url: '/shops/list', icon: UsersIcon, current: false },
-        { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: false },
-        { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: false },
-        { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: false },
-        { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: false },
+        { name: 'トップページ', url: '/', icon: HomeIcon, current: currentUrl === '/' },
+        { name: '店舗管理', url: '/shops/list', icon: UsersIcon, current: currentUrl.startsWith('/shops/') },
+        { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
+        { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/sales/') },
+        { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
+        { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
+        { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
       ])
     }else if(role === "OFFICE"){
       setNavigations([
-        { name: 'トップページ', url: '/', icon: HomeIcon, current: false },
-        { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: false },
-        { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: false },
-        { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: false },
-        { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: false },
+        { name: 'トップページ', url: '/', icon: HomeIcon, current: currentUrl === '/' },
+        { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
+        { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/sales/') },
+        { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
+        { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
+        { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
       ])
     }else if(role === "SALES"){
       setNavigations([
-        { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: false },
-        { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: false},
-        { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: false },
+        { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
+        { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
+        { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
+        { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
       ])
     }
   }, [])

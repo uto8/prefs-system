@@ -26,6 +26,7 @@ export default function IssueList() {
       try{
         const offices = await getOffices();
         const sales = await getSales();
+        console.log("sales", sales)
 
         dispatch(setOfficeValue(offices));
         dispatch(setSaleValue(sales))
@@ -75,7 +76,10 @@ export default function IssueList() {
                     営業名
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    住所
+                    メールアドレス
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    電話番号
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     店舗
@@ -94,6 +98,7 @@ export default function IssueList() {
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.name}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.email}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.phoneNumber}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.officeName}</td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <a href={`/sales/${sale.id}/edit`} className="text-indigo-600 hover:text-indigo-900">
                         編集

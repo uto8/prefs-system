@@ -1,8 +1,4 @@
-import { Cog6ToothIcon } from "@heroicons/react/24/outline"
-import { ForwardRefExoticComponent, RefAttributes, SVGProps } from "react";
 import { NavigationItem } from "./app-sidebar";
-import { logout } from "../actions";
-import { useRouter } from "next/navigation";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')

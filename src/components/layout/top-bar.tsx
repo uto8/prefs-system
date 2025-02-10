@@ -1,8 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { NavigationItem } from "./app-sidebar"
-import { Bars3Icon, BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { ChevronDownIcon } from "lucide-react"
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
+import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline"
 
 export default function TopBar ({
   setSidebarOpen: setSidebarOpen,

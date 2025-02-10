@@ -1,19 +1,9 @@
 "use client"
 
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from "@headlessui/react"
-import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, SVGProps } from "react"
+import { XMarkIcon } from "@heroicons/react/24/outline"
+import { Dispatch, SetStateAction} from "react"
 import { NavigationItem } from "./app-sidebar"
-
-type Navigation = {
-  name: string;
-  href: string;
-  icon: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, "ref"> & {
-      title?: string;
-      titleId?: string;
-  } & RefAttributes<SVGSVGElement>>;
-  current: boolean;
-}[]
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
