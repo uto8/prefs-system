@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/auth";
 import ApiGet from "@/lib/useApi/get";
 import ApiPost from "@/lib/useApi/post";
 import ApiPut from "@/lib/useApi/put";
@@ -7,9 +8,9 @@ import { Issue, IssueConfirmed } from "@/types/Issue";
 
 export const getIssues = async ():Promise<Issue[]> => {
   try{
+    const session = await auth()
+    console.log(session)
     const issues = await ApiGet('/issues');
-    console.log("issues")
-    console.log(issues);
     return issues;
   }catch(e) {
     throw e;

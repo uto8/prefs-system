@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from "react-hook-form"
-import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -12,6 +11,7 @@ import { createSale } from './actions';
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/stores';
 import { addValue } from '@/stores/reducers/saleReducer';
+import TitleComponent from '@/components/layout/title';
 
 
 
@@ -26,7 +26,7 @@ export default function AddSales() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const officeId = Number(searchParams.get('office_id'));
+  const officeId = Number(searchParams.get('office_id')) ?? null;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,16 +58,14 @@ export default function AddSales() {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log("data")
-      console.log(data)
-      await createSale({
+      const body = {
         name: data.name,
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
-        companyId: 1,
-        officeId: officeId,
-      });
+        ...(officeId && { "officeId": officeId }),
+      }
+      await createSale(body);
       dispatch(addValue({
         id: "2",
         name: data.name,
@@ -83,20 +81,7 @@ export default function AddSales() {
 
   return (
     <>
-      <div className="sm:flex sm:items-center mb-8">
-        <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">営業追加</h1>
-        </div>
-        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <Link
-            href="#"
-            onClick={router.back}
-            className="block rounded-md bg-[#0054ac] px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            営業一覧に戻る
-          </Link>
-        </div>
-      </div>
+      <TitleComponent title="営業追加"/>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}

@@ -5,7 +5,6 @@ import { Session } from "@/types/Session";
 const ApiGet = async (url: string, reqHeader: Record<string, string> = {}) => {
   try{
     const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
-    console.log(request_url)
 
     const cookie: Session = await getCookieSession()
     const header: HeadersInit = {

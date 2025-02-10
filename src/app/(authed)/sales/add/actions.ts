@@ -1,17 +1,25 @@
 "use server";
 
+import { getCookieSession } from "@/lib/auth/get-cookie-session";
 import ApiPost from "@/lib/useApi/post";
+import { Session } from "@/types/Session";
 
 export const createSale = async (body: {
   name: string;
   email: string;
   password: string;
   phoneNumber: string;
-  companyId: number;
-  officeId: number
+  officeId?: number | null
 }) => {
   try{
-    const sale = await ApiPost('/sales', body);
+    const cookie: Session = await getCookieSession()
+    const reqBody = {
+      ...(cookie.companyId && { "companyId": cookie.companyId }),
+      ...(cookie.officeId && { "officeId": cookie.officeId }),
+      ...body
+    }
+    console.log(reqBody)
+    const sale = await ApiPost('/sales', reqBody);
     return sale;
   }catch(e) {
     throw e;

@@ -17,9 +17,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token
     },
     session({session, token}){
-      session.user.id= token.id as string;
-      // session.user.role = token.role as string;
-      return {...session, token}
+      session.user = {
+        id: token.id as string,
+        role: token.role as string,
+        companyId: token.companyId as number | null,
+        officeId: token.officeId as number | null,
+        saleId: token.saleId as number | null,
+        email: token.email as string,
+        idToken: token.idToken as string | null,
+        emailVerified: null,
+      };
+      return session
     }
   },
   providers: [

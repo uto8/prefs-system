@@ -118,13 +118,13 @@ export default function SearchModal({
                     </FormItem>
                   )}
                 />
-                <div className='flex'>
+                <div className='flex gap-4'>
                 <FormField
                   control={form.control}
                   name="startPreferredDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>工事完了日</FormLabel>
+                      <FormLabel>工事完了日から</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -158,13 +158,12 @@ export default function SearchModal({
                     </FormItem>
                   )}
                 />
-                〜
                 <FormField
                   control={form.control}
                   name="endPreferredDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>工事完了日</FormLabel>
+                      <FormLabel>工事完了日まで</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>

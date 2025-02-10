@@ -9,6 +9,5 @@ export const getSales = async () => {
 
 export const getOffices = async () => {
   const response = await ApiGet('/offices');
-  console.log(response)
   return response;
 }

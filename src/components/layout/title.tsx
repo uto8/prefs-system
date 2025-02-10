@@ -12,7 +12,7 @@ export default function TitleComponent({
     router.back();  // 前のページに戻る
   };
   return (
-    <div className="px-4 sm:px-0">
+    <div className="px-4 sm:px-0 mb-8">
         <h3 className="flex text-base/7 font-semibold text-gray-900">
             <button onClick={goBack} type="button" className="mr-2 text-gray-400 bg-transparent text-sm" >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="stroke-2 w-6 h-6">

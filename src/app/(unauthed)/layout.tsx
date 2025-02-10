@@ -8,8 +8,6 @@ export default async function LoggedOutLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  console.log("session")
-  console.log(session)
   if(!!session?.user?.id){
     redirect("/");
   }

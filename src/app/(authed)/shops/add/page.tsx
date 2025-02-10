@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import TitleComponent from '@/components/layout/title';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
@@ -63,9 +64,7 @@ export default function CastAdd() {
   return (
     <>
       <div className="sm:flex sm:items-center mb-8">
-        <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">店舗追加</h1>
-        </div>
+        <TitleComponent title="案件追加"/>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <Link
             href="#"

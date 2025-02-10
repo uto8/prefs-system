@@ -132,7 +132,11 @@ export default function IssueListPage() {
                         契約未金入金
                       </span>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.sale.name}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <a href={`/sales/${issue.sale.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      {issue.sale.name}
+                      </a>
+                    </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金

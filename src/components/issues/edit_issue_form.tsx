@@ -1,10 +1,11 @@
-'use client';
+"use client"
 
 import { useRouter } from 'next/navigation';
-import { useForm } from "react-hook-form";
-import { z } from 'zod';
+import { useForm } from "react-hook-form"
+import { Issue } from "@/types/Issue";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,13 +22,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
 import { ja } from "date-fns/locale";
-import { createIssue } from './actions';
-import TitleComponent from '@/components/layout/title';
+import { Calendar } from '../ui/calendar';
+import ApiPut from '@/lib/useApi/put';
 
 const formSchema = z.object({
   currentAddress: z.string().nonempty("現住所は必須項目です"),
@@ -47,44 +47,55 @@ const formSchema = z.object({
   clientPhoneNumber: z.string().nonempty("電話番号は必須項目です"),
 })
 
-
-export default function AddIssue() {
+export default function EditIssueForm({issue}: {issue: Issue}) {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currentAddress: ""
+      currentAddress: issue.currentAddress,
+      preferredDate: new Date(issue.preferredDate),
+      type: issue.type,
+      contactContent: issue.contactContent,
+      constructionSite: issue.constructionSite,
+      budget: issue.budget.toString(),
+      clientName: issue.client.name,
+      clientNameKana: issue.client.nameKana,
+      clientEmail: issue.client.email,
+      clientPhoneNumber: issue.client.phoneNumber,
     },
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log('data')
-      console.log(data)
-      await createIssue({
+
+      const body = {
         currentAddress: data.currentAddress,
-        officeId: 1,
         preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
         type: data.type,
         contactContent: data.contactContent,
-        budget: Number(data.budget),
-        saleId: 1,
+        budget: data.budget,
         constructionSite: data.constructionSite,
+        clientId: issue.clientId,
         clientName: data.clientName,
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail,
         clientPhoneNumber: data.clientPhoneNumber,
-      })
+      }
+
+      await ApiPut(`/issues/${issue.id}` ,body)
+
       router.push('/issues/list')
     }catch(e) {
+      console.log(e)
       throw e;
     }
   }
 
+
+
   return (
     <>
-      <TitleComponent title="案件追加"/>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
