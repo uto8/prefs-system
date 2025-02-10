@@ -44,11 +44,12 @@ async function IssueDetails({ params }: { params: { id: string } }) {
   )
 }
 
-export default function IssuePage({
-  params
-}: {
-  params: { id: string }
-}) {
+export default async function IssuePage(
+  props: {
+    params: Promise<{ id: string }>
+  }
+) {
+  const params = await props.params;
   return (
     <div className="container mx-auto">
       <Suspense fallback={<div>Loading product details...</div>}>

@@ -72,13 +72,12 @@ export default function AddSales() {
         id: "2",
         name: data.name,
         email: data.email,
-        phoneNumber: data.phoneNumber
+        phoneNumber: data.phoneNumber,
+        officeName: ""
       }));
       router.push('/sales/list');
     } catch (e) {
       throw e;
-      console.error("Error creating sales representative:", e);
-      // Handle error (e.g., show error message to user)
     }
   }
 

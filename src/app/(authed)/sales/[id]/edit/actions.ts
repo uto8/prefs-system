@@ -13,6 +13,7 @@ export const getSaleById = async (id: string): Promise<Sale> => {
       name: response.name,
       email: response.email,
       phoneNumber: response.phoneNumber,
+      officeName: response.officeName
     }
   }catch(e) {
     throw e;
@@ -36,6 +37,7 @@ export const editSale = async ({id: id, sale: sale}:{
       name: "response.name",
       email: "string",
       phoneNumber: "string",
+      officeName: ""
     }
   }catch(e) {
     throw e;

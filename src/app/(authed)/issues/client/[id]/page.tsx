@@ -36,11 +36,12 @@ async function ClientDetails({ params }: { params: { id: string } }) {
   )
 }
 
-export default function clientPage({
-  params
-}: {
-  params: { id: string }
-}) {
+export default async function clientPage(
+  props: {
+    params: Promise<{ id: string }>
+  }
+) {
+  const params = await props.params;
   return (
     <div className="container mx-auto">
       <Suspense fallback={<div>Loading product details...</div>}>
