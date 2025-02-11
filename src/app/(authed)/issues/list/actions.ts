@@ -8,9 +8,8 @@ import { Issue, IssueConfirmed } from "@/types/Issue";
 
 export const getIssues = async ():Promise<Issue[]> => {
   try{
-    const session = await auth()
-    console.log(session)
     const issues = await ApiGet('/issues');
+    console.log(issues)
     return issues;
   }catch(e) {
     throw e;
@@ -61,6 +60,17 @@ export const updateIssueConfirmed = async ({id: id, body: body}: {
       completeDate: issueConfirmed.completeDate,
       contractValue: issueConfirmed.contractValue,
     }
+  }catch(e) {
+    throw e;
+  }
+}
+
+export const updateMemo = async ({id, memo}: {
+  id: number,
+  memo: string
+}) => {
+  try{
+    await ApiPut(`/issues/${id}/memo`, {memo: memo})
   }catch(e) {
     throw e;
   }

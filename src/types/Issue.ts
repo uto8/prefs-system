@@ -32,4 +32,5 @@ export type Issue = {
   sale: Sale;
   client: Client;
   issueConfirmed: IssueConfirmed;
+  memo: string;
 }

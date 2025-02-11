@@ -20,13 +20,19 @@ const issueSlice = createSlice({
     addValue: (state, action: PayloadAction<Issue>) => {
       state.value.push(action.payload);
     },
-    // // 発行の更新
+    // 発行の更新
     // updateIssue: (state, action: PayloadAction<Issue>) => {
     //   const index = state.issues.findIndex(item => item.id === action.payload.id);
     //   if (index !== -1) {
     //     state.issues[index] = action.payload;
     //   }
     // },
+    updateMemoValue: (state, action: PayloadAction<{id: number, memo: string}>) => {
+      const index = state.value.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.value[index].memo = action.payload.memo;
+      }
+    },
     // 発行の削除
     // removeIssue: (state, action: PayloadAction<string>) => {
     //   state.issues = state.issues.filter(item => item.id !== action.payload);
@@ -88,6 +94,7 @@ const issueSlice = createSlice({
 export const {
   setValue,
   addValue,
+  updateMemoValue,
 } = issueSlice.actions;
 
 export const issueReducer = issueSlice.reducer;

@@ -1,10 +1,22 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createIssueConfirmed, getIssues } from './actions';
+import { createIssueConfirmed, getIssues, updateMemo } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue } from '@/stores/reducers/issueReducer';
+import { setValue, updateMemoValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
 import SearchModal from '@/components/issues/search_modal';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+
 
 export default function IssueListPage() {
   const { value } = useAppSelector((state) => state.issues);
@@ -13,13 +25,7 @@ export default function IssueListPage() {
   const [open, setOpen] = useState(false)
   const [issueId, setIssueId] = useState(0)
   const [editModal, setEditModal] = useState(false)
-  // const [issueConfirmed, setIssueConfirmed] = useState({
-  //   id: null,
-  //   confirmDate: null,
-  //   startDate: null,
-  //   completeDate: null,
-  //   contractValue: null,
-  // })
+  const [memo, setMemo] = useState("")
 
   useEffect(() => {
     const fetch = async () => {
@@ -57,6 +63,30 @@ export default function IssueListPage() {
       throw e;
     }
   }
+
+  const handleUpdateMemo = async ({id, memo}: {
+    id: number;
+    memo: string
+  }) => {
+    try{
+      await updateMemo({
+        id: id,
+        memo: memo
+      })
+      dispatch(updateMemoValue({id, memo}));
+    }catch(e) {
+      console.log("===E",e)
+      throw e;
+    }
+  }
+
+  const truncateText = (text: string, maxLength: number) => {
+    console.log(text)
+    if(text === null){
+      return ""
+    }
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -105,6 +135,9 @@ export default function IssueListPage() {
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     担当者
                   </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    メモ
+                  </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                     <span className="sr-only">入金</span>
                   </th>
@@ -136,6 +169,20 @@ export default function IssueListPage() {
                       <a href={`/sales/${issue.sale.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       {issue.sale.name}
                       </a>
+                    </td>
+                    <td className="truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <Dialog>
+                        <DialogTrigger onClick={()=>setMemo(issue.memo)}>{truncateText(issue.memo, 6)}</DialogTrigger>
+                        <DialogContent>
+                          <DialogTitle>メモ編集</DialogTitle>
+                          <div>
+                            <textarea value={memo} onChange={(e)=>setMemo(e.target.value)} className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                            <DialogClose asChild>
+                              <Button onClick={()=>handleUpdateMemo({id: issue.id, memo: memo})} className='w-full'>保存</Button>
+                            </DialogClose>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
