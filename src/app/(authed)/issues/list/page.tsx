@@ -80,7 +80,7 @@ export default function IssueListPage() {
 
   const truncateText = (text: string, maxLength: number) => {
     console.log(text)
-    if(text === null){
+    if(!text){
       return ""
     }
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;

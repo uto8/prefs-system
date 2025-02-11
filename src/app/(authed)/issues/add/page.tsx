@@ -89,6 +89,36 @@ export default function AddIssue() {
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className="flex flex-col gap-4">
+            <FormField
+            control={form.control}
+            name="clientName"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                  顧客名
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="clientNameKana"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                顧客名かな
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="currentAddress"
@@ -106,39 +136,45 @@ export default function AddIssue() {
           />
           <FormField
             control={form.control}
-            name="preferredDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>工事予定日</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "yyyy-MM-dd")
-                        ) : (
-                          <span>日付を選択してください</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      locale={ja}
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+            name="constructionSite"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                工事住所
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="clientPhoneNumber"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                顧客電話番号
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="clientEmail"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                顧客メールアドレス
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -204,75 +240,39 @@ export default function AddIssue() {
           />
           <FormField
             control={form.control}
-            name="constructionSite"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                工事住所
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="clientName"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                  顧客名
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="clientNameKana"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                顧客名かな
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="clientEmail"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                顧客メールアドレス
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="clientPhoneNumber"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                顧客電話番号
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
+            name="preferredDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>工事予定日</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "yyyy-MM-dd")
+                        ) : (
+                          <span>日付を選択してください</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      locale={ja}
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
