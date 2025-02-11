@@ -1,6 +1,5 @@
 "use server";
 
-import { auth } from "@/auth";
 import ApiGet from "@/lib/useApi/get";
 import ApiPost from "@/lib/useApi/post";
 import ApiPut from "@/lib/useApi/put";
