@@ -3,7 +3,6 @@
 import { useAppDispatch, useAppSelector } from "@/stores";
 import { setValue } from "@/stores/reducers/officeReducer";
 import { useEffect } from "react";
-import { getOffices } from "./actions";
 import Link from "next/link";
 import ApiGet from "@/lib/useApi/get";
 

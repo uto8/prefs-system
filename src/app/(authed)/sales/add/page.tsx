@@ -8,7 +8,6 @@ import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { createSale } from './actions';
-import { useEffect } from 'react';
 import { useAppDispatch } from '@/stores';
 import { addValue } from '@/stores/reducers/saleReducer';
 import TitleComponent from '@/components/layout/title';
