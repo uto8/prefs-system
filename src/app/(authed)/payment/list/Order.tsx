@@ -4,6 +4,7 @@ import React, { Fragment, useEffect } from 'react'
 import { deleteOrder, getOrders } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { removeOrder, setOrder } from '@/stores/reducers/orderReducer';
+import { format } from 'date-fns';
 
 export default function Order({ handleOpenOrderCheckForm }: {
   handleOpenOrderCheckForm: (orderId: number) => void;
@@ -73,13 +74,13 @@ export default function Order({ handleOpenOrderCheckForm }: {
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <div className="text-sm leading-6 text-gray-900">{Number(order.orderPlanValue)}円</div>
-              {/* <div className="mt-1 text-xs leading-5 text-gray-500">{format(order.withdrawalPlanDate, "yyyy年MM月dd日")}</div> */}
+              <div className="mt-1 text-xs leading-5 text-gray-500">{order.withdrawalPlanDate?format(order.withdrawalPlanDate, "yyyy年MM月dd日"):'未定'}</div>
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
             {order.orderChecks?.map((orderCheck, index) => (
                 <div className="mb-5" key={index}>
                   <div className="text-sm leading-6 text-gray-900">{Number(orderCheck.orderCheckValue)}円</div>
-                  {/* <div className="mt-1 text-xs leading-5 text-gray-500">{format(orderCheck.orderCheckDate, "yyyy年MM月dd日")}</div> */}
+                  <div className="mt-1 text-xs leading-5 text-gray-500">{orderCheck.orderCheckDate?format(orderCheck.orderCheckDate, "yyyy年MM月dd日"):'未定'}</div>
                 </div>
               ))}
             </td>

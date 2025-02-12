@@ -38,24 +38,6 @@ export default function AddSales() {
     },
   })
 
-  useEffect(() => {
-    const fetch = async () => {
-      try{
-        // const offices = await getOffices();
-        // console.log('offices data')
-        // console.log(offices)
-        // dispatch(setValue(offices));
-      }  catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-    fetch()
-  }, [])
-
-  // useEffect(() => {
-  //   setOffices(value)
-  // }, [value])
-
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       const body = {

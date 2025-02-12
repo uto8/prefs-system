@@ -106,7 +106,6 @@ export const getRepairs = async (issueId: string) => {
   try{
     const repairs = await ApiGet("/repairs", {"issueId": issueId})
     console.log("getrepairs")
-    console.log(repairs)
     return repairs;
   }catch(e) {
     throw e;

@@ -44,8 +44,6 @@ export default function OrderCheckForm({depositOpen, setDepositOpen, orderId}: {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log(data);
-      console.log(orderId)
       const orderCheck = await createOrderCheck({
         orderId: orderId,
         orderCheckValue: Number(data.orderCheckValue),

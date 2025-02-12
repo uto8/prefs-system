@@ -5,6 +5,7 @@ import { setValue } from "@/stores/reducers/officeReducer";
 import { useEffect } from "react";
 import { getOffices } from "./actions";
 import Link from "next/link";
+import ApiGet from "@/lib/useApi/get";
 
 export default function ShopList() {
   const { value } = useAppSelector((state) => state.offices);
@@ -12,11 +13,12 @@ export default function ShopList() {
   useEffect(() => {
     const fetch = async () => {
       try{
-        const offices = await getOffices();
+        const offices = await ApiGet("/offices");
         console.log('offices data')
         console.log(offices)
         dispatch(setValue(offices));
       }  catch (error) {
+        console.log(error)
         console.error('Error fetching data:', error);
       }
     }

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/stores';
 import React, { Fragment, useEffect } from 'react'
 import { getRepairs } from './actions';
 import { setRepair } from '@/stores/reducers/repairReducer';
+import { format } from 'date-fns';
 
 export default function Repair({ handleOpenRepairCheckForm }: {
   handleOpenRepairCheckForm: (repairId: number) => void;
@@ -66,15 +67,21 @@ export default function Repair({ handleOpenRepairCheckForm }: {
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <div className="text-sm leading-6 text-gray-900">{repair.repairPlanValue}円</div>
-              {/* <div className="mt-1 text-xs leading-5 text-gray-500">{format(repair.withdrawalPlanDate, 'yyyy年MM月dd日')}</div> */}
+              <div className="mt-1 text-xs leading-5 text-gray-500">
+                {repair.withdrawalPlanDate? format(repair.withdrawalPlanDate, 'yyyy年MM月dd日'): '日付なし' }
+                </div>
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
-            {/* {repair.repairChecks.map((deposit, index) => (
+              {repair.repairChecks.map((deposit, index) => (
                 <div className="mb-5" key={index}>
-                  <div className="text-sm leading-6 text-gray-900">{deposit.repairCheckValue}円</div>
-                  <div className="mt-1 text-xs leading-5 text-gray-500">{format(deposit.repairCheckDate, 'yyyy年MM月dd日')}</div>
+                  <div className="text-sm leading-6 text-gray-900">{deposit.repairCheckValue}円{deposit.id}</div>
+                  <div className="mt-1 text-xs leading-5 text-gray-500">
+                  {deposit.repairCheckDate
+                    ? format(new Date(deposit.repairCheckDate), 'yyyy年MM月dd日')
+                    : '日付なし'}
+                  </div>
                 </div>
-              ))} */}
+              ))}
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <span className="rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset">
