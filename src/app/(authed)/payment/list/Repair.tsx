@@ -74,7 +74,7 @@ export default function Repair({ handleOpenRepairCheckForm }: {
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               {repair.repairChecks.map((deposit, index) => (
                 <div className="mb-5" key={index}>
-                  <div className="text-sm leading-6 text-gray-900">{deposit.repairCheckValue}円{deposit.id}</div>
+                  <div className="text-sm leading-6 text-gray-900">{deposit.repairCheckValue}円</div>
                   <div className="mt-1 text-xs leading-5 text-gray-500">
                   {deposit.repairCheckDate
                     ? format(new Date(deposit.repairCheckDate), 'yyyy年MM月dd日')
