@@ -170,7 +170,7 @@ export default function IssueListPage() {
                     </td>
                     <td className="truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Dialog>
-                        <DialogTrigger onClick={()=>setMemo(issue.memo)}>{truncateText(issue.memo, 6)}</DialogTrigger>
+                        <DialogTrigger onClick={()=>setMemo(issue.memo)}>{issue.memo?truncateText(issue.memo, 6):'なし'}</DialogTrigger>
                         <DialogContent>
                           <DialogTitle>メモ編集</DialogTitle>
                           <div>
