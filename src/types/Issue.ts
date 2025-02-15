@@ -33,4 +33,5 @@ export type Issue = {
   client: Client;
   issueConfirmed: IssueConfirmed;
   memo: string;
+  status: string;
 }

@@ -12,6 +12,7 @@ export const searchIssues = async ({
   low_budget: lowBudgetNumber,
   high_budget: highBudgetNumber,
   sale_name: saleName,
+  status: status,
 }: {
   id: string | null;
   client_name: string | null;
@@ -21,6 +22,7 @@ export const searchIssues = async ({
   low_budget: number | null;
   high_budget: number | null;
   sale_name: string | null;
+  status: string | null;
 }):Promise<Issue[]> => {
   try{
     let url = '/issues?';
@@ -47,6 +49,9 @@ export const searchIssues = async ({
     }
     if (saleName !== null) {
       url += `sale_name=${saleName}&`;
+    }
+    if (status !== null) {
+      url += `status=${status}&`;
     }
     url = url.slice(0, -1);
     const issues = await ApiGet(url);

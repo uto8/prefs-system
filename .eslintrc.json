@@ -1,3 +1,14 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^actionTypes$",  // actionTypesを無視
+        "argsIgnorePattern": "^_",  // 引数名が_で始まるものを無視
+        "ignoreRestSiblings": true,  // rest構文を無視
+        "caughtErrors": "none"  // 捕捉したエラーを無視
+      }
+    ]
+  }
 }

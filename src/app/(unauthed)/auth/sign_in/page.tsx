@@ -33,7 +33,7 @@ export default function SignIn() {
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       setDisabled(true)
-      const response = await loginWithCredentials({
+      await loginWithCredentials({
         email: data.email,
         password: data.password,
       });

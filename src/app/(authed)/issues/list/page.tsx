@@ -86,6 +86,20 @@ export default function IssueListPage() {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
 
+  const statusColor = (status: string) => {
+    if(status === "お問いあわせ"){
+      return "grey";
+    }else if(status === "完了済") {
+      return "green"
+    }else if(status === "確定済"){
+      return "blue"
+    }else if(status.includes("未入金")){
+      return "red"
+    }
+
+    return "yellow"
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center mb-8">
@@ -156,11 +170,8 @@ export default function IssueListPage() {
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.constructionSite}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {/* {index != 3?:<span className="rounded-md py-1 px-2 text-xs bg-red-50 text-red-700 ring-red-600/20 font-medium ring-1 ring-inset">
-                      完工金未入金
-                      </span>} */}
-                      <span className="rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset">
-                        契約未金入金
+                      <span className={`rounded-md py-1 px-2 text-xs bg-${statusColor(issue.status)}-50 text-${statusColor(issue.status)}-700 font-medium ring-1 ring-inset ring-${statusColor(issue.status)}-300`}>
+                        {issue.status}
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

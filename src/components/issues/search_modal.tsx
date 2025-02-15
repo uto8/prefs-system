@@ -21,6 +21,15 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { searchIssues } from './actions';
 import { useAppDispatch } from '@/stores';
 import { setValue } from '@/stores/reducers/issueReducer';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const formSchema = z.object({
   id: z.string().optional(),
@@ -31,6 +40,7 @@ const formSchema = z.object({
   lowBudget: z.number().optional(),
   highBudget: z.number().optional(),
   saleName: z.string().optional(),
+  status: z.string().optional(),
 })
 
 export default function SearchModal({
@@ -47,6 +57,7 @@ export default function SearchModal({
   })
   const dispatch = useAppDispatch();
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    console.log("===STATUS", data)
     try{
       const issues = await searchIssues({
         id: data.id ?? null,
@@ -57,6 +68,7 @@ export default function SearchModal({
         low_budget: data.lowBudget ?? null,
         high_budget: data.highBudget ?? null,
         sale_name: data.saleName ?? null,
+        status: data.status ?? null,
       })
       console.log(issues)
       console.log(data)
@@ -210,6 +222,31 @@ export default function SearchModal({
                         <Input {...field} type="text" />
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ステータス</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-[280px]">
+                          <SelectValue placeholder="ステータスを選択してください" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>ステータス</SelectLabel>
+                            <SelectItem value="お問い合わせ">お問い合わせ</SelectItem>
+                            <SelectItem value="確定済">確定済</SelectItem>
+                            <SelectItem value="入金予定確定済">入金予定確定済</SelectItem>
+                            <SelectItem value="未入金">未入金</SelectItem>
+                            <SelectItem value="入金済">入金済</SelectItem>
+                            <SelectItem value="完了済">完了済</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormItem>
                   )}
                 />
