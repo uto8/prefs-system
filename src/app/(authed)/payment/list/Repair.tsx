@@ -20,8 +20,6 @@ export default function Repair({ handleOpenRepairCheckForm }: {
         const ordersRes = await getRepairs(searchParams.get("issue_id") ?? "");
 
         dispatch(setRepair(ordersRes));
-        console.log("orederRes")
-        console.log(repairs)
 
       }  catch (error) {
         console.error('Error fetching data:', error);

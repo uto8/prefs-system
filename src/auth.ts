@@ -43,6 +43,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: credentials.password
           })
 
+          if(!user.idToken){
+            return null
+          }
+
           setCookieSession({
             role: user.accountType,
             idToken: user.idToken,
@@ -61,7 +65,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             saleId: user.saleId || null,
           }
         }catch(e) {
-          throw e;
+          console.error('===========Login Error:', e);
+          throw new Error("Invalid email or password");
         }
       }
     }),

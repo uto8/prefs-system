@@ -10,6 +10,7 @@ import { loginWithCredentials } from './actions';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from "lucide-react"
 import { useState } from 'react';
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
@@ -19,6 +20,7 @@ const formSchema = z.object({
 export default function SignIn() {
 
   const [disabled, setDisabled] = useState(false);
+  const { toast } = useToast()
 
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,12 +37,13 @@ export default function SignIn() {
         email: data.email,
         password: data.password,
       });
-      console.log("response")
-      console.log(response)
       router.push('/')
     }catch(e){
+      toast({
+        variant: "destructive",
+        title: "ログインエラー",
+      })
       setDisabled(false)
-      console.log('error')
       throw e;
     }
   }

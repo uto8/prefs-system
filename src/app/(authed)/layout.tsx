@@ -1,5 +1,7 @@
+import { auth } from '@/auth';
 import AppSidebar from '@/components/layout/app-sidebar'
 import { getCookieSession } from '@/lib/auth/get-cookie-session';
+import { redirect } from 'next/navigation';
 
 export type NavigationItem = {
   name: string;
@@ -10,6 +12,10 @@ export type NavigationItem = {
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const {role} = await getCookieSession();
+  const session = await auth();
+  if(!session?.user?.idToken){
+    redirect("/auth/sign_in");
+  }
   return (
     <>
       <div>
