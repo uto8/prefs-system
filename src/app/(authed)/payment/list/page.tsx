@@ -14,6 +14,8 @@ import OrderForm from "@/components/orders/order_form"
 import OrderCheckForm from "@/components/orders/order_check_form"
 import RepairCheckForm from "@/components/repairs/repair_check_form"
 import RepairForm from "@/components/repairs/repair_form"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 
 function classNames(...classes: string[]) {
@@ -78,6 +80,9 @@ export default function ReceiptPage() {
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false)
   const [repairConfirmOpen, setRepairConfirmOpen] = useState(false)
 
+  const router = useRouter()
+  const { toast } = useToast()
+
 
   const stats = [
     { name: 'トータル売上', stat: `1000円`, sub: '利益', price: `${1000 - 100 * 0.2 - 100 * 0.5}円` },
@@ -104,21 +109,51 @@ export default function ReceiptPage() {
         <div className="flex justify-end">
         {type=='deposit'&&
           <button
-            onClick={()=>{setOpen(true)}}
+            onClick={()=>{
+              if (issueId) {
+                setOpen(true);
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "案件を指定してください",
+                })
+                router.push('/issues/list');
+              }
+            }}
             className="block inline rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
           入金追加
           </button>}
           {type=='payment'&&
           <button
-            onClick={()=>{setPaymentOpen(true)}}
+            onClick={()=>{
+              if (issueId) {
+                setPaymentOpen(true)
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "案件を指定してください",
+                })
+                router.push('/issues/list');
+              }
+            }}
             className="block inline rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
           発注追加
           </button>}
           {type=='repair'&&
           <button
-            onClick={()=>{setRepairOpen(true)}}
+            onClick={()=>{
+              if (issueId) {
+                setRepairOpen(true)
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "案件を指定してください",
+                })
+                router.push('/issues/list');
+              }
+            }}
             className="block inline rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
           補修追加
