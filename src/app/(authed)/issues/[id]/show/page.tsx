@@ -1,13 +1,11 @@
 import TitleComponent from '@/components/layout/title';
 import ApiGet from '@/lib/useApi/get'
-import { format } from 'date-fns';
 import { Suspense } from 'react'
 
 async function IssueDetails({ params }: { params: { id: string } }) {
 
   const { id } = params;
   const issue = await ApiGet(`/issues/${id}`)
-  console.log(issue)
 
   return (
     <div>
@@ -20,14 +18,14 @@ async function IssueDetails({ params }: { params: { id: string } }) {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">工事予定日</dt>
-            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{format(issue.preferredDate, "yyyy年MM月dd日")}</dd>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue.preferredDate}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">タイプ</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue.type}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm/6 font-medium text-gray-900">連絡内容</dt>
+            <dt className="text-sm/6 font-medium text-gray-900">備考</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue.contactContent}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

@@ -7,7 +7,6 @@ import { Sale } from "@/types/Sale";
 export const getSaleById = async (id: string): Promise<Sale> => {
   try{
     const response = await ApiGet(`/sales/${id}`)
-    console.log(response)
     return {
       id: response.id,
       name: response.name,

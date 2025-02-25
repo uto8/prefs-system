@@ -6,9 +6,7 @@ import ApiPost from "@/lib/useApi/post";
 
 export const getPayments = async (issueId: string) => {
   try{
-    console.log(issueId)
     const payments = await ApiGet("/payments", {"issueId": issueId})
-    console.log(payments)
     return payments;
   }catch(e) {
     throw e;
@@ -55,9 +53,7 @@ export const deletePayment = async (paymentId: number) => {
 
 export const getOrders = async (issueId: string) => {
   try{
-    console.log(issueId)
     const orders = await ApiGet("/orders", {"issueId": issueId})
-    console.log(orders)
     return orders;
   }catch(e) {
     throw e;
@@ -105,7 +101,6 @@ export const deleteOrder = async (orderId: number) => {
 export const getRepairs = async (issueId: string) => {
   try{
     const repairs = await ApiGet("/repairs", {"issueId": issueId})
-    console.log("getrepairs")
     return repairs;
   }catch(e) {
     throw e;

@@ -30,9 +30,7 @@ export default function IssueListPage() {
       try{
         const issues = await getIssues();
         dispatch(setValue(issues));
-        console.log(value)
       }  catch (error) {
-        console.error('Error fetching data:', error);
         throw error;
       }
     }
@@ -73,13 +71,11 @@ export default function IssueListPage() {
       })
       dispatch(updateMemoValue({id, memo}));
     }catch(e) {
-      console.log("===E",e)
       throw e;
     }
   }
 
   const truncateText = (text: string, maxLength: number) => {
-    console.log(text)
     if(!text){
       return ""
     }
@@ -161,7 +157,7 @@ export default function IssueListPage() {
                   <tr key={index}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                       <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      {issue.id}
+                      {issue.office.name}-{issue.id}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -195,6 +191,12 @@ export default function IssueListPage() {
                       </Dialog>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                      <button onClick={()=>{
+                        setEditModal(true)
+                        setIssueId(issue.id)
+                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      契約
+                      </button>
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
@@ -204,13 +206,7 @@ export default function IssueListPage() {
                       <a href={`/payment/list?type=repair&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         補修
                       </a>
-                      <button onClick={()=>{
-                        setEditModal(true)
-                        setIssueId(issue.id)
-                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      契約
-                      </button>
-                      <a href={`/issues/${1}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <a href={`/issues/${issue.sale.id}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         編集
                       </a>
                     </td>

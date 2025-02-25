@@ -7,7 +7,6 @@ import { Office } from "@/types/Office";
 export const getOffice = async (id: string): Promise<Office> => {
   try{
     const response = await ApiGet(`/offices/${id}`)
-    console.log(response)
     return {
       id: response.id,
       name: "response.name",

@@ -65,7 +65,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             saleId: user.saleId || null,
           }
         }catch(e) {
-          console.error('===========Login Error:', e);
           throw new Error("Invalid email or password");
         }
       }

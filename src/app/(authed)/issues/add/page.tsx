@@ -16,35 +16,26 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
-import { ja } from "date-fns/locale";
 import { createIssue } from './actions';
 import TitleComponent from '@/components/layout/title';
 
 const formSchema = z.object({
-  currentAddress: z.string().nonempty("現住所は必須項目です"),
-  preferredDate: z.date({
-    required_error: '必須',
-    message: '工事希望日を入力してください',
-  }),
+  currentAddress: z.string().optional(),
+  preferredDate: z.string().max(160, {
+    message: "160文字以内で入力してください",
+  }).optional(),
   type: z.string().nonempty("種別を選択してください"),
   contactContent: z.string().max(160, {
     message: "160文字以内で入力してください",
-  }),
-  constructionSite: z.string().nonempty("現住所は必須項目です"),
-  budget: z.string(),
+  }).optional(),
+  constructionSite: z.string().optional(),
+  budget: z.string().max(160, {
+    message: "160文字以内で入力してください",
+  }).optional(),
   clientName: z.string().nonempty("顧客名は必須項目です"),
-  clientNameKana: z.string().nonempty("顧客名かなは必須項目です"),
-  clientEmail: z.string().email().nonempty("メールアドレスは必須項目です"),
-  clientPhoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  clientNameKana: z.string().nonempty("顧客名カナは必須項目です"),
+  clientEmail: z.string().optional(),
+  clientPhoneNumber: z.string().optional(),
 })
 
 
@@ -60,21 +51,19 @@ export default function AddIssue() {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log('data')
-      console.log(data)
       await createIssue({
-        currentAddress: data.currentAddress,
+        currentAddress: data.currentAddress ?? '',
         officeId: 1,
-        preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
+        preferredDate: data.preferredDate ?? '',
         type: data.type,
-        contactContent: data.contactContent,
-        budget: Number(data.budget),
+        contactContent: data.contactContent ?? '',
+        budget: data.budget ?? '',
         saleId: 1,
-        constructionSite: data.constructionSite,
+        constructionSite: data.constructionSite ?? '',
         clientName: data.clientName,
         clientNameKana: data.clientNameKana,
-        clientEmail: data.clientEmail,
-        clientPhoneNumber: data.clientPhoneNumber,
+        clientEmail: data.clientEmail ?? "",
+        clientPhoneNumber: data.clientPhoneNumber ?? "",
       })
       router.push('/issues/list')
     }catch(e) {
@@ -110,7 +99,7 @@ export default function AddIssue() {
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                顧客名かな
+                顧客名カナ
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />
@@ -173,7 +162,7 @@ export default function AddIssue() {
                 顧客メールアドレス
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" />
+                  <Input {...field} type="email" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -195,7 +184,7 @@ export default function AddIssue() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="新築">新築</SelectItem>
-                        <SelectItem value="改築">改築</SelectItem>
+                        <SelectItem value="リフォーム">リフォーム</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -210,11 +199,11 @@ export default function AddIssue() {
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                連絡内容
+                備考
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="連絡内容を入力してください"
+                    placeholder="備考を入力してください"
                     className="resize-none"
                     {...field}
                   />
@@ -232,7 +221,11 @@ export default function AddIssue() {
                 予算
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="number" />
+                 <Textarea
+                    placeholder="予算を入力してください"
+                    className="resize-none"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -241,38 +234,18 @@ export default function AddIssue() {
           <FormField
             control={form.control}
             name="preferredDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>工事予定日</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "yyyy-MM-dd")
-                        ) : (
-                          <span>日付を選択してください</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      locale={ja}
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                工事予定日
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="工事予定日を入力してください"
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

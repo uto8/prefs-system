@@ -1,3 +1,4 @@
+import { Office } from "./Office";
 import { Sale } from "./Sale";
 
 export type Client = {
@@ -25,7 +26,7 @@ export type Issue = {
   preferredDate: string;
   type: string;
   contactContent: string;
-  budget: number;
+  budget: string;
   constructionSite: string;
   createdAt: string;
   updatedAt: string;
@@ -33,5 +34,7 @@ export type Issue = {
   client: Client;
   issueConfirmed: IssueConfirmed;
   memo: string;
+  issueCode: string
   status: string;
+  office: Office;
 }

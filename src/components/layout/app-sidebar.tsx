@@ -29,7 +29,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
     if(role === "ADMIN"){
       setNavigations([
         { name: 'トップページ', url: '/', icon: HomeIcon, current: currentUrl === '/' },
-        { name: '店舗管理', url: '/shops/list', icon: UsersIcon, current: currentUrl.startsWith('/shops/') },
+        { name: '店舗管理', url: '/offices/list', icon: UsersIcon, current: currentUrl.startsWith('/offices/') },
         { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
         { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/sales/') },
         { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
@@ -60,10 +60,8 @@ export default function AppSidebar ({role: role}:{role: string | null}){
   const handleLogout = async ():Promise<void> => {
     try{
       await logout();
-      console.log("===ROGOUT")
       router.push('/auth/sign_in')
     }catch(e) {
-      console.log(e)
       throw e;
     }
   }

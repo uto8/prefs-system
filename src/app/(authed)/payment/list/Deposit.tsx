@@ -21,7 +21,6 @@ export default function Deposit({handleOpenPaymentCheckForm}:{
         const payments = await getPayments(searchParams.get("issue_id") ?? "");
 
         dispatch(setPayment(payments))
-        console.log(payments)
 
       }  catch (error) {
         console.error('Error fetching data:', error);

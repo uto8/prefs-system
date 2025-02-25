@@ -17,34 +17,25 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { ja } from "date-fns/locale";
-import { Calendar } from '../ui/calendar';
 import ApiPut from '@/lib/useApi/put';
 
 const formSchema = z.object({
-  currentAddress: z.string().nonempty("現住所は必須項目です"),
-  preferredDate: z.date({
-    required_error: '必須',
-    message: '工事希望日を入力してください',
-  }),
+  currentAddress: z.string().optional(),
+  preferredDate: z.string().max(160, {
+    message: "160文字以内で入力してください",
+  }).optional(),
   type: z.string().nonempty("種別を選択してください"),
   contactContent: z.string().max(160, {
     message: "160文字以内で入力してください",
-  }),
-  constructionSite: z.string().nonempty("現住所は必須項目です"),
-  budget: z.string(),
+  }).optional(),
+  constructionSite: z.string().optional(),
+  budget: z.string().max(160, {
+    message: "160文字以内で入力してください",
+  }).optional(),
   clientName: z.string().nonempty("顧客名は必須項目です"),
-  clientNameKana: z.string().nonempty("顧客名かなは必須項目です"),
-  clientEmail: z.string().email().nonempty("メールアドレスは必須項目です"),
-  clientPhoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  clientNameKana: z.string().nonempty("顧客名カナは必須項目です"),
+  clientEmail: z.string().optional(),
+  clientPhoneNumber: z.string().optional(),
 })
 
 export default function EditIssueForm({issue}: {issue: Issue}) {
@@ -54,11 +45,11 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       currentAddress: issue.currentAddress,
-      preferredDate: new Date(issue.preferredDate),
+      preferredDate: issue.preferredDate,
       type: issue.type,
       contactContent: issue.contactContent,
       constructionSite: issue.constructionSite,
-      budget: issue.budget.toString(),
+      budget: issue.budget,
       clientName: issue.client.name,
       clientNameKana: issue.client.nameKana,
       clientEmail: issue.client.email,
@@ -70,24 +61,23 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
     try{
 
       const body = {
-        currentAddress: data.currentAddress,
-        preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
+        currentAddress: data.currentAddress ?? '',
+        preferredDate: data.preferredDate ?? '',
         type: data.type,
-        contactContent: data.contactContent,
-        budget: data.budget,
-        constructionSite: data.constructionSite,
+        contactContent: data.contactContent ?? '',
+        budget: data.budget ?? '',
+        constructionSite: data.constructionSite ?? '',
         clientId: issue.clientId,
         clientName: data.clientName,
         clientNameKana: data.clientNameKana,
-        clientEmail: data.clientEmail,
-        clientPhoneNumber: data.clientPhoneNumber,
+        clientEmail: data.clientEmail ?? '',
+        clientPhoneNumber: data.clientPhoneNumber ?? '',
       }
 
       await ApiPut(`/issues/${issue.id}` ,body)
 
       router.push('/issues/list')
     }catch(e) {
-      console.log(e)
       throw e;
     }
   }
@@ -118,38 +108,14 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
           <FormField
             control={form.control}
             name="preferredDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>工事予定日</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "yyyy-MM-dd")
-                        ) : (
-                          <span>日付を選択してください</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      locale={ja}
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                工事予定日
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -170,7 +136,7 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="新築">新築</SelectItem>
-                        <SelectItem value="改築">改築</SelectItem>
+                        <SelectItem value="リフォーム">リフォーム</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -185,11 +151,11 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                連絡内容
+                備考
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="連絡内容を入力してください"
+                    placeholder="備考を入力してください"
                     className="resize-none"
                     {...field}
                   />
@@ -207,7 +173,7 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
                 予算
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="number" />
+                  <Input {...field} type="text" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -249,7 +215,7 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                顧客名かな
+                顧客名カナ
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />

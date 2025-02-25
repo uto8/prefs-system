@@ -9,7 +9,7 @@ export const createIssue = async (body: {
   preferredDate: string;
   type: string;
   contactContent: string;
-  budget: number;
+  budget: string;
   saleId: number;
   constructionSite: string;
   clientName: string;

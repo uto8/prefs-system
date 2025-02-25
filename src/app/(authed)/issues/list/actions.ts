@@ -8,7 +8,6 @@ import { Issue, IssueConfirmed } from "@/types/Issue";
 export const getIssues = async ():Promise<Issue[]> => {
   try{
     const issues = await ApiGet('/issues');
-    console.log(issues)
     return issues;
   }catch(e) {
     throw e;

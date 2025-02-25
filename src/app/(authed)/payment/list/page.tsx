@@ -40,7 +40,6 @@ export default function ReceiptPage() {
         const payments = await getPayments(searchParams.get("issue_id") ?? "");
 
         dispatch(setPayment(payments))
-        console.log(payments)
 
       }  catch (error) {
         console.error('Error fetching data:', error);
@@ -52,7 +51,6 @@ export default function ReceiptPage() {
   const handleOpenPaymentCheckForm = (paymentId: number) => {
     setPaymentId(paymentId)
     setDepositOpen(true)
-    console.log(paymentId)
   }
 
   const handleOpenOrderCheckForm = (orderId: number) => {

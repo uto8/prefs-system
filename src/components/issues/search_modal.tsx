@@ -57,7 +57,6 @@ export default function SearchModal({
   })
   const dispatch = useAppDispatch();
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("===STATUS", data)
     try{
       const issues = await searchIssues({
         id: data.id ?? null,
@@ -70,11 +69,8 @@ export default function SearchModal({
         sale_name: data.saleName ?? null,
         status: data.status ?? null,
       })
-      console.log(issues)
-      console.log(data)
       dispatch(setValue(issues));
     }catch(e) {
-      console.log(e)
       throw e;
     }
     setOpen(false)

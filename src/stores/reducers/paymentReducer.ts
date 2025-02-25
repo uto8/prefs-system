@@ -34,8 +34,6 @@ const paymentSlice = createSlice({
     // 入金確認の追加
     addPaymentCheck: (state, action: PayloadAction<PaymentCheck>) => {
       const index = state.value.findIndex(item => item.id === action.payload.paymentId);
-      console.log("index")
-      console.log(index)
       state.value[index].paymentChecks.push(action.payload);
     },
     // // 入金確認の更新

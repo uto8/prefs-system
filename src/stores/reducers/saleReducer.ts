@@ -17,9 +17,7 @@ export const salesSlice = createSlice({
       state.value = action.payload;
     },
     addValue:(state, action: PayloadAction<Sale>) => {
-      console.log(action.payload)
       state.value.push(action.payload);
-      console.log(state)
     },
     removeValue:(state, action: PayloadAction<Sale>) => {
       state.value = state.value.filter(item => item.id !== action.payload.id)

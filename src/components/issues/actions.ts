@@ -55,8 +55,6 @@ export const searchIssues = async ({
     }
     url = url.slice(0, -1);
     const issues = await ApiGet(url);
-    console.log("issues")
-    console.log(issues);
     return issues;
   }catch(e) {
     throw e;

@@ -98,12 +98,12 @@ export default function ContractModal({
               <form
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="flex flex-col gap-4">
-                <FormField
+                  <FormField
                   control={form.control}
                   name="confirmDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>工事予定日</FormLabel>
+                      <FormLabel>契約日</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -133,6 +133,21 @@ export default function ContractModal({
                           />
                         </PopoverContent>
                       </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                  <FormField
+                  control={form.control}
+                  name="contractValue"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel>
+                      契約金額
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="number" />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -181,7 +196,7 @@ export default function ContractModal({
                   name="completeDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>工事完了日</FormLabel>
+                      <FormLabel>引き渡し予定日</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -215,21 +230,7 @@ export default function ContractModal({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="contractValue"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      契約金額
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 <div className="mt-4">
                   <Button type="submit">
                     登録
