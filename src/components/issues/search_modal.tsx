@@ -6,17 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
 import { Button } from '../ui/button'
-import { ja } from 'date-fns/locale';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { searchIssues } from './actions';
 import { useAppDispatch } from '@/stores';
@@ -34,11 +24,7 @@ import {
 const formSchema = z.object({
   id: z.string().optional(),
   clientName: z.string().optional(),
-  startPreferredDate: z.date().optional(),
-  endPreferredDate: z.date().optional(),
   type: z.string().optional(),
-  lowBudget: z.number().optional(),
-  highBudget: z.number().optional(),
   saleName: z.string().optional(),
   status: z.string().optional(),
 })
@@ -61,11 +47,7 @@ export default function SearchModal({
       const issues = await searchIssues({
         id: data.id ?? null,
         client_name: data.clientName ?? null,
-        start_preferred_date: data.startPreferredDate ? format(data.startPreferredDate, "yyyy-MM-dd"): null,
-        end_preferred_date: data.endPreferredDate ? format(data.endPreferredDate, "yyyy-MM-dd"): null,
         type: data.type ?? null,
-        low_budget: data.lowBudget ?? null,
-        high_budget: data.highBudget ?? null,
         sale_name: data.saleName ?? null,
         status: data.status ?? null,
       })
@@ -126,86 +108,6 @@ export default function SearchModal({
                     </FormItem>
                   )}
                 />
-                <div className='flex gap-4'>
-                <FormField
-                  control={form.control}
-                  name="startPreferredDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>工事完了日から</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "yyyy-MM-dd")
-                              ) : (
-                                <span>日付を選択してください</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            locale={ja}
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="endPreferredDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>工事完了日まで</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "yyyy-MM-dd")
-                              ) : (
-                                <span>日付を選択してください</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            locale={ja}
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                </div>
                 <FormField
                   control={form.control}
                   name="saleName"

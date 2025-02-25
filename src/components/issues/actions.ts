@@ -6,21 +6,13 @@ import { Issue } from "@/types/Issue";
 export const searchIssues = async ({
   id: id,
   client_name: clientName,
-  start_preferred_date: startPreferredDate,
-  end_preferred_date: endPreferredDate,
   type: type,
-  low_budget: lowBudgetNumber,
-  high_budget: highBudgetNumber,
   sale_name: saleName,
   status: status,
 }: {
   id: string | null;
   client_name: string | null;
-  start_preferred_date: string | null;
-  end_preferred_date: string | null;
   type: string | null;
-  low_budget: number | null;
-  high_budget: number | null;
   sale_name: string | null;
   status: string | null;
 }):Promise<Issue[]> => {
@@ -32,20 +24,8 @@ export const searchIssues = async ({
     if (clientName !== null) {
       url += `client_name=${clientName}&`;
     }
-    if (startPreferredDate !== null) {
-      url += `start_preferred_date=${startPreferredDate}&`;
-    }
-    if (endPreferredDate !== null) {
-      url += `end_preferred_date=${endPreferredDate}&`;
-    }
     if (type !== null) {
       url += `type=${type}&`;
-    }
-    if (lowBudgetNumber !== null) {
-      url += `low_budget=${lowBudgetNumber}&`;
-    }
-    if (highBudgetNumber !== null) {
-      url += `high_budget=${highBudgetNumber}&`;
     }
     if (saleName !== null) {
       url += `sale_name=${saleName}&`;
