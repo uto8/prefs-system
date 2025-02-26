@@ -39,6 +39,10 @@ const formSchema = z.object({
     message: '入金予定日を入力してください',
   }),
   description: z.string().nonempty("備考欄は必須項目です"),
+  billingDate: z.date({
+    required_error: '必須',
+    message: '請求日を入力してください',
+  })
 })
 
 export default function PaymentForm({open, setOpen}: {
@@ -71,6 +75,7 @@ export default function PaymentForm({open, setOpen}: {
         paymentPlanValue: Number(data.paymentPlanValue),
         paymentPlanDate:  format(data.paymentPlanDate, "yyyy-MM-dd"),
         description: data.description,
+        billingDate:  format(data.billingDate, "yyyy-MM-dd"),
       })
       dispatch(addPayment({
         type: data.type,
@@ -78,6 +83,7 @@ export default function PaymentForm({open, setOpen}: {
         paymentPlanDate: format(data.paymentPlanDate, "yyyy-MM-dd"),
         description: data.description,
         id: payment.id,
+        billingDate: data.billingDate,
         paymentChecks: []
       }));
       setOpen(false)
@@ -163,6 +169,45 @@ export default function PaymentForm({open, setOpen}: {
                             variant={"outline"}
                             className={cn(
                               "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "yyyy-MM-dd")
+                            ) : (
+                              <span>日付を選択してください</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          locale={ja}
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="billingDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>請求日</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                           >

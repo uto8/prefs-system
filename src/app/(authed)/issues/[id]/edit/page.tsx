@@ -2,9 +2,9 @@
 import TitleComponent from '@/components/layout/title';
 import { Suspense } from 'react';
 import ApiGet from '@/lib/useApi/get';
-import EditIssueForm from '@/components/issues/edit_issue_form';
 import { Issue } from '@/types/Issue';
 import Loading from '@/components/layout/loading';
+import EditIssueForm from '@/components/issues/editIssueForm/edit-issue-form';
 
 export default async function IssuePage(
   props: {
@@ -18,7 +18,7 @@ export default async function IssuePage(
     <div className="container mx-auto">
       <Suspense fallback={<Loading/>}>
         <TitleComponent title="案件編集"/>
-        <EditIssueForm issue={issue}/>
+        <EditIssueForm offices={[]} sales={[]}/>
       </Suspense>
     </div>
   )

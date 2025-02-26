@@ -75,7 +75,8 @@ export default function Deposit({handleOpenPaymentCheckForm}:{
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <div className="text-sm leading-6 text-gray-900">{`${payment.paymentPlanValue}`}円</div>
-              <div className="mt-1 text-xs leading-5 text-gray-500">{format(payment.paymentPlanDate, "yyyy年MM月dd日")}</div>
+              <div className="mt-1 text-xs leading-5 text-gray-500">入金予定日：{format(payment.paymentPlanDate, "yyyy年MM月dd日")}</div>
+              <div className="mt-1 text-xs leading-5 text-gray-500">請求日：{format(payment.paymentPlanDate, "yyyy年MM月dd日")}</div>
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
             {payment.paymentChecks.map((paymentCheck, index) => (
