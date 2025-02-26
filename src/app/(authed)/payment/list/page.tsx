@@ -5,7 +5,7 @@ import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/20/solid'
 import Order from "./Order"
 import Deposit from "./Deposit"
 import Repair from "./Repair"
-import { getPayments } from "./actions"
+import { getIssue, getPayments } from "./actions"
 import { setPayment } from "@/stores/reducers/paymentReducer"
 import { useAppDispatch } from "@/stores"
 import PaymentForm from "@/components/payments/payment_form"
@@ -16,6 +16,7 @@ import RepairCheckForm from "@/components/repairs/repair_check_form"
 import RepairForm from "@/components/repairs/repair_form"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
+import { Issue } from "@/types/Issue"
 
 
 function classNames(...classes: string[]) {
@@ -29,6 +30,7 @@ export default function ReceiptPage() {
   const [orderId, setOrderId] = useState<number | null>(null);
   const [repairId, setRepairId] = useState<number | null>(null);
   const dispatch = useAppDispatch();
+  const [issue, setIssue] = useState<Issue | undefined>()
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -37,9 +39,14 @@ export default function ReceiptPage() {
 
     const fetch = async () => {
       try{
-        const payments = await getPayments(searchParams.get("issue_id") ?? "");
 
+        if(searchParams.get("issue_id")){
+          const issue = await getIssue(searchParams.get("issue_id") ?? "")
+          setIssue(issue)
+        }
+        const payments = await getPayments(searchParams.get("issue_id") ?? "");
         dispatch(setPayment(payments))
+
 
       }  catch (error) {
         console.error('Error fetching data:', error);
@@ -94,16 +101,16 @@ export default function ReceiptPage() {
           <h1 className="text-base font-semibold leading-6 text-gray-900">売上管理</h1>
         </div>
       </div>
-        <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        {issue?<dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 mb-6">
           {stats.map((item) => (
             <div key={item.name} className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
               <dt className="truncate text-sm font-medium text-gray-500">案件番号</dt>
-              <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900 mb-6">1111</dd>
-              <dd className="truncate text-sm font-medium text-gray-500">担当者：Aさん</dd>
-              <dd className="truncate text-sm font-medium text-gray-500">住所：愛知県名古屋市中川区</dd>
+              <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 mb-6">{issue?.office.name}-{issue?.id}</dd>
+              <dd className="truncate text-sm font-medium text-gray-500">担当者：{issue?.sale.name}</dd>
+              <dd className="truncate text-sm font-medium text-gray-500">住所：{issue?.constructionSite}</dd>
             </div>
           ))}
-        </dl>
+        </dl>: null}
         <div className="flex justify-end">
         {type=='deposit'&&
           <button

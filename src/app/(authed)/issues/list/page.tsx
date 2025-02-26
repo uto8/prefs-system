@@ -96,7 +96,6 @@ export default function IssueListPage() {
 
     return "yellow"
   }
-
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center mb-8">
@@ -206,7 +205,7 @@ export default function IssueListPage() {
                       <a href={`/payment/list?type=repair&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         補修
                       </a>
-                      <a href={`/issues/${issue.sale.id}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <a href={`/issues/${issue.id}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         編集
                       </a>
                     </td>
