@@ -2,7 +2,6 @@
 import TitleComponent from '@/components/layout/title';
 import { Suspense } from 'react';
 import ApiGet from '@/lib/useApi/get';
-import { Issue } from '@/types/Issue';
 import Loading from '@/components/layout/loading';
 import EditIssueForm from '@/components/issues/editIssueForm/edit-issue-form';
 
@@ -13,7 +12,7 @@ export default async function IssuePage(
 ) {
   const params = await props.params;
   const { id } = params;
-  const issue: Issue = await ApiGet(`/issues/${id}`)
+  await ApiGet(`/issues/${id}`)
   return (
     <div className="container mx-auto">
       <Suspense fallback={<Loading/>}>
