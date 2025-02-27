@@ -1,64 +1,36 @@
 'use client';
 
 import { SelectProps } from '@radix-ui/react-select';
-import { FieldError } from 'react-hook-form';
-import {
-    Select,
-    SelectTrigger,
-    SelectValue,
-    SelectContent,
-    SelectGroup,
-    SelectItem
-} from '../ui/select';
+import { FormLabel } from './form';
 
-type SelectFieldVariant = 'outlined' | 'vertical' | 'inline';
+export type OptionFields = { value: string; label: string }[];
 
 type SelectFieldProps = {
-    variant?: SelectFieldVariant;
-    label?: string;
-    options: { value: string; label: string }[];
-    value?: string;
-    placeholder?: string | false;
-    errors?: FieldError | undefined,
-    onChange?: (value: string) => void;
-    onBlur?: React.FocusEventHandler<HTMLSelectElement>;
+  label?: string;
+  options: OptionFields;
+  value?: string;
+  placeholder?: string;
+  onChange?: (value: string) => void;
 } & SelectProps;
 
 export default function SelectField({
-    variant = 'outlined',
-    label,
-    options,
-    value,
-    placeholder = false,
-    errors,
-    onChange,
-    onOpenChange,
+  label,
+  options,
+  value,
+  placeholder = "選択してください",
+  onChange,
 }: SelectFieldProps) {
-  console.log(errors)
-  console.log(variant)
-    return (
-      <>
-      <label htmlFor="">{label}</label>
-        <Select
-          value={value && value !== '' ? value : 'none'}
-          onValueChange={(val) => onChange?.(val === 'none' ? '' : val)}
-          onOpenChange={(open) => onOpenChange?.(open)}
-        >
-          <SelectTrigger>
-              <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {placeholder && <SelectItem value="none">{placeholder}</SelectItem>}
-              {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </>
-
-    );
+  return (
+    <div>
+      {label && <FormLabel>{label}</FormLabel>}
+      <select value={value} onChange={(e) => onChange?.(e.target.value)} className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
+        {placeholder && <option value="">{placeholder}</option>}
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 }

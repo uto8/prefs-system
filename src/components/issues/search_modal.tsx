@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useState } from 'react';
 
 const formSchema = z.object({
   id: z.string().optional(),
@@ -29,18 +30,13 @@ const formSchema = z.object({
   status: z.string().optional(),
 })
 
-export default function SearchModal({
-  open: open,
-  setOpen: setOpen
-}:{
-  open: boolean;
-  setOpen: (value: boolean) => void
-}) {
+export default function SearchModal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
     },
   })
+  const [open, setOpen] = useState(false)
   const dispatch = useAppDispatch();
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
@@ -58,6 +54,15 @@ export default function SearchModal({
     setOpen(false)
   }
   return <>
+  <button
+            onClick={()=>setOpen(true)}
+            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+
+          </button>
   {/* 検索ポップアップ */}
     <Dialog open={open} onClose={setOpen} className="relative z-10">
       <DialogBackdrop

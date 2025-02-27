@@ -4,20 +4,39 @@ import { Suspense } from 'react';
 import ApiGet from '@/lib/useApi/get';
 import Loading from '@/components/layout/loading';
 import EditIssueForm from '@/components/issues/editIssueForm/edit-issue-form';
+import { OptionFields } from '@/components/ui/select-field';
+import { Office } from '@/types/Office';
+import { Sale } from '@/types/Sale';
+import { auth } from '@/auth';
 
-export default async function IssuePage(
+export default async function Page(
   props: {
     params: Promise<{ id: string }>
   }
 ) {
   const params = await props.params;
   const { id } = params;
-  await ApiGet(`/issues/${id}`)
+  const [offices, sales, issue] = await Promise.all([
+    ApiGet('/offices'),
+    ApiGet('/sales'),
+    ApiGet(`/issues/${id}`)
+  ]);
+  const officeOption: OptionFields = offices.map((office: Office) => {return {value: office.id, label: office.name}})
+  const saleOption: OptionFields = sales.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+  const session = await auth();
+  const officeId: string | null = session?.user.officeId? String(session?.user.officeId): null
+  const saleId: string | null = session?.user.saleId? String(session?.user.saleId): null
   return (
     <div className="container mx-auto">
       <Suspense fallback={<Loading/>}>
         <TitleComponent title="案件編集"/>
-        <EditIssueForm offices={[]} sales={[]}/>
+        <EditIssueForm
+          offices={officeOption}
+          sales={saleOption}
+          issue={issue}
+          userOfficeId={officeId}
+          userSaleId={saleId}
+        />
       </Suspense>
     </div>
   )

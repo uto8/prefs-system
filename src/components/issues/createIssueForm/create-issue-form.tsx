@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -17,11 +17,9 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import TitleComponent from '@/components/layout/title';
 import { createIssue } from '@/app/(authed)/issues/add/actions';
-import { Office } from '@/types/Office';
-import SelectField from '@/components/ui/select-field';
-import { Sale } from '@/types/Sale';
+import SelectField, { OptionFields } from '@/components/ui/select-field';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -45,9 +43,19 @@ const formSchema = z.object({
   isFranchise: z.boolean(),
 })
 
-
-export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sales: Sale[]}) {
+export default function CreateIssueForm({
+  offices =[],
+  sales=[],
+  userOfficeId,
+  userSaleId
+}: {
+  offices: OptionFields,
+  sales: OptionFields,
+  userOfficeId: string | null,
+  userSaleId: string | null,
+}) {
   const router = useRouter();
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,7 +70,8 @@ export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sa
       clientNameKana: "",
       clientEmail: "",
       clientPhoneNumber: "",
-      saleId: "1",
+      officeId: userOfficeId ?? "",
+      saleId: userSaleId ?? "",
       isFranchise: false,
     },
   })
@@ -70,7 +79,6 @@ export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sa
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log("==data", data)
       await createIssue({
         currentAddress: data.currentAddress ?? '',
         officeId: Number(data.officeId),
@@ -86,6 +94,10 @@ export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sa
         clientPhoneNumber: data.clientPhoneNumber ?? "",
         isFranchise: data.isFranchise?1:0
       })
+      toast({
+        variant: "success",
+        title: "案件確定しました",
+      })
       router.push('/issues/list')
     }catch(e) {
       throw e;
@@ -94,7 +106,6 @@ export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sa
 
   return (
     <>
-      <TitleComponent title="案件追加"/>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
@@ -248,32 +259,36 @@ export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sa
               </FormItem>
             )}
           />
-          <Controller name="officeId" control={form.control} render={({ field }) => (
-            <>
-              <SelectField
-                  variant='vertical'
-                  label='店舗'
-                  placeholder='選択してください'
-                  options={offices.map((office) => ({ value: office.id, label: office.name }))}
-                  value={field.value ?? ''}
-                  onChange={field.onChange}
-              />
-            </>
-          )}>
-          </Controller>
-          <Controller name="saleId" control={form.control} render={({ field }) => (
-            <>
-              <SelectField
-                  variant='vertical'
-                  label='担当者'
-                  placeholder='選択してください'
-                  options={sales.map((sale) => ({ value: sale.id, label: sale.name }))}
-                  value={field.value ?? ''}
-                  onChange={field.onChange}
-              />
-            </>
-          )}>
-          </Controller>
+          {(() => {
+            if(!userSaleId){
+              return <>
+                {!userOfficeId ?<FormField
+                  control={form.control}
+                  name="officeId"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormControl>
+                        <SelectField options={offices} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />: null}
+                <FormField
+                  control={form.control}
+                  name="saleId"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormControl>
+                        <SelectField options={sales} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+          }})()}
+
           <FormField
             control={form.control}
             name="contactContent"

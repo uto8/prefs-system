@@ -10,12 +10,15 @@ const ApiDelete = async (url: string, reqHeader: Record<string, string> = {}) =>
       method: 'DELETE',
       headers: header,
     });
+
+    const data = await response.json();
+
     // ステータスコードを確認
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorMessage = data.error?? `削除に失敗しました`;
+      throw Error(errorMessage);
     }
 
-    const data = response.json();
     return data;
   }catch(e) {
     throw e;

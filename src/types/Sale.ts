@@ -4,5 +4,6 @@ export type Sale = {
   email: string,
   phoneNumber: string,
   officeName: string,
+  officeId: number
 }
 

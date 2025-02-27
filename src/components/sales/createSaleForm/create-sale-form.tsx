@@ -1,30 +1,32 @@
-'use client';
+"use client"
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from "react-hook-form"
-import { useAppDispatch } from '@/stores';
-import { addValue } from '@/stores/reducers/officeReducer';
-import { createOffices } from '@/features/offices/add';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import TitleComponent from '@/components/layout/title';
-import { useToast } from '@/hooks/use-toast';
+import { useAppDispatch } from '@/stores';
+import { addValue } from '@/stores/reducers/saleReducer';
+import { createSale } from '@/app/(authed)/sales/add/actions';
+import { useToast } from "@/hooks/use-toast"
+
+
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
   password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
-  address: z.string().nonempty("住所は必須項目です"),
 })
 
-export default function CastAdd() {
+export default function CreateSaleForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { toast } = useToast()
+  const searchParams = useSearchParams();
+  const officeId = Number(searchParams.get('office_id')) ?? null;
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,56 +35,50 @@ export default function CastAdd() {
       email: "",
       password: "",
       phoneNumber: "",
-      address: ""
     },
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      dispatch(addValue({
-        id: "",
-        name: data.name,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        companyId: 0
-      }));
-      await createOffices({
-        address: data.address,
+      const body = {
         name: data.name,
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
-        cognito_id: "gadsgdsa",
-        companyId: 1
-      })
+        ...(officeId && { "officeId": officeId }),
+      }
+      await createSale(body);
+      dispatch(addValue({
+        id: "2",
+        name: data.name,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        officeName: "",
+        officeId: officeId
+      }));
       toast({
-        variant: "success",
-        title: "店舗を作成しました",
+        variant: "destructive",
+        title: "営業を作成しました",
       })
-      router.push('/offices/list');
-    }catch(e) {
+      router.push('/sales/list');
+    } catch (e) {
       throw e;
     }
-
   }
 
   return (
     <>
-      <div className="sm:flex sm:items-center mb-8">
-        <TitleComponent title="営業追加"/>
-      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col gap-4"
-        >
+          className="flex flex-col gap-4">
           <FormField
             control={form.control}
             name="name"
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                店舗名
+                営業名
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />
@@ -128,21 +124,6 @@ export default function CastAdd() {
               <FormItem>
                 <FormLabel>
                 電話番号
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                住所
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />

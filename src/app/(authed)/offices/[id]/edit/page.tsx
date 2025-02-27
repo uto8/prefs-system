@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { editOffice, getOffice } from './actions';
 import TitleComponent from '@/components/layout/title';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
@@ -30,6 +31,7 @@ export default function EditOffice() {
     id: "",
     phoneNumber: ""
   })
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,6 +74,10 @@ export default function EditOffice() {
         password: data.password,
         phoneNumber: data.phoneNumber
       }
+    })
+    toast({
+      variant: "success",
+      title: "店舗を更新しました",
     })
     router.push("/offices/list")
   }
