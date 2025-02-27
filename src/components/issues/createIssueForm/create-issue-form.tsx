@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -17,13 +17,8 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import TitleComponent from '@/components/layout/title';
 import { createIssue } from '@/app/(authed)/issues/add/actions';
-import { Office } from '@/types/Office';
 import SelectField, { OptionFields } from '@/components/ui/select-field';
-import { Sale } from '@/types/Sale';
-import { useEffect } from 'react';
-import { auth } from '@/auth';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),

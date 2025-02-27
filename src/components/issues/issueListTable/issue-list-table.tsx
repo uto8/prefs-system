@@ -3,7 +3,6 @@
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { setValue, updateMemoValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
-import SearchModal from '@/components/issues/search_modal';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,8 +18,6 @@ import { createIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/act
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
 }) {
-
-  const [open, setOpen] = useState(false)
   const [issueId, setIssueId] = useState(0)
   const [editModal, setEditModal] = useState(false)
   const [memo, setMemo] = useState("")
