@@ -20,6 +20,7 @@ export type IssueConfirmed = {
 export type Issue = {
   id: number;
   officeId: number;
+  saleId: number;
   clientId: number;
   companyId: number;
   currentAddress: string;
