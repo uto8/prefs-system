@@ -1,16 +1,16 @@
 'use server'
 
 import SearchModal from '@/components/issues/search_modal';
-import { getIssues } from './actions';
 import IssueListTable from '@/components/issues/issueListTable/issue-list-table';
+import ApiGet from '@/lib/useApi/get';
 
 
 
 export default async function IssueListPage() {
 
-  const issues = await getIssues();
-
-
+  const [issues] = await Promise.all([
+    ApiGet('/issues'),
+  ]);
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center mb-8">

@@ -11,6 +11,7 @@ import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import TitleComponent from '@/components/layout/title';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
@@ -23,6 +24,7 @@ const formSchema = z.object({
 export default function CastAdd() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,6 +54,10 @@ export default function CastAdd() {
         phoneNumber: data.phoneNumber,
         cognito_id: "gadsgdsa",
         companyId: 1
+      })
+      toast({
+        variant: "success",
+        title: "店舗を作成しました",
       })
       router.push('/offices/list');
     }catch(e) {

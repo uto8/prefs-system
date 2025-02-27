@@ -43,10 +43,10 @@ export const createIssueConfirmed = async (body: {
 export const updateIssueConfirmed = async ({id: id, body: body}: {
   id: number,
   body: {
-    confirmDate: Date;
-    startDate: Date;
-    completeDate: Date;
-    contractValue: number;
+    confirmDate: string;
+    startDate: string;
+    completeDate: string;
+    contractValue: string;
   }
 }):Promise<IssueConfirmed> => {
   try{

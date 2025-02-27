@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { createIssue } from '@/app/(authed)/issues/add/actions';
 import SelectField, { OptionFields } from '@/components/ui/select-field';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -54,6 +55,7 @@ export default function CreateIssueForm({
   userSaleId: string | null,
 }) {
   const router = useRouter();
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,6 +93,10 @@ export default function CreateIssueForm({
         clientEmail: data.clientEmail ?? "",
         clientPhoneNumber: data.clientPhoneNumber ?? "",
         isFranchise: data.isFranchise?1:0
+      })
+      toast({
+        variant: "success",
+        title: "案件確定しました",
       })
       router.push('/issues/list')
     }catch(e) {

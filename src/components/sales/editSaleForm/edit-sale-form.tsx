@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { editSale } from '@/app/(authed)/sales/[id]/edit/actions';
 import { Sale } from '@/types/Sale';
 import SelectField, { OptionFields } from '@/components/ui/select-field';
+import { useToast } from '@/hooks/use-toast';
 
 
 const formSchema = z.object({
@@ -32,6 +33,7 @@ export default function EditSaleForm({
   const params = useParams();
   const id = params.id;
   const idString: string = id as string;
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,6 +56,10 @@ export default function EditSaleForm({
         phoneNumber: data.phoneNumber,
         officeId: data.officeId
       }})
+      toast({
+        variant: "success",
+        title: "営業を更新しました",
+      })
       router.push('/sales/list')
     }catch(e) {
       throw e;

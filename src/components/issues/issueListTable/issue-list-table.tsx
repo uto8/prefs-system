@@ -13,14 +13,16 @@ import {
 } from "@/components/ui/dialog"
 import { useEffect, useState } from 'react';
 import { Issue } from '@/types/Issue';
-import { createIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
+import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
+import { useToast } from '@/hooks/use-toast';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
 }) {
-  const [issueId, setIssueId] = useState(0)
+  const [issueContractData, setIssueContractData] = useState<Issue | null>(null)
   const [editModal, setEditModal] = useState(false)
   const [memo, setMemo] = useState("")
+  const { toast } = useToast()
 
   const { value } = useAppSelector((state) => state.issues);
   const dispatch = useAppDispatch();
@@ -32,12 +34,15 @@ export default function IssueListTable({issues: issues}: {
       }  catch (error) {
         throw error;
       }
+      console.log("value",value)
+      console.log("issues",issues)
     }
     fetch()
   }, [])
 
-  const handleContract = async ({issueId: issueId, input: input}: {
+  const handleContract = async ({issueId: issueId, issueConfirmId: issueConfirmId, input: input}: {
     issueId: number,
+    issueConfirmId: number | null,
     input: {
       confirmDate: string;
       startDate: string;
@@ -47,13 +52,34 @@ export default function IssueListTable({issues: issues}: {
   }) => {
     try{
       setEditModal(false)
-      await createIssueConfirmed({
-        issueId: issueId,
-        confirmDate: input.confirmDate,
-        startDate: input.startDate,
-        completeDate: input.completeDate,
-        contractValue: input.contractValue,
-      })
+      if(issueConfirmId){
+        await updateIssueConfirmed({
+          id: issueConfirmId,
+          body: {
+            confirmDate: input.confirmDate,
+            startDate: input.startDate,
+            completeDate: input.completeDate,
+            contractValue: input.contractValue,
+          }
+        })
+        toast({
+          variant: "success",
+          title: "契約更新しました",
+        })
+      }else{
+        await createIssueConfirmed({
+          issueId: issueId,
+          confirmDate: input.confirmDate,
+          startDate: input.startDate,
+          completeDate: input.completeDate,
+          contractValue: input.contractValue,
+        })
+        toast({
+          variant: "success",
+          title: "契約確定しました",
+        })
+      }
+
     }catch(e) {
       throw e;
     }
@@ -91,7 +117,6 @@ export default function IssueListTable({issues: issues}: {
     }else if(status.includes("未入金")){
       return "red"
     }
-
     return "yellow"
   }
 
@@ -165,8 +190,9 @@ export default function IssueListTable({issues: issues}: {
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <button onClick={()=>{
+                        if(!issue)return
                         setEditModal(true)
-                        setIssueId(issue.id)
+                        setIssueContractData(issue)
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       契約
                       </button>
@@ -194,7 +220,7 @@ export default function IssueListTable({issues: issues}: {
         editModal={editModal}
         setEditModal={()=>setEditModal(false)}
         handleContract={handleContract}
-        issueId={issueId}
+        issue={issueContractData}
       />
   </>
 }
