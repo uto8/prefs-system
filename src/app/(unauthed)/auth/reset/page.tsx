@@ -1,47 +1,45 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import { loginWithCredentials } from './actions';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from "lucide-react"
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast"
+import ApiPost from '@/lib/useApi/post';
 
 const formSchema = z.object({
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
-  password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
 })
 
-export default function SignIn() {
+export default function Page() {
 
   const [disabled, setDisabled] = useState(false);
   const { toast } = useToast()
 
-  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   })
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       setDisabled(true)
-      await loginWithCredentials({
-        email: data.email,
-        password: data.password,
-      });
-      router.push('/')
-    }catch(e){
+      await ApiPost("/auth/reset", {
+        email: data.email
+      })
+      setDisabled(false)
+      form.reset({email: ""})
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(e: any){
+      const errorMessage = e.message ?? "削除に失敗しました";
       toast({
         variant: "destructive",
-        title: "ログインエラー",
+        title: `${errorMessage}`,
       })
       setDisabled(false)
       throw e;
@@ -79,32 +77,17 @@ export default function SignIn() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({field}) => (
-                  <FormItem>
-                    <FormLabel>
-                    パスワード
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="mt-4 flex">
                 <Button disabled={disabled} type="submit" className='w-full'>
                   {disabled&&<Loader2 className="animate-spin" />}
-                  ログイン
+                  パスワードリセット用リンクを送信
                 </Button>
               </div>
             </form>
           </Form>
-          {/* <div className='text-center mt-8'>
-            <a href={`/auth/reset`} className="text-indigo-400 hover:text-indigo-900">パスワードをお忘れの方はこちら</a>
-          </div> */}
+          <div className='text-center mt-8'>
+            <a href={`/auth/sign_in`} className="text-indigo-400 hover:text-indigo-900">ログインページはこちら</a>
+          </div>
           </div>
         </div>
       </div>

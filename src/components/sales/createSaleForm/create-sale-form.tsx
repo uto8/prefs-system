@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useAppDispatch } from '@/stores';
 import { addValue } from '@/stores/reducers/saleReducer';
 import { createSale } from '@/app/(authed)/sales/add/actions';
+import { useToast } from "@/hooks/use-toast"
 
 
 
@@ -25,6 +26,7 @@ export default function CreateSaleForm() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const officeId = Number(searchParams.get('office_id')) ?? null;
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,6 +56,10 @@ export default function CreateSaleForm() {
         officeName: "",
         officeId: officeId
       }));
+      toast({
+        variant: "destructive",
+        title: "営業を作成しました",
+      })
       router.push('/sales/list');
     } catch (e) {
       throw e;

@@ -1,5 +1,3 @@
-"use client"
-
 const ApiDelete = async (url: string, reqHeader: Record<string, string> = {}) => {
   try{
     const header: HeadersInit = {

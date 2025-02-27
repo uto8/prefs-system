@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -18,6 +18,7 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '../ui/button'
 import { ja } from "date-fns/locale";
+import { Issue } from '@/types/Issue'
 
 
 const formSchema = z.object({
@@ -40,7 +41,7 @@ export default function ContractModal({
   editModal: editModal,
   setEditModal: setEditModal,
   handleContract: handleContract,
-  issueId: issueId,
+  issue: issue,
 }: {
   editModal: boolean,
   setEditModal:(value: boolean) => void,
@@ -49,14 +50,15 @@ export default function ContractModal({
     input,
   }: {
     issueId: number;
+    issueConfirmId: number | null;
     input: {
-      confirmDate: string;
-      startDate: string;
-      completeDate: string;
-      contractValue: string;
+        confirmDate: string;
+        startDate: string;
+        completeDate: string;
+        contractValue: string;
     };
   }) => Promise<void>;
-  issueId: number
+  issue: Issue | null
 }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,10 +67,23 @@ export default function ContractModal({
     },
   })
 
+  useEffect(() => {
+    if (issue?.issueConfirmed.id) {
+      form.reset({
+        confirmDate: issue.issueConfirmed.confirmDate ? new Date(issue.issueConfirmed.confirmDate) : undefined,
+        startDate: issue.issueConfirmed.startDate ? new Date(issue.issueConfirmed.startDate) : undefined,
+        completeDate: issue.issueConfirmed.completeDate ? new Date(issue.issueConfirmed.completeDate) : undefined,
+        contractValue: issue.issueConfirmed.contractValue ?? "",
+      });
+    }
+  },[issue])
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    if(!issue)return
     try{
       await handleContract({
-        issueId: issueId,
+        issueId: issue.id,
+        issueConfirmId: issue.issueConfirmed.id,
         input: {
           confirmDate: format(data.confirmDate, "yyyy-MM-dd"),
           startDate: format(data.startDate, "yyyy-MM-dd"),
@@ -138,99 +153,98 @@ export default function ContractModal({
                     )}
                   />
                   <FormField
-                  control={form.control}
-                  name="contractValue"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      契約金額
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="startDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>工事開始日</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "yyyy-MM-dd")
-                              ) : (
-                                <span>日付を選択してください</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            locale={ja}
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="completeDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>引き渡し予定日</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "yyyy-MM-dd")
-                              ) : (
-                                <span>日付を選択してください</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            locale={ja}
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
+                    control={form.control}
+                    name="contractValue"
+                    render={({field}) => (
+                      <FormItem>
+                        <FormLabel>
+                        契約金額
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} type="number" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>工事開始日</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "yyyy-MM-dd")
+                                ) : (
+                                  <span>日付を選択してください</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              locale={ja}
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="completeDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>引き渡し予定日</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "yyyy-MM-dd")
+                                ) : (
+                                  <span>日付を選択してください</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              locale={ja}
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 <div className="mt-4">
                   <Button type="submit">
                     登録

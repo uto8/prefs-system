@@ -1,7 +1,6 @@
 'use server'
 
 import SearchModal from '@/components/issues/search_modal';
-import { getIssues } from './actions';
 import IssueListTable from '@/components/issues/issueListTable/issue-list-table';
 import ApiGet from '@/lib/useApi/get';
 

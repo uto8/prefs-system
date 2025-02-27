@@ -13,10 +13,15 @@ export default function SaleListTable({
   const {toast} = useToast()
 
   const handleDelete = async (id: string) => {
-    var result = window.confirm('本当に削除しますか？');
+    const result = window.confirm('本当に削除しますか？');
     if(!result) return
     try{
       await ApiDelete(`/sales/${id}`)
+      toast({
+        variant: "success",
+        title: "営業を削除しました",
+      })
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }catch(e: any){
       const errorMessage = e.message ?? "削除に失敗しました";
       toast({

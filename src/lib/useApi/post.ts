@@ -27,7 +27,14 @@ const ApiPost = async (url: string, body: object, reqHeader: Record<string, stri
       body: JSON.stringify(reqBody)
     });
 
-    const data = response.json();
+    const data = await response.json();
+
+    // ステータスコードを確認
+    if (!response.ok) {
+      const errorMessage = data.error?? `作成に失敗しました`;
+      throw Error(errorMessage);
+    }
+
     return data;
   }catch(e) {
     throw e;

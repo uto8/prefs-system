@@ -20,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import SelectField, { OptionFields } from '@/components/ui/select-field';
 import { Issue } from '@/types/Issue';
 import ApiPut from '@/lib/useApi/put';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -58,6 +59,7 @@ export default function EditIssueForm({
   userSaleId: string | null,
 }) {
   const router = useRouter();
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -83,7 +85,6 @@ export default function EditIssueForm({
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      console.log("==data", data)
       const body = {
         currentAddress: data.currentAddress ?? '',
         preferredDate: data.preferredDate ?? '',
@@ -99,6 +100,10 @@ export default function EditIssueForm({
       }
 
       await ApiPut(`/issues/${issue.id}` ,body)
+      toast({
+        variant: "success",
+        title: "案件更新しました",
+      })
       router.push('/issues/list')
     }catch(e) {
       throw e;
