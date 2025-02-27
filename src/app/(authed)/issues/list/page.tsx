@@ -90,9 +90,9 @@ export default function IssueListPage() {
     }else if(status === "確定済"){
       return "blue"
     }
-    else if(status.includes("未入金")){
-      return "red"
-    }
+    // else if(status.includes("未入金")){
+    //   return "red"
+    // }
 
     return "yellow"
   }
