@@ -156,12 +156,12 @@ export default function IssueListPage() {
                   <tr key={index}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                       <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      {issue.office.name}-{issue.id}
+                      {issue.office?issue.office.name:null}-{issue.id}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <a href={`/issues/client/${issue.clientId}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      {issue.client.name}
+                      {issue.client?issue.client.name: null}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.constructionSite}</td>
@@ -172,7 +172,7 @@ export default function IssueListPage() {
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <a href={`/sales/${issue.sale.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      {issue.sale.name}
+                      {issue.sale?issue.sale.name:null}
                       </a>
                     </td>
                     <td className="truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500">
