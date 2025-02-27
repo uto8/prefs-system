@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Issue } from '@/types/Issue';
 import { createIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
+import { deleteSale } from '@/app/(authed)/sales/list/actions';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -91,7 +92,6 @@ export default function IssueListTable({issues: issues}: {
     }else if(status.includes("未入金")){
       return "red"
     }
-
     return "yellow"
   }
 
