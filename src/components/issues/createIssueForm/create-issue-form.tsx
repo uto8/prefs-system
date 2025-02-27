@@ -219,9 +219,6 @@ export default function AddIssue({offices =[], sales=[]}: {offices: Office[], sa
             name="isFranchise"
             render={() => (
             <FormItem>
-              <div className="mb-4">
-                <FormLabel className="text-base">Sidebar</FormLabel>
-              </div>
               <FormField
                   control={form.control}
                   name="isFranchise"
