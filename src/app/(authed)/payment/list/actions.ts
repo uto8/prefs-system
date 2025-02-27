@@ -3,6 +3,7 @@
 import ApiDelete from "@/lib/useApi/delete";
 import ApiGet from "@/lib/useApi/get"
 import ApiPost from "@/lib/useApi/post";
+import { Issue } from "@/types/Issue";
 
 export const getPayments = async (issueId: string) => {
   try{
@@ -18,7 +19,8 @@ export const createPayment = async (body: {
   type: string;
   paymentPlanValue: number;
   paymentPlanDate: string;
-  description: string
+  description: string;
+  billingDate: string
 }) => {
   try{
     const payment = await ApiPost("/payments", body)
@@ -101,6 +103,15 @@ export const deleteOrder = async (orderId: number) => {
 export const getRepairs = async (issueId: string) => {
   try{
     const repairs = await ApiGet("/repairs", {"issueId": issueId})
+    return repairs;
+  }catch(e) {
+    throw e;
+  }
+}
+
+export const getIssue = async (issueId: string): Promise<Issue> => {
+  try{
+    const repairs = await ApiGet(`/issues/${issueId}`, {"issueId": issueId})
     return repairs;
   }catch(e) {
     throw e;
