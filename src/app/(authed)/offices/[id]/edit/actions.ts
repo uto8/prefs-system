@@ -9,9 +9,9 @@ export const getOffice = async (id: string): Promise<Office> => {
     const response = await ApiGet(`/offices/${id}`)
     return {
       id: response.id,
-      name: "response.name",
-      email: "string",
-      phoneNumber: "string",
+      name: response.name,
+      email: response.email,
+      phoneNumber: response.phoneNumber,
       companyId: 1
     }
   }catch(e) {
@@ -24,7 +24,6 @@ export const editOffice = async ({id: id, office: office}:{
   office: {
     name: string,
     email: string,
-    password: string,
     phoneNumber: string,
   }
 }): Promise<Office> => {
@@ -33,9 +32,9 @@ export const editOffice = async ({id: id, office: office}:{
     console.log(response)
     return {
       id: id,
-      name: "response.name",
-      email: "string",
-      phoneNumber: "string",
+      name: office.name,
+      email: office.email,
+      phoneNumber: office.phoneNumber,
       companyId: 1
     }
   }catch(e) {
