@@ -75,13 +75,13 @@ export default function EditIssueForm({
       clientEmail: issue.client.email,
       clientPhoneNumber: issue.client.phoneNumber,
       officeId: String(issue.officeId),
-      saleId: String(issue.saleId),
+      saleId: String(issue.sale.id),
+      isFranchise: false,
     },
   })
 
   const officeId = useWatch({ control: form.control, name: "officeId" });
   const saleId = useWatch({ control: form.control, name: "saleId" });
-
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
@@ -97,6 +97,7 @@ export default function EditIssueForm({
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail ?? '',
         clientPhoneNumber: data.clientPhoneNumber ?? '',
+        isFranchise: data.isFranchise?1:0
       }
 
       await ApiPut(`/issues/${issue.id}` ,body)
@@ -237,9 +238,6 @@ export default function EditIssueForm({
             name="isFranchise"
             render={() => (
             <FormItem>
-              <div className="mb-4">
-                <FormLabel className="text-base">Sidebar</FormLabel>
-              </div>
               <FormField
                   control={form.control}
                   name="isFranchise"
