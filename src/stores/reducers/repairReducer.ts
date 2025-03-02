@@ -43,10 +43,15 @@ const repairSlice = createSlice({
     //     state.repairChecks[index] = action.payload;
     //   }
     // },
-    // // 補修確認の削除
-    // removeRepairCheck: (state, action: PayloadAction<string>) => {
-    //   state.repairChecks = state.repairChecks.filter(item => item.id !== action.payload);
-    // }
+    // 補修確認の削除
+    removeRepairCheck: (state, action: PayloadAction<{ repairId: number; repairCheckId: string }>) => {
+      const updated =state.value.map(repair =>
+        repair.id === action.payload.repairId
+          ? { ...repair, repairChecks: repair.repairChecks.filter(check => String(check.id) !== action.payload.repairCheckId) }
+          : repair
+      );
+      state.value = updated
+    }
   }
 });
 
@@ -57,7 +62,7 @@ export const {
   removeRepair,
   addRepairCheck,
   // updateRepairCheck,
-  // removeRepairCheck
+  removeRepairCheck
 } = repairSlice.actions;
 
 export const repairReducer = repairSlice.reducer;

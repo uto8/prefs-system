@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/20/solid'
-import Order from "./Order"
+import OrderTab from "./Order"
 import Deposit from "./Deposit"
-import Repair from "./Repair"
+import RepairTab from "./Repair"
 import { getIssue, getPayments } from "./actions"
 import { setPayment } from "@/stores/reducers/paymentReducer"
 import { useAppDispatch } from "@/stores"
@@ -17,6 +17,12 @@ import RepairForm from "@/components/repairs/repair_form"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { Issue } from "@/types/Issue"
+import PaymentEditForm from "@/components/payments/payment_edit_form"
+import { Payment } from "@/types/Payment"
+import { Order } from "@/types/Order"
+import OrderEditForm from "@/components/orders/order_edit_form"
+import { Repair } from "@/types/Repair"
+import RepairEditForm from "@/components/repairs/repair_edit_form"
 
 
 function classNames(...classes: string[]) {
@@ -84,6 +90,12 @@ export default function ReceiptPage() {
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false)
   const [repairConfirmOpen, setRepairConfirmOpen] = useState(false)
+  const [editPaymentFormOpen, setEditPaymentFormOpen] = useState(false)
+  const [editPaymentFormDefault, setEditPaymentFormDefault] = useState<Payment | null>(null)
+  const [editOrderFormOpen, setEditOrderFormOpen] = useState(false)
+  const [editOrderFormDefault, setEditOrderFormDefault] = useState<Order | null>(null)
+  const [editRepairFormOpen, setEditRepairFormOpen] = useState(false)
+  const [editRepairFormDefault, setEditRepairFormDefault] = useState<Repair | null>(null)
 
   const router = useRouter()
   const { toast } = useToast()
@@ -204,15 +216,21 @@ export default function ReceiptPage() {
 
       {type=='deposit'&&<Deposit
         handleOpenPaymentCheckForm={handleOpenPaymentCheckForm}
+        setEditPaymentFormOpen={setEditPaymentFormOpen}
+        setEditPaymentFormDefault={setEditPaymentFormDefault}
       />}
 
 
-        {type=='payment'&&<Order
+        {type=='payment'&&<OrderTab
           handleOpenOrderCheckForm={handleOpenOrderCheckForm}
+          setEditOrderFormOpen={setEditOrderFormOpen}
+          setEditOrderFormDefault={setEditOrderFormDefault}
         />}
 
-        {type=='repair'&&<Repair
+        {type=='repair'&&<RepairTab
           handleOpenRepairCheckForm={handleOpenRepairCheckForm}
+          setEditRepairFormOpen={setEditRepairFormOpen}
+          setEditRepairFormDefault={setEditRepairFormDefault}
         />}
 
       </div>
@@ -236,12 +254,18 @@ export default function ReceiptPage() {
 
       {/* 入金フォームポップアップ */}
       <PaymentForm open={open} setOpen={setOpen}/>
+      {/* 入金編集フォームポップアップ */}
+      <PaymentEditForm open={editPaymentFormOpen} setOpen={setEditPaymentFormOpen} payment={editPaymentFormDefault}/>
 
       {/* 発注追加ポップアップ */}
       <OrderForm paymentOpen={paymentOpen} setPaymentOpen={setPaymentOpen}/>
+      {/* 発注編集ポップアップ */}
+      <OrderEditForm paymentOpen={editOrderFormOpen} setPaymentOpen={setEditOrderFormOpen} editOrderFormDefault={editOrderFormDefault}/>
 
       {/* 補修追加ポップアップ */}
       <RepairForm repairOpen={repairOpen} setRepairOpen={setRepairOpen}/>
+      {/* 補修編集ポップアップ */}
+      <RepairEditForm repairOpen={editRepairFormOpen} setRepairOpen={setEditRepairFormOpen} repair={editRepairFormDefault}/>
     </>
   )
 }
