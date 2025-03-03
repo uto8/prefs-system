@@ -16,7 +16,7 @@ import Loading from '@/components/layout/loading';
 //   { type: '予定入金額',name: '1000000円', title: '2000000円', email: '3000000円', role: '4000000円' },
 // ]
 
-export default function Example() {
+export default function Page() {
 
   return (
     <div className="sm:px-6 lg:px-8">

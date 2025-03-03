@@ -102,9 +102,9 @@ export default function SignIn() {
               </div>
             </form>
           </Form>
-          {/* <div className='text-center mt-8'>
+          <div className='text-center mt-8'>
             <a href={`/auth/reset`} className="text-indigo-400 hover:text-indigo-900">パスワードをお忘れの方はこちら</a>
-          </div> */}
+          </div>
           </div>
         </div>
       </div>

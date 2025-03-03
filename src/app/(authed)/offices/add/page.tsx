@@ -69,7 +69,7 @@ export default function CastAdd() {
   return (
     <>
       <div className="sm:flex sm:items-center mb-8">
-        <TitleComponent title="営業追加"/>
+        <TitleComponent title="店舗追加"/>
       </div>
       <Form {...form}>
         <form

@@ -44,9 +44,14 @@ const paymentSlice = createSlice({
     //   }
     // },
     // 入金確認の削除
-    // removePaymentCheck: (state, action: PayloadAction<string>) => {
-    //   // state.value = state.paymentChecks.filter(item => item.id !== action.payload);
-    // }
+    removePaymentCheck: (state, action: PayloadAction<{ paymentId: number; paymentCheckId: string }>) => {
+      const updated =state.value.map(payment =>
+        payment.id === action.payload.paymentId
+          ? { ...payment, paymentChecks: payment.paymentChecks.filter(check => String(check.id) !== action.payload.paymentCheckId) }
+          : payment
+      );
+      state.value = updated
+    }
   }
 });
 
@@ -55,7 +60,7 @@ export const {
   addPayment,
   updatePayment,
   removePayment,
-  // removePaymentCheck
+  removePaymentCheck,
   addPaymentCheck
 } = paymentSlice.actions;
 
