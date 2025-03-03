@@ -42,10 +42,15 @@ const orderSlice = createSlice({
     //     state.orderChecks[index] = action.payload;
     //   }
     // },
-    // // 発注確認の削除
-    // removeOrderCheck: (state, action: PayloadAction<string>) => {
-    //   state.orderChecks = state.orderChecks.filter(item => item.id !== action.payload);
-    // }
+    // 発注確認の削除
+    removeOrderCheck: (state, action: PayloadAction<{ orderId: number; orderCheckId: string }>) => {
+      const updated =state.value.map(order =>
+        order.id === action.payload.orderId
+          ? { ...order, orderChecks: order.orderChecks.filter(check => String(check.id) !== action.payload.orderCheckId) }
+          : order
+      );
+      state.value = updated
+    }
   }
 });
 
@@ -56,7 +61,7 @@ export const {
   removeOrder,
   addOrderCheck,
   // updateOrderCheck,
-  // removeOrderCheck
+  removeOrderCheck
 } = orderSlice.actions;
 
 export const orderReducer = orderSlice.reducer;

@@ -1,13 +1,21 @@
 "use client"
 
-import React, { Fragment, useEffect } from 'react'
-import { deleteOrder, getOrders } from './actions';
+import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react'
+import { deleteOrder, deleteOrderCheck, getOrders } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { removeOrder, setOrder } from '@/stores/reducers/orderReducer';
+import { removeOrder, removeOrderCheck, setOrder } from '@/stores/reducers/orderReducer';
 import { format } from 'date-fns';
+import { Order } from "@/types/Order"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
-export default function Order({ handleOpenOrderCheckForm }: {
+export default function OrderTab({
+  handleOpenOrderCheckForm,
+  setEditOrderFormOpen,
+  setEditOrderFormDefault,
+}: {
   handleOpenOrderCheckForm: (orderId: number) => void;
+  setEditOrderFormOpen: Dispatch<SetStateAction<boolean>>
+  setEditOrderFormDefault: Dispatch<Order | null>
 }) {
 
   const { value: orders } = useAppSelector((state) => state.orders);
@@ -18,6 +26,14 @@ export default function Order({ handleOpenOrderCheckForm }: {
     if(result){
       await deleteOrder(id)
       dispatch(removeOrder(id))
+    }
+  }
+
+  const handleDeleteCheck = async (id: number, checkId: number) => {
+    const result: boolean = confirm("本当に削除しますか？")
+    if(result){
+      await deleteOrderCheck(checkId)
+      dispatch(removeOrderCheck({orderId: id, orderCheckId: String(checkId)}))
     }
   }
 
@@ -78,15 +94,29 @@ export default function Order({ handleOpenOrderCheckForm }: {
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
             {order.orderChecks?.map((orderCheck, index) => (
-                <div className="mb-5" key={index}>
-                  <div className="text-sm leading-6 text-gray-900">{Number(orderCheck.orderCheckValue)}円</div>
-                  <div className="mt-1 text-xs leading-5 text-gray-500">{orderCheck.orderCheckDate?format(orderCheck.orderCheckDate, "yyyy年MM月dd日"):'未定'}</div>
+                <div className="mb-5 flex" key={index}>
+                  <div>
+                    <div className="text-sm leading-6 text-gray-900">{Number(orderCheck.orderCheckValue)}円</div>
+                    <div className="mt-1 text-xs leading-5 text-gray-500">{orderCheck.orderCheckDate?format(orderCheck.orderCheckDate, "yyyy年MM月dd日"):'未定'}</div>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[grey]">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                    </svg>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                    <DropdownMenuItem onClick={()=>{handleDeleteCheck(Number(order.id) ,Number(orderCheck.id))}}>
+                    削除
+                    </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               ))}
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <span className="rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset">
-                打診中
+                {order.type}
               </span>
             </td>
             <td className="align-baseline py-5 text-right">
@@ -97,15 +127,12 @@ export default function Order({ handleOpenOrderCheckForm }: {
                 >
                   支払い完了
                 </button>
-                {/* <button
-                  onClick={()=>{setAddPaymentOpen(true)}}
+                <button
+                  onClick={()=>{setEditOrderFormOpen(true); setEditOrderFormDefault(order)}}
                   className="text-sm mr-2 font-medium leading-6 text-indigo-600 hover:text-indigo-500"
                 >
                   編集
-                  <span className="sr-only">
-                    , invoice #{order.id}
-                  </span>
-                </button> */}
+                </button>
                 <button
                   onClick={()=>{handleDelete(order.id)}}
                   className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"

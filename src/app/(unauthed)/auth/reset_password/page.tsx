@@ -8,18 +8,18 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from "lucide-react"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast"
 import ApiPost from '@/lib/useApi/post';
 
 const formSchema = z.object({
+  email: z.string().email().nonempty("メールアドレスは必須項目です"),
   code: z.string().nonempty("コードは必須項目です"),
   password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
 })
 
 export default function Page() {
 
-  const [email, setEmail] = useState("");
   const [disabled, setDisabled] = useState(false);
   const { toast } = useToast()
 
@@ -27,21 +27,16 @@ export default function Page() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      email: "",
       code: "",
       password: "",
     },
   })
 
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    setEmail(searchParams.get("email")??"");
-  }, []);
-
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       setDisabled(true)
-      await ApiPost(`/auth/reset/${email}/password`, {
+      await ApiPost(`/auth/reset/${data.email}/password`, {
         resetCode: data.code,
         newPassword: data.password,
       })
@@ -79,6 +74,21 @@ export default function Page() {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="flex flex-col gap-4"
             >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({field}) => (
+                  <FormItem>
+                    <FormLabel>
+                    メールアドレス
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} type="text" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="code"
