@@ -1,7 +1,16 @@
+"use server"
+
+import { Session } from "@/types/Session";
+import { getCookieSession } from "../auth/get-cookie-session";
+
 const ApiDelete = async (url: string, reqHeader: Record<string, string> = {}) => {
   try{
+    const cookie: Session = await getCookieSession()
     const header: HeadersInit = {
-      "companyId": "1",
+      ...(cookie.role && { "role": cookie.role }),
+      ...(cookie.companyId && { "companyId": cookie.companyId }),
+      ...(cookie.officeId && { "officeId": cookie.officeId }),
+      ...(cookie.saleId && { "saleId": cookie.saleId }),
       ...reqHeader
     };
     const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;

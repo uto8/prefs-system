@@ -1,16 +1,29 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ApiPut = async (url: string, body: object) => {
-  const header = {
-    //Todo companyIdを変更
-    "companyId": "1"
+"use server"
+
+import { Session } from "@/types/Session";
+import { getCookieSession } from "../auth/get-cookie-session";
+
+const ApiPut = async (url: string, body: object, reqHeader: Record<string, string> = {}) => {
+  const cookie: Session = await getCookieSession()
+  const header: HeadersInit = {
+    ...(cookie.role && { "role": cookie.role }),
+    ...(cookie.companyId && { "companyId": cookie.companyId }),
+    ...(cookie.officeId && { "officeId": cookie.officeId }),
+    ...(cookie.saleId && { "saleId": cookie.saleId }),
+    ...reqHeader
   };
+  // process.env.NEXT_PUBLIC_API_BASE_URL
   const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
+  const reqBody = {
+    ...(cookie.officeId && { "officeId": cookie.officeId }),
+    ...body
+  }
 
   try {
     const response = await fetch(request_url, {
       method: 'PUT',
       headers: header,
-      body: JSON.stringify(body)
+      body: JSON.stringify(reqBody)
     });
 
     if (!response) {
