@@ -97,7 +97,9 @@ export default function EditIssueForm({
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail ?? '',
         clientPhoneNumber: data.clientPhoneNumber ?? '',
-        isFranchise: data.isFranchise?1:0
+        isFranchise: data.isFranchise?1:0,
+        officeId: data.officeId,
+        saleId: data.saleId,
       }
 
       await ApiPut(`/issues/${issue.id}` ,body)
