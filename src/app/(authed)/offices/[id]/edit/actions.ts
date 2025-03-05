@@ -12,19 +12,24 @@ export const getOffice = async (id: string): Promise<Office> => {
       name: response.name,
       email: response.email,
       phoneNumber: response.phoneNumber,
-      companyId: 1
+      companyId: 1,
+      isFranchise: response.isFranchise
     }
   }catch(e) {
     throw e;
   }
 }
 
-export const editOffice = async ({id: id, office: office}:{
+export const editOffice = async ({
+  id,
+  office
+}:{
   id: string,
   office: {
     name: string,
     email: string,
     phoneNumber: string,
+    isFranchise: boolean
   }
 }): Promise<Office> => {
   try{
@@ -35,7 +40,8 @@ export const editOffice = async ({id: id, office: office}:{
       name: office.name,
       email: office.email,
       phoneNumber: office.phoneNumber,
-      companyId: 1
+      companyId: 1,
+      isFranchise: office.isFranchise
     }
   }catch(e) {
     throw e;

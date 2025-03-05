@@ -38,4 +38,5 @@ export type Issue = {
   issueCode: string
   status: string;
   office: Office;
+  isFranchise: boolean;
 }
