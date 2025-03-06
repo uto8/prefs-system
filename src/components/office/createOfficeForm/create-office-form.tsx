@@ -10,15 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import TitleComponent from '@/components/layout/title';
 import { useToast } from '@/hooks/use-toast';
-import { auth } from '@/auth';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
-  password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
+  password: z.string().min(8, "8文字以上で入力してください").nonempty("パスワードは必須項目です"),
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
   address: z.string().nonempty("住所は必須項目です"),
   isFranchise: z.boolean(),
@@ -67,7 +65,13 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
         title: "店舗を作成しました",
       })
       router.push('/offices/list');
-    }catch(e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(e: any) {
+      const errorMessage = e.message ?? "店舗作成に失敗しました";
+      toast({
+        variant: "destructive",
+        title: `${errorMessage}`,
+      })
       throw e;
     }
 

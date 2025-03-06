@@ -27,6 +27,7 @@ const formSchema = z.object({
   clientName: z.string().optional(),
   type: z.string().optional(),
   saleName: z.string().optional(),
+  officeName: z.string().optional(),
   status: z.string().optional(),
 })
 
@@ -45,6 +46,7 @@ export default function SearchModal() {
         client_name: data.clientName ?? null,
         type: data.type ?? null,
         sale_name: data.saleName ?? null,
+        office_name: data.officeName ?? null,
         status: data.status ?? null,
       })
       dispatch(setValue(issues));
@@ -120,6 +122,21 @@ export default function SearchModal() {
                     <FormItem>
                       <FormLabel>
                       担当者名
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} type="text" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="officeName"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormLabel>
+                      店舗名
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="text" />

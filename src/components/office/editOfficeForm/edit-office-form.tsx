@@ -7,10 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-import TitleComponent from '@/components/layout/title';
+import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { editOffice, getOffice } from '@/app/(authed)/offices/[id]/edit/actions';
+import { editOffice } from '@/app/(authed)/offices/[id]/edit/actions';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Office } from '@/types/Office';
 
@@ -33,7 +32,7 @@ export default function EditOfficeForm({
   const id = params.id;
   const idString: string = id as string;
   const { toast } = useToast()
-  console.log("====office", office)
+  console.log("====office", office, companyId)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

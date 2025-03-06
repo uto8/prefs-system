@@ -34,9 +34,9 @@ const issueSlice = createSlice({
       }
     },
     // 発行の削除
-    // removeIssue: (state, action: PayloadAction<string>) => {
-    //   state.issues = state.issues.filter(item => item.id !== action.payload);
-    // },
+    removeIssue: (state, action: PayloadAction<number>) => {
+      state.value = state.value.filter(item => item.id !== action.payload);
+    },
     // // 発行の状態を更新
     // updateIssueStatus: (state, action: PayloadAction<{ id: string, status: string }>) => {
     //   const index = state.issues.findIndex(item => item.id === action.payload.id);
@@ -95,6 +95,7 @@ export const {
   setValue,
   addValue,
   updateMemoValue,
+  removeIssue
 } = issueSlice.actions;
 
 export const issueReducer = issueSlice.reducer;

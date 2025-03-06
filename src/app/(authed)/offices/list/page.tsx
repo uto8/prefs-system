@@ -1,14 +1,18 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/stores";
-import { setValue } from "@/stores/reducers/officeReducer";
+import { removeValue, setValue } from "@/stores/reducers/officeReducer";
 import { useEffect } from "react";
 import Link from "next/link";
 import ApiGet from "@/lib/useApi/get";
+import ApiDelete from "@/lib/useApi/delete";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ShopList() {
   const { value } = useAppSelector((state) => state.offices);
   const dispatch = useAppDispatch();
+  const {toast} = useToast();
+
   useEffect(() => {
     const fetch = async () => {
       try{
@@ -20,6 +24,27 @@ export default function ShopList() {
     }
     fetch()
   },[])
+
+  const handleDelete = async (id: string) => {
+    const result = window.confirm('本当に削除しますか？');
+    if(!result) return
+    try{
+      await ApiDelete(`/offices/${id}`)
+      toast({
+        variant: "success",
+        title: "店舗を削除しました",
+      })
+      dispatch(removeValue(id));
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(e: any){
+      const errorMessage = e.message ?? "削除に失敗しました";
+      toast({
+        variant: "destructive",
+        title: `${errorMessage}`,
+      })
+      throw e;
+    }
+  }
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -71,9 +96,12 @@ export default function ShopList() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.phoneNumber}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.isFranchise? "✅": "❌"}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <Link href={`/offices/${office.id}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                        <Link href={`/offices/${office.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-2">
                           編集
                         </Link>
+                        <button onClick={()=>{handleDelete(office.id)}} className="text-indigo-600 hover:text-indigo-900">
+                          削除
+                        </button>
                       </td>
                     </tr>
                   ))

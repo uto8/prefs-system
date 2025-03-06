@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue, updateMemoValue } from '@/stores/reducers/issueReducer';
+import { removeIssue, setValue, updateMemoValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { Issue } from '@/types/Issue';
 import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
 import { useToast } from '@/hooks/use-toast';
+import ApiDelete from '@/lib/useApi/delete';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -34,8 +35,6 @@ export default function IssueListTable({issues: issues}: {
       }  catch (error) {
         throw error;
       }
-      console.log("value",value)
-      console.log("issues",issues)
     }
     fetch()
   }, [])
@@ -106,6 +105,27 @@ export default function IssueListTable({issues: issues}: {
     }
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
+
+  const handleDelete = async (id: number) => {
+    const result = window.confirm('本当に削除しますか？');
+    if(!result) return
+    try{
+      await ApiDelete(`/issues/${id}`)
+      toast({
+        variant: "success",
+        title: "案件を削除しました",
+      })
+      dispatch(removeIssue(id));
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(e: any){
+      const errorMessage = e.message ?? "削除に失敗しました";
+      toast({
+        variant: "destructive",
+        title: `${errorMessage}`,
+      })
+      throw e;
+    }
+  }
 
   const statusColor = (status: string) => {
     if(status === "お問いあわせ"){
@@ -205,9 +225,12 @@ export default function IssueListTable({issues: issues}: {
                       <a href={`/payment/list?type=repair&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         補修
                       </a>
-                      <a href={`/issues/${issue.id}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <a href={`/issues/${issue.id}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900 mr-2">
                         編集
                       </a>
+                      <button onClick={()=>{handleDelete(issue.id)}} className="text-indigo-600 hover:text-indigo-900">
+                        削除
+                      </button>
                     </td>
                   </tr>
                 ))}

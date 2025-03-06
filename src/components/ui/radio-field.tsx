@@ -8,7 +8,7 @@ type RadioFieldProps = {
   label?: string;
   options: OptionFields;
   value?: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
 }
 
 export default function RadioField({
