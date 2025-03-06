@@ -4,4 +4,5 @@ export type Office = {
   email: string,
   phoneNumber: string,
   companyId: number;
+  isFranchise: boolean;
 }

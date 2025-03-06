@@ -7,7 +7,8 @@ export const createOffices = async (office: {
   phoneNumber: string,
   address: string,
   cognito_id: string,
-  companyId: number
+  companyId: number,
+  isFranchise: boolean,
 }) => {
   try{
     const offices = await ApiPost('/offices', office);

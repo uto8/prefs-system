@@ -20,11 +20,13 @@ const ApiGet = async (url: string, reqHeader: Record<string, string> = {}) => {
       headers: header
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorMessage = data.error?? `取得に失敗しました`;
+      throw Error(errorMessage);
     }
 
-    const data = response.json();
     return data;
   }catch(e) {
     throw e;

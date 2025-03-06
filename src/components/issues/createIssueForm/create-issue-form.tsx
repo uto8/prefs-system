@@ -16,10 +16,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { createIssue } from '@/app/(authed)/issues/add/actions';
 import SelectField, { OptionFields } from '@/components/ui/select-field';
 import { useToast } from '@/hooks/use-toast';
+import RadioField from '@/components/ui/radio-field';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -40,7 +40,7 @@ const formSchema = z.object({
   clientPhoneNumber: z.string().optional(),
   officeId: z.string().nonempty("店舗を選択してください"),
   saleId: z.string().nonempty("担当者を選択してください"),
-  isFranchise: z.boolean(),
+  isFranchise: z.string().optional(),
 })
 
 export default function CreateIssueForm({
@@ -72,7 +72,7 @@ export default function CreateIssueForm({
       clientPhoneNumber: "",
       officeId: userOfficeId ?? "",
       saleId: userSaleId ?? "",
-      isFranchise: false,
+      isFranchise: "",
     },
   })
 
@@ -92,7 +92,7 @@ export default function CreateIssueForm({
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail ?? "",
         clientPhoneNumber: data.clientPhoneNumber ?? "",
-        isFranchise: data.isFranchise?1:0
+        isFranchise: data.isFranchise === "1"? 1: 0
       })
       toast({
         variant: "success",
@@ -240,18 +240,9 @@ export default function CreateIssueForm({
                         className="flex flex-row items-start space-x-3 space-y-0"
                       >
                         <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={(checked) => {
-                              return checked
-                                ? field.onChange(true)
-                                : field.onChange(false)
-                            }}
-                          />
+                          <RadioField options={[{label: "自社", value: "0"}, {label: "別元請", value: "1"}]} onChange={field.onChange}/>
                         </FormControl>
-                        <FormLabel className="font-normal">
-                          {"フランチャイズ"}
-                        </FormLabel>
+                        <FormMessage />
                       </FormItem>
                     )
                   }}
