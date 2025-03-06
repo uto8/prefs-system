@@ -7,20 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import SelectField, { OptionFields } from '@/components/ui/select-field';
 import { Issue } from '@/types/Issue';
 import ApiPut from '@/lib/useApi/put';
 import { useToast } from '@/hooks/use-toast';
+import RadioField from '@/components/ui/radio-field';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -41,7 +33,7 @@ const formSchema = z.object({
   clientPhoneNumber: z.string().optional(),
   officeId: z.string().nonempty("店舗を選択してください"),
   saleId: z.string().nonempty("担当者を選択してください"),
-  isFranchise: z.boolean(),
+  isFranchise: z.string().optional(),
 })
 
 
@@ -76,12 +68,13 @@ export default function EditIssueForm({
       clientPhoneNumber: issue.client.phoneNumber,
       officeId: String(issue.officeId),
       saleId: String(issue.sale.id),
-      isFranchise: false,
+      isFranchise: issue.isFranchise ? "1": "0",
     },
   })
 
   const officeId = useWatch({ control: form.control, name: "officeId" });
   const saleId = useWatch({ control: form.control, name: "saleId" });
+  const type = useWatch({ control: form.control, name: "type" });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
@@ -97,9 +90,9 @@ export default function EditIssueForm({
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail ?? '',
         clientPhoneNumber: data.clientPhoneNumber ?? '',
-        isFranchise: data.isFranchise?1:0,
         officeId: data.officeId,
         saleId: data.saleId,
+        isFranchise: data.isFranchise === "1"? 1: 0
       }
 
       await ApiPut(`/issues/${issue.id}` ,body)
@@ -219,17 +212,7 @@ export default function EditIssueForm({
                 タイプ
                 </FormLabel>
                 <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="選択してください" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="新築">新築</SelectItem>
-                        <SelectItem value="リフォーム">リフォーム</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <SelectField options={[{label: "新築", value:"新築"},{label: "リフォーム", value:"リフォーム"}]} value={type} placeholder="選択してください" onChange={field.onChange}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -250,18 +233,9 @@ export default function EditIssueForm({
                         className="flex flex-row items-start space-x-3 space-y-0"
                       >
                         <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={(checked) => {
-                              return checked
-                                ? field.onChange(true)
-                                : field.onChange(false)
-                            }}
-                          />
+                          <RadioField value={issue.isFranchise?"1": "0"} options={[{label: "自社", value: "0"}, {label: "別元請", value: "1"}]} onChange={field.onChange}/>
                         </FormControl>
-                        <FormLabel className="font-normal">
-                          {"フランチャイズ"}
-                        </FormLabel>
+                        <FormMessage />
                       </FormItem>
                     )
                   }}

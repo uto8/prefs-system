@@ -18,8 +18,8 @@ const officeSlice = createSlice({
     addValue:(state, action: PayloadAction<Office>) => {
       state.value.push(action.payload);
     },
-    removeValue:(state, action: PayloadAction<Office>) => {
-      state.value = state.value.filter(item => item.id !== action.payload.id)
+    removeValue:(state, action: PayloadAction<string>) => {
+      state.value = state.value.filter(item => item.id !== action.payload)
     },
     editValue: (state, action: PayloadAction<Office>) => {
       const index = state.value.findIndex(item => item.id === action.payload.id);

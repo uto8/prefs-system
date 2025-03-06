@@ -26,11 +26,14 @@ const ApiPut = async (url: string, body: object, reqHeader: Record<string, strin
       body: JSON.stringify(reqBody)
     });
 
-    if (!response) {
-      throw new Error('Network response was not ok.');
+    const data = await response.json();
+
+    // ステータスコードを確認
+    if (!response.ok) {
+      const errorMessage = data.error?? `更新に失敗しました`;
+      throw Error(errorMessage);
     }
 
-    const data = response.json();
     return data;
   } catch (error) {
     throw error;
