@@ -53,20 +53,29 @@ export default function EditOfficeForm({
   }, [office, form]);
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    await editOffice({
-      id: idString,
-      office: {
-        name: data.name,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        isFranchise: data.isFranchise
-      }
-    })
-    toast({
-      variant: "success",
-      title: "店舗を更新しました",
-    })
-    router.push("/offices/list")
+    try{
+      await editOffice({
+        id: idString,
+        office: {
+          name: data.name,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          isFranchise: data.isFranchise
+        }
+      })
+      toast({
+        variant: "success",
+        title: "店舗を更新しました",
+      })
+      router.push("/offices/list")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(e: any) {
+      const errorMessage = e.message ?? "店舗更新に失敗しました";
+      toast({
+        variant: "destructive",
+        title: `${errorMessage}`,
+      })
+    }
   }
 
   return (

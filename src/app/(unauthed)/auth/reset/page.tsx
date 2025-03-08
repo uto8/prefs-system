@@ -33,6 +33,10 @@ export default function Page() {
         email: data.email
       })
       setDisabled(false)
+      toast({
+        variant: "success",
+        title: `リセット用リンクを送信しました`,
+      })
       form.reset({email: ""})
        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }catch(e: any){
