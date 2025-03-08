@@ -61,8 +61,13 @@ export default function EditSaleForm({
         title: "営業を更新しました",
       })
       router.push('/sales/list')
-    }catch(e) {
-      throw e;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(e: any) {
+      const errorMessage = e.message ?? "営業作成に失敗しました";
+      toast({
+        variant: "destructive",
+        title: `${errorMessage}`,
+      })
     }
   }
 
