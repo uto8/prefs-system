@@ -23,7 +23,7 @@ import {
 import { useState } from 'react';
 
 const formSchema = z.object({
-  id: z.string().optional(),
+  issueCode: z.string().optional(),
   clientName: z.string().optional(),
   type: z.string().optional(),
   saleName: z.string().optional(),
@@ -42,12 +42,12 @@ export default function SearchModal() {
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       const issues = await searchIssues({
-        id: data.id ?? null,
         client_name: data.clientName ?? null,
         type: data.type ?? null,
         sale_name: data.saleName ?? null,
         office_name: data.officeName ?? null,
         status: data.status ?? null,
+        issueCode: data.issueCode ?? null,
       })
       dispatch(setValue(issues));
     }catch(e) {
@@ -87,7 +87,7 @@ export default function SearchModal() {
                 className="flex flex-col gap-4">
                 <FormField
                   control={form.control}
-                  name="id"
+                  name="issueCode"
                   render={({field}) => (
                     <FormItem>
                       <FormLabel>

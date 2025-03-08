@@ -23,6 +23,7 @@ import RadioField from '@/components/ui/radio-field';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
+  issueCode: z.string().optional(),
   preferredDate: z.string().max(160, {
     message: "160文字以内で入力してください",
   }).optional(),
@@ -60,6 +61,7 @@ export default function CreateIssueForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      issueCode: "",
       currentAddress: "",
       preferredDate: "",
       type: "",
@@ -80,6 +82,7 @@ export default function CreateIssueForm({
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       await createIssue({
+        issueCode: data.issueCode ?? "",
         currentAddress: data.currentAddress ?? '',
         officeId: Number(data.officeId),
         preferredDate: data.preferredDate ?? '',
@@ -110,7 +113,7 @@ export default function CreateIssueForm({
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className="flex flex-col gap-4">
-            <FormField
+          <FormField
             control={form.control}
             name="clientName"
             render={({field}) => (
@@ -132,6 +135,21 @@ export default function CreateIssueForm({
               <FormItem>
                 <FormLabel>
                 顧客名カナ
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="issueCode"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                  案件番号
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />
