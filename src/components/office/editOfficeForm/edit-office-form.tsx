@@ -33,6 +33,7 @@ export default function EditOfficeForm({
   const id = params.id;
   const idString: string = id as string;
   const { toast } = useToast()
+  console.log(companyId)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

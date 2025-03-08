@@ -32,6 +32,7 @@ export const createIssue = async (body: {
       bodyReq.saleId = session.user.saleId
     }
     const res = await ApiPost('/issues' ,bodyReq)
+    console.log(res);
   }catch(e) {
     throw e;
   }
