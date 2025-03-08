@@ -10,6 +10,7 @@ export const getOffice = async (id: string): Promise<Office> => {
     return {
       id: response.id,
       name: response.name,
+      officeCode: response.officeCode,
       email: response.email,
       phoneNumber: response.phoneNumber,
       companyId: 1,
@@ -27,6 +28,7 @@ export const editOffice = async ({
   id: string,
   office: {
     name: string,
+    officeCode: string,
     email: string,
     phoneNumber: string,
     isFranchise: boolean
@@ -38,6 +40,7 @@ export const editOffice = async ({
     return {
       id: id,
       name: office.name,
+      officeCode: office.officeCode,
       email: office.email,
       phoneNumber: office.phoneNumber,
       companyId: 1,

@@ -1,5 +1,6 @@
 import TitleComponent from '@/components/layout/title';
 import ApiGet from '@/lib/useApi/get'
+import { format } from 'date-fns';
 import { Suspense } from 'react'
 
 async function IssueDetails({ params }: { params: { id: string } }) {
@@ -40,6 +41,10 @@ async function IssueDetails({ params }: { params: { id: string } }) {
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">フランチャイズ</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{(issue.isFranchise ==1)? "別元請": "自社"}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm/6 font-medium text-gray-900">案件登録日</dt>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{format(issue.createdAt, "yyyy年MM月dd日")}</dd>
           </div>
         </dl>
       </div>

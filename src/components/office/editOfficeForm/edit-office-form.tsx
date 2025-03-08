@@ -15,6 +15,7 @@ import { Office } from '@/types/Office';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
+  officeCode: z.string().nonempty("店舗番号は必須項目です"),
   email: z.string().email("メールアドレスの形式が無効です").nonempty("メールアドレスは必須項目です"),
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
   isFranchise: z.boolean()
@@ -32,12 +33,12 @@ export default function EditOfficeForm({
   const id = params.id;
   const idString: string = id as string;
   const { toast } = useToast()
-  console.log("====office", office, companyId)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: office.name,
+      officeCode: office.officeCode,
       email: office.email,
       phoneNumber: office.phoneNumber,
       isFranchise: office.isFranchise
@@ -47,6 +48,7 @@ export default function EditOfficeForm({
   useEffect(() => {
     if (office.name) {
       form.setValue('name', office.name); // 名前をフォームのフィールドに設定
+      form.setValue('officeCode', office.officeCode); // 名前をフォームのフィールドに設定
       form.setValue('email', office.email); // メールを設定
       form.setValue('phoneNumber', office.phoneNumber); // 電話番号を設定
     }
@@ -58,6 +60,7 @@ export default function EditOfficeForm({
         id: idString,
         office: {
           name: data.name,
+          officeCode: data.officeCode,
           email: data.email,
           phoneNumber: data.phoneNumber,
           isFranchise: data.isFranchise
@@ -92,6 +95,21 @@ export default function EditOfficeForm({
               <FormItem>
                 <FormLabel>
                 店舗名
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="officeCode"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                店舗番号
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />
