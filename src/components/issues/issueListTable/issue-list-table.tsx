@@ -175,7 +175,7 @@ export default function IssueListTable({issues: issues}: {
                   <tr key={index}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                       <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      {issue.office?issue.office.name:null}-{issue.id}
+                      {issue.issueCode}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

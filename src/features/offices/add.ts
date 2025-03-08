@@ -2,6 +2,7 @@ import ApiPost from "@/lib/useApi/post";
 
 export const createOffices = async (office: {
   name: string,
+  officeCode: string,
   email: string,
   password: string,
   phoneNumber: string,

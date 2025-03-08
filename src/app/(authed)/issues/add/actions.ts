@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import ApiPost from "@/lib/useApi/post";
 
 export const createIssue = async (body: {
+  issueCode: string;
   currentAddress: string;
   officeId: number,
   preferredDate: string;
@@ -31,9 +32,8 @@ export const createIssue = async (body: {
       bodyReq.saleId = session.user.saleId
     }
     const res = await ApiPost('/issues' ,bodyReq)
-    console.log("==res", res)
+    console.log(res);
   }catch(e) {
-    console.log("==E", e)
     throw e;
   }
 }

@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form"
-import { useAppDispatch } from '@/stores';
-import { addValue } from '@/stores/reducers/officeReducer';
 import { createOffices } from '@/features/offices/add';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -15,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
+  officeCode: z.string().nonempty("店舗番号は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
   password: z.string().min(8, "8文字以上で入力してください").nonempty("パスワードは必須項目です"),
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
@@ -24,13 +23,13 @@ const formSchema = z.object({
 
 export default function CreateOfficeForm({companyId}: {companyId: number}) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      officeCode: "",
       email: "",
       password: "",
       phoneNumber: "",
@@ -41,17 +40,10 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      dispatch(addValue({
-        id: "",
-        name: data.name,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        companyId: companyId,
-        isFranchise: data.isFranchise
-      }));
       await createOffices({
         address: data.address,
         name: data.name,
+        officeCode: data.officeCode,
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
@@ -91,6 +83,21 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
               <FormItem>
                 <FormLabel>
                 店舗名
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="officeCode"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                店舗番号
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />
