@@ -24,6 +24,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [navigation, setNavigations] = useState<NavigationItem[]>([]);
   const currentUrl = document.location.pathname + document.location.search;
+  console.log("role", role)
 
   useEffect(() => {
     if(role === "ADMIN"){
@@ -53,7 +54,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
         { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
       ])
     }
-  }, [])
+  }, [role])
 
   const router = useRouter();
 
