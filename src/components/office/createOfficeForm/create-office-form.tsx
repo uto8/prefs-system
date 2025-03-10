@@ -192,7 +192,7 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
                             />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            {"フランチャイズ"}
+                            {"加盟店"}
                           </FormLabel>
                         </FormItem>
                       )

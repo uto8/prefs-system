@@ -82,8 +82,8 @@ export default function Deposit({handleOpenPaymentCheckForm, setEditPaymentFormO
                   </div>
                 </div>
               </div>
-              <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
-              <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
+              <div className="absolute bottom-0 right-full h-px bg-gray-100" />
+              <div className="w-full absolute bottom-0 left-0 h-px bg-gray-100" />
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <div className="text-sm leading-6 text-gray-900 flex justify-between">

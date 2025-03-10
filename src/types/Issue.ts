@@ -39,4 +39,5 @@ export type Issue = {
   status: string;
   office: Office;
   isFranchise: boolean;
+  datetime: string;
 }

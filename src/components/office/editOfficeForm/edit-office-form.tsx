@@ -175,7 +175,7 @@ export default function EditOfficeForm({
                             />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            {"フランチャイズ"}
+                            {"加盟店"}
                           </FormLabel>
                         </FormItem>
                       )

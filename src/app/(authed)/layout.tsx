@@ -1,7 +1,10 @@
-import { auth } from '@/auth';
+"use client"
+
 import AppSidebar from '@/components/layout/app-sidebar'
-import { getCookieSession } from '@/lib/auth/get-cookie-session';
 import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getSession } from './actions';
+import { Session } from 'next-auth';
 
 export type NavigationItem = {
   name: string;
@@ -10,16 +13,22 @@ export type NavigationItem = {
   current: boolean;
 };
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
-  const {role} = await getCookieSession();
-  const session = await auth();
-  if(!session?.user?.idToken){
-    redirect("/auth/sign_in");
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null)
+  async function fetchData() {
+    const result = await getSession();
+    setSession(result);
+    if(!result?.user?.idToken){
+      redirect("/auth/sign_in");
+    }
   }
+  useEffect(() =>{
+    fetchData()
+  }, [])
   return (
     <>
       <div>
-        <AppSidebar role={role}/>
+        <AppSidebar role={session?.user.role?? ""}/>
 
         <div className="lg:pl-72">
           <main className="py-10">

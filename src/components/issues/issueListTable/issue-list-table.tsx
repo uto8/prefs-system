@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { removeIssue, setValue, updateMemoValue } from '@/stores/reducers/issueReducer';
+import { removeIssue, setValue, updateDatetimeValue, updateMemoValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,17 +16,24 @@ import { Issue } from '@/types/Issue';
 import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
 import { useToast } from '@/hooks/use-toast';
 import ApiDelete from '@/lib/useApi/delete';
+import MeetingHistories from '../meeting-histories';
+import { format } from 'date-fns';
+import ApiPost from '@/lib/useApi/post';
+import ApiGet from '@/lib/useApi/get';
+import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
 }) {
   const [issueContractData, setIssueContractData] = useState<Issue | null>(null)
   const [editModal, setEditModal] = useState(false)
+  const [datetime, setDatetime] = useState("")
   const [memo, setMemo] = useState("")
   const { toast } = useToast()
 
   const { value } = useAppSelector((state) => state.issues);
   const dispatch = useAppDispatch();
+  const { value: meetings } = useAppSelector((state) => state.meetings);
 
   useEffect(() => {
     const fetch = async () => {
@@ -84,6 +91,25 @@ export default function IssueListTable({issues: issues}: {
     }
   }
 
+  const handleCreateMeeting = async (issueId: number, date: string) => {
+    if(date === "") return
+    await ApiPost("/meetings", {
+      issueId: issueId,
+      datetime: date,
+      description: ""
+    })
+    dispatch(updateDatetimeValue({id: issueId, datetime: date}));
+  }
+
+  const getMeetings = async (issueId: number) => {
+    try{
+      const meetings = await ApiGet(`/meetings/${issueId}`)
+      dispatch(setMeetingValue(meetings));
+    }catch(e) {
+      throw e
+    }
+  }
+
   const handleUpdateMemo = async ({id, memo}: {
     id: number;
     memo: string
@@ -127,17 +153,36 @@ export default function IssueListTable({issues: issues}: {
     }
   }
 
-  const statusColor = (status: string) => {
-    if(status === "お問いあわせ"){
-      return "grey";
+  const status = (status: string) => {
+    let statusColor = "yellow"
+    if(status === "お問い合わせ"){
+      return <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20">
+        {status}
+      </span>
     }else if(status === "完了済") {
-      return "green"
+      statusColor = "green"
+      return <span className='rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20'>
+        {status}
+      </span>
     }else if(status === "確定済"){
-      return "blue"
+      return <span className={`rounded-md py-1 px-2 text-xs bg-blue-50 text-blue-700 font-medium ring-1 ring-inset ring-blue-300`}>
+        {status}
+      </span>
     }else if(status.includes("未入金")){
-      return "red"
+      return <span className="rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-red-700 bg-red-50 ring-red-600/10">
+        {status}
+      </span>
+    }else if(status.includes("入金済")){
+      return <span className='rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20'>
+        {status}
+      </span>
     }
-    return "yellow"
+
+    return (
+      <span className={`rounded-md py-1 px-2 text-xs bg-${statusColor}-50 text-${statusColor}-700 font-medium ring-1 ring-inset ring-${statusColor}-300`}>
+        {status}
+      </span>
+    )
   }
 
   return <>
@@ -162,6 +207,9 @@ export default function IssueListTable({issues: issues}: {
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     担当者
                   </th>
+                  <th scope="col" className="px-1 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    打ち合わせ
+                  </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     メモ
                   </th>
@@ -183,16 +231,33 @@ export default function IssueListTable({issues: issues}: {
                       {issue.client?issue.client.name: null}
                       </a>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{issue.constructionSite}</td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{truncateText(issue.constructionSite, 8)}</td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <span className={`rounded-md py-1 px-2 text-xs bg-${statusColor(issue.status)}-50 text-${statusColor(issue.status)}-700 font-medium ring-1 ring-inset ring-${statusColor(issue.status)}-300`}>
-                        {issue.status}
-                      </span>
+                      {status(issue.status)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <a href={`/sales/${issue.sale.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       {issue.sale?issue.sale.name:null}
                       </a>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <Dialog>
+                        <DialogTrigger onClick={()=> {getMeetings(issue.id)}}>
+                          {issue.datetime?`${format(issue.datetime, "MM月dd日 HH時mm分")}`:"未定"}
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogTitle>打ち合わせ</DialogTitle>
+                          <div>
+                            <input value={datetime} onChange={(e)=>setDatetime(e.target.value)} type='datetime-local' className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                            <DialogClose asChild>
+                              <Button onClick={()=>handleCreateMeeting(issue.id, datetime)} className='w-full'>保存</Button>
+                            </DialogClose>
+                          </div>
+                          <div>
+                            <MeetingHistories meetings={meetings}/>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </td>
                     <td className="truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Dialog>

@@ -85,8 +85,8 @@ export default function OrderTab({
                   </div>
                 </div>
               </div>
-              <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
-              <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
+              <div className="absolute bottom-0 right-full h-px w-full bg-gray-100" />
+              <div className="absolute bottom-0 left-0 h-px w-full bg-gray-100" />
             </td>
             <td className="align-baseline hidden py-5 pr-6 sm:table-cell">
               <div className="text-sm leading-6 text-gray-900">{Number(order.orderPlanValue)}円</div>
