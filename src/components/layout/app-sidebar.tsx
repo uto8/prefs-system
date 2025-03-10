@@ -24,7 +24,6 @@ export default function AppSidebar ({role: role}:{role: string | null}){
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [navigation, setNavigations] = useState<NavigationItem[]>([]);
   const currentUrl = document.location.pathname + document.location.search;
-  console.log("role", role)
 
   useEffect(() => {
     if(role === "ADMIN"){

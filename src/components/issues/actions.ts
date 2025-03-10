@@ -9,7 +9,8 @@ export const searchIssues = async ({
   sale_name: saleName,
   office_name: officeName,
   status: status,
-  issueCode: issueCode
+  issueCode: issueCode,
+  offset,
 }: {
   client_name: string | null;
   type: string | null;
@@ -17,7 +18,8 @@ export const searchIssues = async ({
   office_name: string | null;
   status: string | null;
   issueCode: string | null;
-}):Promise<Issue[]> => {
+  offset: number
+}) => {
   try{
     let url = '/issues?';
     if (clientName !== null) {
@@ -38,7 +40,7 @@ export const searchIssues = async ({
     if (issueCode !== null) {
       url += `issue_code=${issueCode}&`;
     }
-    url = url.slice(0, -1);
+    url += `limit=20&offset=${offset}`
     const issues = await ApiGet(url);
     return issues;
   }catch(e) {

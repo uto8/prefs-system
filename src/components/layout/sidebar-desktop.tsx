@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { NavigationItem } from "./app-sidebar";
 
 function classNames(...classes: string[]) {
@@ -11,6 +12,7 @@ export default function SidebarDesktop ({
   navigation: NavigationItem[];
   handleLogout: ()=>Promise<void>
 }) {
+  const router = useRouter()
   return <>
   <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
     {/* Sidebar component, swap this element with another sidebar if you like */}
@@ -34,7 +36,7 @@ export default function SidebarDesktop ({
                       item.current
                         ? 'bg-gray-800 text-white'
                         : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                      'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                      'w-full group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                     )}
                   >
                     <item.icon aria-hidden="true" className="size-6 shrink-0" />
