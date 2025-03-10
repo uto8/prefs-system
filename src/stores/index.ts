@@ -9,6 +9,9 @@ import { paymentReducer } from "./reducers/paymentReducer";
 import { orderReducer } from "./reducers/orderReducer";
 import { issueReducer } from "./reducers/issueReducer";
 import { repairReducer } from "./reducers/repairReducer";
+import { notificationReducer } from "./reducers/notificationReducer";
+import { authReducer } from "./reducers/authReducer";
+import { meetingReducer } from "./reducers/meetingReducer";
 // Configuration for redux-persist
 const persistConfig = {
   key: "root",
@@ -17,12 +20,15 @@ const persistConfig = {
 
 // Combine reducers
 const rootReducer = {
+  auth: authReducer,
   offices: officeReducer,
   sales: saleReducer,
   payments: paymentReducer,
   orders: orderReducer,
   issues: issueReducer,
-  repairs: repairReducer
+  repairs: repairReducer,
+  notifications: notificationReducer,
+  meetings: meetingReducer
 };
 
 // Persist reducers

@@ -53,7 +53,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
         { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
       ])
     }
-  }, [])
+  }, [role])
 
   const router = useRouter();
 

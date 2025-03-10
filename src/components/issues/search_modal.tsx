@@ -31,7 +31,7 @@ const formSchema = z.object({
   status: z.string().optional(),
 })
 
-export default function SearchModal() {
+export default function SearchModal({offset}: {offset: number}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,8 +48,9 @@ export default function SearchModal() {
         office_name: data.officeName ?? null,
         status: data.status ?? null,
         issueCode: data.issueCode ?? null,
+        offset: offset
       })
-      dispatch(setValue(issues));
+      dispatch(setValue(issues.data));
     }catch(e) {
       throw e;
     }

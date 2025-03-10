@@ -3,7 +3,7 @@ import StoreProvider from "@/stores/StoreProvider";
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
