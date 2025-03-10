@@ -6,6 +6,7 @@ import SearchModal from "@/components/issues/search_modal";
 import IssueListTable from "@/components/issues/issueListTable/issue-list-table";
 import ApiGet from "@/lib/useApi/get";
 import { DataPagination } from "@/components/layout/pagenation";
+import { Issue } from "@/types/Issue";
 
 export default function IssueListPage() {
   const searchParams = useSearchParams();
@@ -14,7 +15,7 @@ export default function IssueListPage() {
   const LIMIT = 20;
   const offset = (currentPage - 1) * LIMIT;
 
-  const [issues, setIssues] = useState<{ data: any[]; totalCount: number } | null>(null);
+  const [issues, setIssues] = useState<{ data: Issue[]; totalCount: number } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

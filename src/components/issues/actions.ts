@@ -1,7 +1,6 @@
 "use server"
 
 import ApiGet from "@/lib/useApi/get";
-import { Issue } from "@/types/Issue";
 
 export const searchIssues = async ({
   client_name: clientName,

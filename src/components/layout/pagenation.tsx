@@ -1,26 +1,20 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { current } from "@reduxjs/toolkit";
 
 export function DataPagination({ currentPage, totalPages }: { currentPage: number; totalPages: number }) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const goToPage = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", page.toString());
-    router.push(`?${params.toString()}`);
-  };
+  // const goToPage = (page: number) => {
+  //   const params = new URLSearchParams(searchParams);
+  //   params.set("page", page.toString());
+  //   router.push(`?${params.toString()}`);
+  // };
 
   return (
     <Pagination className="mt-16">

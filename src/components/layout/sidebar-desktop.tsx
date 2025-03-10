@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { NavigationItem } from "./app-sidebar";
 
 function classNames(...classes: string[]) {
@@ -12,7 +11,6 @@ export default function SidebarDesktop ({
   navigation: NavigationItem[];
   handleLogout: ()=>Promise<void>
 }) {
-  const router = useRouter()
   return <>
   <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
     {/* Sidebar component, swap this element with another sidebar if you like */}
