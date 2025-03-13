@@ -1,12 +1,12 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getSaleById } from './actions';
+import { getReceptionById } from './actions';
 import TitleComponent from '@/components/layout/title';
-import EditSaleForm from '@/components/sales/editSaleForm/edit-sale-form';
 import ApiGet from '@/lib/useApi/get';
 import { OptionFields } from '@/components/ui/select-field';
 import { Office } from '@/types/Office';
+import EditReceptionForm from '@/components/receptions/editReceptionForm/edit-reception-form';
 
 export default async function Page(
   props: {
@@ -16,22 +16,22 @@ export default async function Page(
 
   const params = await props.params;
   const { id } = params;
-  const [sale, offices] = await Promise.all([
-    getSaleById(id),
+  const [reception, offices] = await Promise.all([
+    getReceptionById(id),
     ApiGet('/offices'),
   ]);
 
   const officeOption: OptionFields = offices.map((office: Office) => {return {value: office.id, label: office.name}})
   const session = await auth();
-  const officeId: string | null = session?.user.officeId? String(session?.user.officeId): null
+  const receptionId: string | null = session?.user.officeId? String(session?.user.officeId): null
 
   return (
     <>
-      <TitleComponent title="営業編集"/>
-      <EditSaleForm
-        sale={sale}
+      <TitleComponent title="受付編集"/>
+      <EditReceptionForm
+        reception={reception}
         offices={officeOption}
-        userOfficeId={officeId}/>
+        userOfficeId={receptionId}/>
     </>
   )
 }

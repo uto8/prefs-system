@@ -23,11 +23,11 @@ const formSchema = z.object({
 export default function EditSaleForm({
   sale: sale,
   offices: offices,
-  userSaleId: userSaleId
+  userOfficeId: userOfficeId
 }: {
   sale: Sale;
   offices: OptionFields;
-  userSaleId: string | null
+  userOfficeId: string | null
 }) {
   const router = useRouter();
   const params = useParams();
@@ -124,7 +124,7 @@ export default function EditSaleForm({
             )}
           />
           {(() => {
-            if(!userSaleId){
+            if(!userOfficeId){
               return <FormField
               control={form.control}
               name="officeId"
