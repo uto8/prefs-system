@@ -1,5 +1,3 @@
-import RevenuItem, { RevenuData } from '@/components/revenu/revenu-item';
-import ApiGet from '@/lib/useApi/get';
 //  import { useRouter } from "next/navigation";
 
 export default async function Page() {
