@@ -1,8 +1,6 @@
 import { auth } from "@/auth";
 import ReceptionTitle from "@/components/receptions/reception-title";
 import ReceptionListTable from "@/components/receptions/receptionListTable/reception-list-table";
-import SaleTitle from "@/components/sales/sale_title";
-import SaleListTable from "@/components/sales/saleListTable/sale-list-table";
 import ApiGet from "@/lib/useApi/get";
 
 export default async function ReceptionList() {
