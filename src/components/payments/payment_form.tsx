@@ -161,7 +161,7 @@ export default function PaymentForm({open, setOpen}: {
                 name="paymentPlanDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>工事予定日</FormLabel>
+                    <FormLabel>入金予定日</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>

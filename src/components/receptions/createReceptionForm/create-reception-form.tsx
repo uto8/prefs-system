@@ -7,10 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useAppDispatch } from '@/stores';
-import { addValue } from '@/stores/reducers/saleReducer';
-import { createSale } from '@/app/(authed)/sales/add/actions';
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from '@/hooks/use-toast';
+import { createReception } from '@/app/(authed)/receptions/add/actions';
 
 
 
@@ -21,9 +19,8 @@ const formSchema = z.object({
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
 })
 
-export default function CreateSaleForm() {
+export default function CreateReceptionForm() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const officeId = Number(searchParams.get('office_id')) ?? null;
   const { toast } = useToast();
@@ -47,23 +44,15 @@ export default function CreateSaleForm() {
         phoneNumber: data.phoneNumber,
         ...(officeId && { "officeId": officeId }),
       }
-      await createSale(body);
-      dispatch(addValue({
-        id: "2",
-        name: data.name,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        officeName: "",
-        officeId: officeId
-      }));
+      await createReception(body);
       toast({
         variant: "success",
-        title: "営業を作成しました",
+        title: "受付を作成しました",
       })
-      router.push('/sales/list');
+      router.push('/receptions/list');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      const errorMessage = e.message ?? "営業更新に失敗しました";
+      const errorMessage = e.message ?? "受付更新に失敗しました";
       toast({
         variant: "destructive",
         title: `${errorMessage}`,
@@ -83,7 +72,7 @@ export default function CreateSaleForm() {
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                営業名
+                受付名
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />

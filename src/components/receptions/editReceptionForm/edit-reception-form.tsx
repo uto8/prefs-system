@@ -1,69 +1,69 @@
-"use client"
+'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useForm } from "react-hook-form"
+import { useParams, useRouter } from 'next/navigation';
+import { useForm, useWatch } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useAppDispatch } from '@/stores';
-import { addValue } from '@/stores/reducers/saleReducer';
-import { createSale } from '@/app/(authed)/sales/add/actions';
-import { useToast } from "@/hooks/use-toast"
-
+import SelectField, { OptionFields } from '@/components/ui/select-field';
+import { useToast } from '@/hooks/use-toast';
+import { Reception } from '@/types/Reception';
+import { editReception } from '@/app/(authed)/receptions/[id]/edit/actions';
 
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
-  password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
   phoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  officeId: z.string().nonempty("店舗を選択してください"),
 })
 
-export default function CreateSaleForm() {
+export default function EditReceptionForm({
+  reception: reception,
+  offices: offices,
+  userOfficeId: userOfficeId
+}: {
+  reception: Reception;
+  offices: OptionFields;
+  userOfficeId: string | null
+}) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const officeId = Number(searchParams.get('office_id')) ?? null;
-  const { toast } = useToast();
+  const params = useParams();
+  const id = params.id;
+  const idString: string = id as string;
+  const {toast} = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      phoneNumber: "",
+      name: reception.name,
+      email: reception.email,
+      phoneNumber: reception.phoneNumber,
+      officeId: String(reception.officeId),
     },
   })
 
+  const officeId = useWatch({ control: form.control, name: "officeId" });
+
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      const body = {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        phoneNumber: data.phoneNumber,
-        ...(officeId && { "officeId": officeId }),
-      }
-      await createSale(body);
-      dispatch(addValue({
-        id: "2",
+      await editReception({id: idString, reception:{
         name: data.name,
         email: data.email,
         phoneNumber: data.phoneNumber,
-        officeName: "",
-        officeId: officeId
-      }));
+        officeId: data.officeId
+      }})
       toast({
         variant: "success",
-        title: "営業を作成しました",
+        title: "受付を更新しました",
       })
-      router.push('/sales/list');
+      router.push('/receptions/list')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      const errorMessage = e.message ?? "営業更新に失敗しました";
+    }catch(e: any) {
+      const errorMessage = e.message ?? "受付更新に失敗しました";
       toast({
         variant: "destructive",
         title: `${errorMessage}`,
@@ -76,14 +76,15 @@ export default function CreateSaleForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col gap-4">
+          className="flex flex-col gap-4"
+        >
           <FormField
             control={form.control}
             name="name"
             render={({field}) => (
               <FormItem>
                 <FormLabel>
-                営業名
+                受付名
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" />
@@ -109,21 +110,6 @@ export default function CreateSaleForm() {
           />
           <FormField
             control={form.control}
-            name="password"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>
-                パスワード
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} type="password" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="phoneNumber"
             render={({field}) => (
               <FormItem>
@@ -137,6 +123,21 @@ export default function CreateSaleForm() {
               </FormItem>
             )}
           />
+          {(() => {
+            if(!userOfficeId){
+              return <FormField
+              control={form.control}
+              name="officeId"
+              render={({field}) => (
+                <FormItem>
+                  <FormControl>
+                    <SelectField options={offices} value={officeId} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          }})()}
           <div className="mt-4">
             <Button type="submit">
               登録

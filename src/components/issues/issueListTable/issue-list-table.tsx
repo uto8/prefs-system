@@ -21,12 +21,14 @@ import { format } from 'date-fns';
 import ApiPost from '@/lib/useApi/post';
 import ApiGet from '@/lib/useApi/get';
 import { setMeetingValue } from '@/stores/reducers/meetingReducer';
+import CompleteModal from '../complete_modal';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
 }) {
   const [issueContractData, setIssueContractData] = useState<Issue | null>(null)
   const [editModal, setEditModal] = useState(false)
+  const [completeModal, setCompleteModal] = useState(false)
   const [datetime, setDatetime] = useState("")
   const [memo, setMemo] = useState("")
   const { toast } = useToast()
@@ -274,13 +276,20 @@ export default function IssueListTable({issues: issues}: {
                       </Dialog>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <button onClick={()=>{
+
+                      {issue.status === "完了済" ? <button onClick={()=>{
+                        if(!issue)return
+                        setCompleteModal(true)
+                        setIssueContractData(issue)
+                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      完了
+                      </button>: <button onClick={()=>{
                         if(!issue)return
                         setEditModal(true)
                         setIssueContractData(issue)
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       契約
-                      </button>
+                      </button>}
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
@@ -308,6 +317,11 @@ export default function IssueListTable({issues: issues}: {
         editModal={editModal}
         setEditModal={()=>setEditModal(false)}
         handleContract={handleContract}
+        issue={issueContractData}
+      />
+      <CompleteModal
+        editModal={completeModal}
+        setEditModal={()=>setCompleteModal(false)}
         issue={issueContractData}
       />
   </>
