@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, } from '@headlessui/react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -47,6 +47,14 @@ export default function CompleteModal({
     },
   })
 
+  useEffect(() => {
+    if (issue?.issueConfirmed.id) {
+      form.reset({
+        finishDate: issue.issueConfirmed.finishDate ? new Date(issue.issueConfirmed.finishDate) : undefined,
+      });
+    }
+  },[issue])
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     if(!issue)return
     try{
@@ -57,6 +65,7 @@ export default function CompleteModal({
         variant: "success",
         title: "契約を完了しました",
       })
+      setEditModal(false)
     }catch(e) {
       toast({
         variant: "destructive",
