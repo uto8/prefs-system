@@ -15,6 +15,7 @@ export type IssueConfirmed = {
   startDate: string | null;
   completeDate: string | null;
   contractValue: string | null;
+  finishDate: string | null;
 }
 
 export type Issue = {
