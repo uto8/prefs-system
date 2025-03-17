@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Office } from '@/types/Office';
 import { useRouter } from 'next/navigation';
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function ReceptionTitle({isOffice, offices}: {
   isOffice: boolean;
@@ -36,6 +37,7 @@ export default function ReceptionTitle({isOffice, offices}: {
             <DropdownMenuContent>
               <DropdownMenuLabel>店舗を選択してください</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <ScrollArea className="h-72">
               {
                 offices.map((office, index) => (
                   <DropdownMenuItem
@@ -44,6 +46,7 @@ export default function ReceptionTitle({isOffice, offices}: {
                   >{office.name}</DropdownMenuItem>
                 ))
               }
+              </ScrollArea>
             </DropdownMenuContent>
           </DropdownMenu>}
         </div>
