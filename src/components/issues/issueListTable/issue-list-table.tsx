@@ -276,20 +276,20 @@ export default function IssueListTable({issues: issues}: {
                       </Dialog>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-
+                      <button onClick={()=>{
+                        if(!issue)return
+                        setEditModal(true)
+                        setIssueContractData(issue)
+                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      契約
+                      </button>
                       {issue.status === "完了済" ? <button onClick={()=>{
                         if(!issue)return
                         setCompleteModal(true)
                         setIssueContractData(issue)
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       完了
-                      </button>: <button onClick={()=>{
-                        if(!issue)return
-                        setEditModal(true)
-                        setIssueContractData(issue)
-                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      契約
-                      </button>}
+                      </button>: null}
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
