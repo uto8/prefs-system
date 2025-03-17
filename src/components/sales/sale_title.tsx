@@ -12,7 +12,6 @@ import {
 import { Office } from '@/types/Office';
 import { useRouter } from 'next/navigation';
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 
 export default function SaleTitle({isOffice, offices}: {
   isOffice: boolean;

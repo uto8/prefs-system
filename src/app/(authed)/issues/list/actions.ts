@@ -34,6 +34,7 @@ export const createIssueConfirmed = async (body: {
       startDate: issueConfirmed.startDate,
       completeDate: issueConfirmed.completeDate,
       contractValue: issueConfirmed.contractValue,
+      finishDate: issueConfirmed.finishDate
     }
   }catch(e) {
     throw e;
@@ -57,6 +58,7 @@ export const updateIssueConfirmed = async ({id: id, body: body}: {
       startDate: issueConfirmed.startDate,
       completeDate: issueConfirmed.completeDate,
       contractValue: issueConfirmed.contractValue,
+      finishDate: issueConfirmed.finishDate,
     }
   }catch(e) {
     throw e;
