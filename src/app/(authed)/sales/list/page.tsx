@@ -1,27 +1,70 @@
-import { auth } from "@/auth";
+"use client"
+
+import { DataPagination } from "@/components/layout/pagenation";
 import SaleTitle from "@/components/sales/sale_title";
 import SaleListTable from "@/components/sales/saleListTable/sale-list-table";
 import ApiGet from "@/lib/useApi/get";
+import { Office } from "@/types/Office";
+import { Sale } from "@/types/Sale";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
-export default async function IssueList() {
+export default function IssueList() {
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const currentPage = Number(page) || 1;
+  const LIMIT = 20;
+  const offset = (currentPage - 1) * LIMIT;
 
-  const session = await auth();
-  const isOffice = session?.user.role === "OFFICE"
+  const [sales, setSales] = useState<{ data: Sale[]; totalCount: number } | null>(null);
+  const [offices, setOffices] = useState<Office[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
-  const [offices, sales] = await Promise.all([
-    ApiGet('/offices'),
-    ApiGet('/sales')
-  ]);
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        // sales, offices, session を並列で取得
+        const [salesData, officesData] = await Promise.all([
+          ApiGet(`/sales?limit=${LIMIT}&offset=${offset}`),
+          ApiGet("/offices"),
+        ]);
+        console.log(salesData)
+
+        setSales(salesData);
+        setOffices(officesData);
+      } catch (error) {
+        console.error("データ取得エラー:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [page]);
+
+  const isOffice = session?.user?.role === "OFFICE";
+  const totalPages = sales ? Math.ceil(sales.totalCount / LIMIT) : 1;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <SaleTitle isOffice={isOffice} offices={offices}/>
       <div className="mt-8 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <SaleListTable sales={sales} />
+      {loading ? (
+        <></>
+      ) : (
+        <>
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <SaleListTable sales={sales?.data ?? []} />
+              {sales && LIMIT < sales.totalCount && (
+                <DataPagination currentPage={currentPage} totalPages={totalPages} link="sales" />
+              )}
+            </div>
           </div>
-        </div>
+        </>)}
       </div>
     </div>
   );
