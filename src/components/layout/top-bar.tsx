@@ -26,7 +26,6 @@ export default function TopBar ({
     fetchData();
   }, []);
   useEffect(() => {
-    console.log("==")
     displayNotifications()
   }, [value]);
 

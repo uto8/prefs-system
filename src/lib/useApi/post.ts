@@ -31,7 +31,6 @@ const ApiPost = async (url: string, body: object, reqHeader: Record<string, stri
 
     // ステータスコードを確認
     if (!response.ok) {
-      console.log("====data", data)
       const errorMessage = data.error?? `作成に失敗しました`;
       throw Error(errorMessage);
     }
