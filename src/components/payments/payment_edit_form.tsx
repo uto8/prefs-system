@@ -65,9 +65,9 @@ export default function PaymentEditForm({open, setOpen, payment}: {
     if (payment) {
       form.reset({
         type: payment.type,
-        paymentPlanValue: payment.paymentPlanValue,
+        paymentPlanValue: String(payment.paymentPlanValue),
         paymentPlanDate: new Date(payment.paymentPlanDate),
-        billingDate: payment.billingDate,
+        billingDate: new Date(payment.billingDate),
         description: payment.description,
       });
     }

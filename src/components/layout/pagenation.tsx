@@ -9,7 +9,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-export function DataPagination({ currentPage, totalPages }: { currentPage: number; totalPages: number }) {
+export function DataPagination({ currentPage, totalPages, link }: { currentPage: number; totalPages: number, link: string }) {
   // const goToPage = (page: number) => {
   //   const params = new URLSearchParams(searchParams);
   //   params.set("page", page.toString());
@@ -20,18 +20,18 @@ export function DataPagination({ currentPage, totalPages }: { currentPage: numbe
     <Pagination className="mt-16">
       <PaginationContent>
         <PaginationItem aria-disabled={1 === currentPage}>
-          <PaginationPrevious href={`/issues/list/?page=${1}`} />
+          <PaginationPrevious href={`/${link}/list/?page=${1}`} />
         </PaginationItem>
         {[...Array(totalPages)].map((_, index) => {
           const page = index + 1;
           return (
             <PaginationItem key={index} aria-disabled={page === currentPage}>
-              <PaginationLink href={`/issues/list/?page=${page}`} isActive={page=== currentPage}>{page}</PaginationLink>
+              <PaginationLink href={`/${link}/list/?page=${page}`} isActive={page=== currentPage}>{page}</PaginationLink>
             </PaginationItem>
           );
         })}
         <PaginationItem aria-disabled={totalPages === currentPage}>
-          <PaginationNext href={`/issues/list/?page=${totalPages}`} />
+          <PaginationNext href={`/${link}/list/?page=${totalPages}`} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
