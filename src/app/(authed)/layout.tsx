@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="lg:pl-72">
 
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8"><SessionProvider children={children}/></div>
+            <div className="px-4 sm:px-6 lg:px-8"><SessionProvider>{children}</SessionProvider></div>
           </main>
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function IssueList() {
   const [sales, setSales] = useState<{ data: Sale[]; totalCount: number } | null>(null);
   const [offices, setOffices] = useState<Office[]>([]);
   const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   useEffect(() => {
     async function fetchData() {
