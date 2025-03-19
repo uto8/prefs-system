@@ -52,7 +52,7 @@ export default function IssueListPage() {
         <>
           <IssueListTable issues={issues?.data || []} />
           {issues && LIMIT < issues.totalCount && (
-            <DataPagination currentPage={currentPage} totalPages={totalPages} />
+            <DataPagination currentPage={currentPage} totalPages={totalPages} link="issues" />
           )}
         </>
       )}

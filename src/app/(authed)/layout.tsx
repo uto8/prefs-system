@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getSession } from './actions';
 import { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
 
 export type NavigationItem = {
   name: string;
@@ -31,8 +32,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <AppSidebar role={session?.user.role?? ""}/>
 
         <div className="lg:pl-72">
+
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+            <div className="px-4 sm:px-6 lg:px-8"><SessionProvider children={children}/></div>
           </main>
         </div>
       </div>
