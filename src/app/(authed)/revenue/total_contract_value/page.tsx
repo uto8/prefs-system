@@ -46,7 +46,6 @@ export default async function Revenue() {
                 acc[month] = totalContractValue;
                 return acc;
               }, {});
-              console.log("====issuesMap", issuesMap)
               return <tr key={index} className="divide-x divide-gray-200">
                 <td className="whitespace-nowrap py-4 text-sm font-medium text-gray-900">
                   {issue.officeName}

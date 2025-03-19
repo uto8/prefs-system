@@ -1,37 +1,50 @@
 "use client";
 
-import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react'
 import { format } from 'date-fns';
-import { deletePayment, deletePaymentCheck, getPayments } from './actions';
+import { deletePayment, deletePaymentCheck } from './actions';
 import { removePayment, removePaymentCheck, setPayment } from '@/stores/reducers/paymentReducer';
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { Payment } from '@/types/Payment';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useSearchParams } from 'next/navigation';
+import ApiGet from '@/lib/useApi/get';
+import { DataPagination } from '@/components/layout/pagenation';
 
 export default function Deposit({handleOpenPaymentCheckForm, setEditPaymentFormOpen, setEditPaymentFormDefault}:{
   handleOpenPaymentCheckForm: (paymentId: number) => void;
   setEditPaymentFormOpen: Dispatch<SetStateAction<boolean>>;
   setEditPaymentFormDefault: Dispatch<SetStateAction<Payment|null>>;
 }) {
+  const [payments, setPayments] = useState<{ data: Payment[]; totalCount: number } | null>(null);
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const currentPage = Number(page) || 1;
+  const LIMIT = 20;
+  const offset = (currentPage - 1) * LIMIT;
+  const [loading, setLoading] = useState(true);
 
-  const { value: payments } = useAppSelector((state) => state.payments);
+  const issueId = searchParams.get("issue_id") ?? ""
+
+  const { value: paymentsState } = useAppSelector((state) => state.payments);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const fetch = async () => {
-      try{
-        const payments = await getPayments(searchParams.get("issue_id") ?? "");
-
-        dispatch(setPayment(payments))
-
-      }  catch (error) {
-        console.error('Error fetching data:', error);
+    async function fetchData() {
+      try {
+        const payments = await ApiGet(`/payments?limit=${LIMIT}&offset=${offset}`, {"issueId": issueId})
+        console.log(payments)
+        setPayments(payments)
+        dispatch(setPayment(payments.data))
+      } catch (error) {
+        console.error("データ取得エラー:", error);
+      } finally {
+        setLoading(false);
       }
     }
-    fetch()
-  }, []);
+
+    fetchData();
+  }, [page]);
 
   const handleDelete = async (paymentId: number) => {
     const result: boolean = confirm('削除しますか');
@@ -48,8 +61,14 @@ export default function Deposit({handleOpenPaymentCheckForm, setEditPaymentFormO
       dispatch(removePaymentCheck({paymentId: paymentId, paymentCheckId: String(checkId)}))
     }
   }
+  const totalPages = payments ? Math.ceil(payments.totalCount / LIMIT) : 1;
 
   return (
+    <>
+    {loading ? (
+      <></>
+    ) : (
+    <>
     <table className="w-full text-left">
       <thead className="sr-only">
         <tr>
@@ -70,7 +89,7 @@ export default function Deposit({handleOpenPaymentCheckForm, setEditPaymentFormO
             <th>入金確認</th>
           </tr>
         </Fragment>
-        {payments.map((payment, index) => (
+        {paymentsState.map((payment, index) => (
           <tr key={index}>
             <td className="align-baseline relative py-5 pr-6">
               <div className="flex gap-x-6">
@@ -142,6 +161,10 @@ export default function Deposit({handleOpenPaymentCheckForm, setEditPaymentFormO
           </tr>
         ))}
       </tbody>
-    </table>
+    </table></>)}
+    {payments && LIMIT < payments.totalCount && (
+      <DataPagination currentPage={currentPage} totalPages={totalPages} link="payment" query='&type=deposit' />
+    )}
+    </>
   )
 }

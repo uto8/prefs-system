@@ -1,12 +1,15 @@
 "use client"
 
-import React, { Dispatch, Fragment, SetStateAction, useEffect } from 'react'
-import { deleteOrder, deleteOrderCheck, getOrders } from './actions';
+import React, { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react'
+import { deleteOrder, deleteOrderCheck } from './actions';
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { removeOrder, removeOrderCheck, setOrder } from '@/stores/reducers/orderReducer';
 import { format } from 'date-fns';
 import { Order } from "@/types/Order"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useSearchParams } from 'next/navigation';
+import ApiGet from '@/lib/useApi/get';
+import { DataPagination } from '@/components/layout/pagenation';
 
 export default function OrderTab({
   handleOpenOrderCheckForm,
@@ -18,8 +21,35 @@ export default function OrderTab({
   setEditOrderFormDefault: Dispatch<Order | null>
 }) {
 
-  const { value: orders } = useAppSelector((state) => state.orders);
+  const [orders, setOrders] = useState<{ data: Order[]; totalCount: number } | null>(null);
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") || "1";
+  const currentPage = Number(page) || 1;
+  const LIMIT = 20;
+  const offset = (currentPage - 1) * LIMIT;
+  const [loading, setLoading] = useState(true);
+
+  const issueId = searchParams.get("issue_id") ?? ""
+
+  const { value: ordersState } = useAppSelector((state) => state.orders);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const orders = await ApiGet(`/orders?limit=${LIMIT}&offset=${offset}`, {"issueId": issueId})
+        console.log(orders)
+        setOrders(orders)
+        dispatch(setOrder(orders.data))
+      } catch (error) {
+        console.error("データ取得エラー:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [page]);
 
   const handleDelete = async (id: number) => {
     const result: boolean = confirm("本当に削除しますか？")
@@ -37,23 +67,14 @@ export default function OrderTab({
     }
   }
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const fetch = async () => {
-      try{
-        const ordersRes = await getOrders(searchParams.get("issue_id") ?? "");
-
-        dispatch(setOrder(ordersRes))
-
-      }  catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-    fetch()
-  }, []);
+  const totalPages = orders ? Math.ceil(orders.totalCount / LIMIT) : 1;
 
   return (
+    <>
+    {loading ? (
+      <></>
+    ) : (
+    <>
     <table className="w-full text-left">
       <thead className="sr-only">
         <tr>
@@ -73,7 +94,7 @@ export default function OrderTab({
             <th>ステータス</th>
           </tr>
         </Fragment>
-        {orders.map((order, index) => (
+        {ordersState.map((order, index) => (
           <tr key={index}>
             <td className="align-baseline relative py-5 pr-6">
               <div className="flex gap-x-6">
@@ -148,5 +169,10 @@ export default function OrderTab({
         ))}
       </tbody>
     </table>
+    </>)}
+    {orders && LIMIT < orders.totalCount && (
+      <DataPagination currentPage={currentPage} totalPages={totalPages} link="payment" query='&type=payment' />
+    )}
+    </>
   )
 }
