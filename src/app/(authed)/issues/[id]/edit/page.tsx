@@ -22,7 +22,7 @@ export default async function Page(
     ApiGet(`/issues/${id}`)
   ]);
   const officeOption: OptionFields = offices.map((office: Office) => {return {value: office.id, label: office.name}})
-  const saleOption: OptionFields = sales.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+  const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
   const session = await auth();
   const officeId: string | null = session?.user.officeId? String(session?.user.officeId): null
   const saleId: string | null = session?.user.saleId? String(session?.user.saleId): null
