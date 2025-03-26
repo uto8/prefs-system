@@ -9,14 +9,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { createReception } from '@/app/(authed)/receptions/add/actions';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
+  type: z.string().nonempty("タイプは必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
   password: z.string().min(5, "5文字以上で入力してください").nonempty("パスワードは必須項目です"),
-  phoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  phoneNumber: z.string().optional(),
 })
 
 export default function CreateReceptionForm() {
@@ -29,6 +31,7 @@ export default function CreateReceptionForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      type: "",
       email: "",
       password: "",
       phoneNumber: "",
@@ -39,9 +42,10 @@ export default function CreateReceptionForm() {
     try{
       const body = {
         name: data.name,
+        type: data.type,
         email: data.email,
         password: data.password,
-        phoneNumber: data.phoneNumber,
+        phoneNumber: data.phoneNumber ?? "",
         ...(officeId && { "officeId": officeId }),
       }
       await createReception(body);
@@ -106,6 +110,31 @@ export default function CreateReceptionForm() {
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                タイプ
+                </FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="選択してください" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="HEADRECEPTION">本部</SelectItem>
+                        <SelectItem value="RECEPTION">店舗</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

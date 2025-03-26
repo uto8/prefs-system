@@ -17,7 +17,7 @@ const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   officeCode: z.string().nonempty("店舗番号は必須項目です"),
   email: z.string().email("メールアドレスの形式が無効です").nonempty("メールアドレスは必須項目です"),
-  phoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  phoneNumber: z.string().optional(),
   isFranchise: z.boolean()
 })
 
@@ -41,7 +41,7 @@ export default function EditOfficeForm({
       name: office.name,
       officeCode: office.officeCode,
       email: office.email,
-      phoneNumber: office.phoneNumber,
+      phoneNumber: office.phoneNumber ?? "",
       isFranchise: office.isFranchise
     }
   })
@@ -63,7 +63,7 @@ export default function EditOfficeForm({
           name: data.name,
           officeCode: data.officeCode,
           email: data.email,
-          phoneNumber: data.phoneNumber,
+          phoneNumber: data.phoneNumber ?? "",
           isFranchise: data.isFranchise
         }
       })
