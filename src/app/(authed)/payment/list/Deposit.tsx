@@ -32,10 +32,9 @@ export default function Deposit({handleOpenPaymentCheckForm, setEditPaymentFormO
   useEffect(() => {
     async function fetchData() {
       try {
-        const payments = await ApiGet(`/payments?limit=${LIMIT}&offset=${offset}`, {"issueId": issueId})
-        console.log(payments)
-        setPayments(payments)
-        dispatch(setPayment(payments.data))
+        const paymentsRes = await ApiGet(`/payments?limit=${LIMIT}&offset=${offset}`, {"issueId": issueId})
+        setPayments(paymentsRes)
+        dispatch(setPayment(paymentsRes.data))
       } catch (error) {
         console.error("データ取得エラー:", error);
       } finally {

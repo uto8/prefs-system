@@ -51,7 +51,7 @@ export default function ReceiptPage() {
           setIssue(issue)
         }
         const payments = await getPayments(searchParams.get("issue_id") ?? "");
-        dispatch(setPayment(payments))
+        dispatch(setPayment(payments.data))
 
 
       }  catch (error) {

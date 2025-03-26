@@ -16,7 +16,7 @@ const formSchema = z.object({
   officeCode: z.string().nonempty("店舗番号は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
   password: z.string().min(8, "8文字以上で入力してください").nonempty("パスワードは必須項目です"),
-  phoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  phoneNumber: z.string().optional(),
   address: z.string().nonempty("住所は必須項目です"),
   isFranchise: z.boolean(),
 })
@@ -46,7 +46,7 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
         officeCode: data.officeCode,
         email: data.email,
         password: data.password,
-        phoneNumber: data.phoneNumber,
+        phoneNumber: data.phoneNumber?? "",
         // Todo cognito_idの設定
         cognito_id: "gadsgdsa",
         companyId: companyId,
