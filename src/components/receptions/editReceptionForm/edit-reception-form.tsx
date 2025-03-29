@@ -16,7 +16,7 @@ import { editReception } from '@/app/(authed)/receptions/[id]/edit/actions';
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
-  phoneNumber: z.string().nonempty("電話番号は必須項目です"),
+  phoneNumber: z.string().optional(),
   officeId: z.string().nonempty("店舗を選択してください"),
 })
 
@@ -53,7 +53,7 @@ export default function EditReceptionForm({
       await editReception({id: idString, reception:{
         name: data.name,
         email: data.email,
-        phoneNumber: data.phoneNumber,
+        phoneNumber: data.phoneNumber ?? "",
         officeId: data.officeId
       }})
       toast({
