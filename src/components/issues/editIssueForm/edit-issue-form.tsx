@@ -34,6 +34,7 @@ const formSchema = z.object({
   clientPhoneNumber: z.string().optional(),
   officeId: z.string().nonempty("店舗を選択してください"),
   saleId: z.string().nonempty("担当者を選択してください"),
+  receptionId: z.string().optional(),
   isFranchise: z.string().optional(),
 })
 
@@ -41,12 +42,14 @@ const formSchema = z.object({
 export default function EditIssueForm({
   offices =[],
   sales=[],
+  receptions=[],
   issue,
   userOfficeId,
   userSaleId
 }: {
   offices: OptionFields,
   sales: OptionFields,
+  receptions: OptionFields,
   issue: Issue,
   userOfficeId: string | null,
   userSaleId: string | null,
@@ -70,12 +73,14 @@ export default function EditIssueForm({
       clientPhoneNumber: issue.client.phoneNumber,
       officeId: String(issue.officeId),
       saleId: String(issue.sale.id),
+      receptionId: issue.reception? String(issue.reception.id): undefined,
       isFranchise: issue.isFranchise ? "1": "0",
     },
   })
 
   const officeId = useWatch({ control: form.control, name: "officeId" });
   const saleId = useWatch({ control: form.control, name: "saleId" });
+  const receptionId = useWatch({ control: form.control, name: "receptionId" });
   const type = useWatch({ control: form.control, name: "type" });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -95,7 +100,8 @@ export default function EditIssueForm({
         officeId: data.officeId,
         saleId: data.saleId,
         isFranchise: data.isFranchise === "1"? 1: 0,
-        issueCode: data.issueCode
+        issueCode: data.issueCode,
+        receptionId: data.receptionId? Number(data.receptionId) ?? null: null
       }
 
       await ApiPut(`/issues/${issue.id}` ,body)
@@ -287,7 +293,20 @@ export default function EditIssueForm({
                       <FormMessage />
                     </FormItem>
                   )}
-                /></>
+                />
+                <FormField
+                  control={form.control}
+                  name="receptionId"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormControl>
+                        <SelectField options={receptions} value={receptionId} placeholder="受付を選択してください" label='受付' onChange={field.onChange}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                </>
                 }}
           )()}
           <FormField
