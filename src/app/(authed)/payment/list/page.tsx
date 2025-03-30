@@ -117,7 +117,7 @@ export default function ReceiptPage() {
           {stats.map((item) => (
             <div key={item.name} className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
               <dt className="truncate text-sm font-medium text-gray-500">案件番号</dt>
-              <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 mb-6">{issue?.office.name}-{issue?.id}</dd>
+              <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900 mb-6">{issue?.issueCode}</dd>
               <dd className="truncate text-sm font-medium text-gray-500">担当者：{issue?.sale.name}</dd>
               <dd className="truncate text-sm font-medium text-gray-500">住所：{issue?.constructionSite}</dd>
             </div>
