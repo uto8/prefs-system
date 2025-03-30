@@ -246,9 +246,9 @@ export default function IssueListTable({issues: issues}: {
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <a href={`/receptions/${issue.reception.id}/show`} className="text-indigo-600 hover:text-indigo-900">
+                      {issue.reception.id?<a href={`/receptions/${issue.reception.id}/show`} className="text-indigo-600 hover:text-indigo-900">
                         {issue.reception?issue.reception.name:null}
-                      </a>
+                      </a>: <>-</>}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Dialog>
