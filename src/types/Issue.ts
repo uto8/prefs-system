@@ -1,4 +1,5 @@
 import { Office } from "./Office";
+import { Reception } from "./Reception";
 import { Sale } from "./Sale";
 
 export type Client = {
@@ -41,4 +42,5 @@ export type Issue = {
   office: Office;
   isFranchise: boolean;
   datetime: string;
+  reception: Reception;
 }

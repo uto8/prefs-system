@@ -18,6 +18,7 @@ export const createIssue = async (body: {
   clientEmail: string;
   clientPhoneNumber: string;
   isFranchise: number;
+  receptionId: number | null;
 }) => {
   try{
     const session = await auth()
@@ -31,6 +32,7 @@ export const createIssue = async (body: {
     if(session?.user.saleId){
       bodyReq.saleId = session.user.saleId
     }
+    console.log("===receptionid", body.receptionId)
     const res = await ApiPost('/issues' ,bodyReq)
     console.log(res);
   }catch(e) {

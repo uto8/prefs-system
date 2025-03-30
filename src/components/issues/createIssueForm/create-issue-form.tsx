@@ -41,17 +41,20 @@ const formSchema = z.object({
   clientPhoneNumber: z.string().optional(),
   officeId: z.string().nonempty("店舗を選択してください"),
   saleId: z.string().nonempty("担当者を選択してください"),
+  receptionId: z.string().optional(),
   isFranchise: z.string().optional(),
 })
 
 export default function CreateIssueForm({
   offices =[],
   sales=[],
+  receptions=[],
   userOfficeId,
   userSaleId
 }: {
   offices: OptionFields,
   sales: OptionFields,
+  receptions: OptionFields,
   userOfficeId: string | null,
   userSaleId: string | null,
 }) {
@@ -74,6 +77,7 @@ export default function CreateIssueForm({
       clientPhoneNumber: "",
       officeId: userOfficeId ?? "",
       saleId: userSaleId ?? "",
+      receptionId: "",
       isFranchise: "",
     },
   })
@@ -95,7 +99,8 @@ export default function CreateIssueForm({
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail ?? "",
         clientPhoneNumber: data.clientPhoneNumber ?? "",
-        isFranchise: data.isFranchise === "1"? 1: 0
+        isFranchise: data.isFranchise === "1"? 1: 0,
+        receptionId: data.receptionId? Number(data.receptionId): null
       })
       toast({
         variant: "success",
@@ -290,6 +295,18 @@ export default function CreateIssueForm({
                     <FormItem>
                       <FormControl>
                         <SelectField options={sales} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="receptionId"
+                  render={({field}) => (
+                    <FormItem>
+                      <FormControl>
+                        <SelectField options={receptions} placeholder="受付を選択してください" label='担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
