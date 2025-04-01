@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
@@ -24,6 +26,7 @@ const formSchema = z.object({
 export default function CreateOfficeForm({companyId}: {companyId: number}) {
   const router = useRouter();
   const { toast } = useToast()
+  const [disabled, setDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +43,7 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
+      setDisabled(true)
       await createOffices({
         address: data.address,
         name: data.name,
@@ -59,6 +63,7 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
       router.push('/offices/list');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }catch(e: any) {
+      setDisabled(false)
       const errorMessage = e.message ?? "店舗作成に失敗しました";
       toast({
         variant: "destructive",
@@ -203,7 +208,8 @@ export default function CreateOfficeForm({companyId}: {companyId: number}) {
             />
           </div>
           <div className="mt-4">
-            <Button type="submit">
+            <Button disabled={disabled} type="submit">
+              {disabled&&<Loader2 className="animate-spin" />}
               登録
             </Button>
           </div>
