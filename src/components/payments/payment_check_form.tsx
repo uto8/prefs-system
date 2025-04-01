@@ -16,7 +16,6 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { ja } from "date-fns/locale";
-import { Textarea } from '../ui/textarea';
 import { createPaymentCheck } from '@/app/(authed)/payment/list/actions';
 import { useAppDispatch } from '@/stores';
 import { addPaymentCheck } from '@/stores/reducers/paymentReducer';
@@ -27,7 +26,6 @@ const formSchema = z.object({
     required_error: '必須',
     message: '入金予定日を入力してください',
   }),
-  description: z.string().nonempty("備考欄は必須項目です"),
 })
 
 export default function PaymentCheckForm({depositOpen, setDepositOpen, paymentId}: {
@@ -39,7 +37,6 @@ export default function PaymentCheckForm({depositOpen, setDepositOpen, paymentId
     resolver: zodResolver(formSchema),
     defaultValues: {
       paymentCheckValue: "",
-      description: "",
     },
   })
 
@@ -52,14 +49,14 @@ export default function PaymentCheckForm({depositOpen, setDepositOpen, paymentId
         paymentId: paymentId,
         paymentCheckValue: Number(data.paymentCheckValue),
         paymentCheckDate: format(data.paymentCheckDate, "yyyy-MM-dd"),
-        description: data.description
+        description: ""
       })
 
       dispatch(addPaymentCheck({
         id: paymentCheck.id,
         paymentCheckValue: data.paymentCheckValue,
         paymentCheckDate: format(data.paymentCheckDate, "yyyy-MM-dd"),
-        description: data.description,
+        description: "",
         createdAt: '',
         paymentId: paymentId
       }))
@@ -143,25 +140,6 @@ export default function PaymentCheckForm({depositOpen, setDepositOpen, paymentId
                           />
                         </PopoverContent>
                       </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      備考
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="備考を入力してください"
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

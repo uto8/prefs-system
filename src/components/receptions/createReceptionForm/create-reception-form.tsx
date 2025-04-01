@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { createReception } from '@/app/(authed)/receptions/add/actions';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 
 
@@ -26,6 +28,7 @@ export default function CreateReceptionForm() {
   const searchParams = useSearchParams();
   const officeId = Number(searchParams.get('office_id')) ?? null;
   const { toast } = useToast();
+  const [disabled, setDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +43,7 @@ export default function CreateReceptionForm() {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
+      setDisabled(true)
       const body = {
         name: data.name,
         type: data.type,
@@ -56,6 +60,7 @@ export default function CreateReceptionForm() {
       router.push('/receptions/list');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      setDisabled(false)
       const errorMessage = e.message ?? "受付更新に失敗しました";
       toast({
         variant: "destructive",
@@ -156,7 +161,8 @@ export default function CreateReceptionForm() {
             )}
           />
           <div className="mt-4">
-            <Button type="submit">
+            <Button disabled={disabled} type="submit">
+              {disabled&&<Loader2 className="animate-spin" />}
               登録
             </Button>
           </div>
