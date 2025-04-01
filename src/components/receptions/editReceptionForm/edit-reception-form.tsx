@@ -11,13 +11,14 @@ import SelectField, { OptionFields } from '@/components/ui/select-field';
 import { useToast } from '@/hooks/use-toast';
 import { Reception } from '@/types/Reception';
 import { editReception } from '@/app/(authed)/receptions/[id]/edit/actions';
-
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   name: z.string().nonempty("名前は必須項目です"),
   email: z.string().email().nonempty("メールアドレスは必須項目です"),
   phoneNumber: z.string().optional(),
   officeId: z.string().nonempty("店舗を選択してください"),
+  type: z.string().nonempty("タイプは必須項目です"),
 })
 
 export default function EditReceptionForm({
@@ -34,6 +35,7 @@ export default function EditReceptionForm({
   const id = params.id;
   const idString: string = id as string;
   const {toast} = useToast();
+  console.log("===reception", reception.type)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,10 +44,12 @@ export default function EditReceptionForm({
       email: reception.email,
       phoneNumber: reception.phoneNumber,
       officeId: String(reception.officeId),
+      type: String(reception.type),
     },
   })
 
   const officeId = useWatch({ control: form.control, name: "officeId" });
+  const type = useWatch({ control: form.control, name: "type" })
 
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -54,7 +58,8 @@ export default function EditReceptionForm({
         name: data.name,
         email: data.email,
         phoneNumber: data.phoneNumber ?? "",
-        officeId: data.officeId
+        officeId: data.officeId,
+        type: data.type
       }})
       toast({
         variant: "success",
@@ -138,6 +143,31 @@ export default function EditReceptionForm({
               )}
             />
           }})()}
+          <FormField
+            control={form.control}
+            name="type"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                タイプ
+                </FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={type}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="選択してください" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="HEADRECEPTION">本部</SelectItem>
+                        <SelectItem value="RECEPTION">店舗</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="mt-4">
             <Button type="submit">
               登録
