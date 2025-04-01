@@ -14,6 +14,7 @@ export const getReceptionById = async (id: string): Promise<Reception> => {
       phoneNumber: response.phoneNumber,
       officeName: response.officeName,
       officeId: response.officeId,
+      type: response.type
     }
   }catch(e) {
     throw e;
@@ -26,7 +27,8 @@ export const editReception = async ({id: id, reception: reception}:{
     name: string,
     email: string,
     phoneNumber: string,
-    officeId: string
+    officeId: string,
+    type: string
   }
 }): Promise<Reception> => {
   try{
@@ -39,7 +41,8 @@ export const editReception = async ({id: id, reception: reception}:{
       email: "string",
       phoneNumber: "string",
       officeName: "",
-      officeId: 0
+      officeId: 0,
+      type: response.type
     }
   }catch(e) {
     throw e;

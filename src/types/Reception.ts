@@ -4,5 +4,6 @@ export type Reception = {
   email: string,
   phoneNumber: string,
   officeName: string,
-  officeId: number
+  officeId: number,
+  type: string
 }
