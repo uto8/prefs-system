@@ -20,6 +20,8 @@ import { createIssue } from '@/app/(authed)/issues/add/actions';
 import SelectField, { OptionFields } from '@/components/ui/select-field';
 import { useToast } from '@/hooks/use-toast';
 import RadioField from '@/components/ui/radio-field';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -60,6 +62,7 @@ export default function CreateIssueForm({
 }) {
   const router = useRouter();
   const {toast} = useToast();
+  const [disabled, setDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,6 +88,7 @@ export default function CreateIssueForm({
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
+      setDisabled(true)
       await createIssue({
         issueCode: data.issueCode ?? "",
         currentAddress: data.currentAddress ?? '',
@@ -108,6 +112,7 @@ export default function CreateIssueForm({
       })
       router.push('/issues/list')
     }catch(e) {
+      setDisabled(false)
       throw e;
     }
   }
@@ -373,7 +378,8 @@ export default function CreateIssueForm({
             )}
           />
           <div className="mt-4">
-            <Button type="submit">
+            <Button disabled={disabled} type="submit">
+              {disabled&&<Loader2 className="animate-spin" />}
               登録
             </Button>
           </div>

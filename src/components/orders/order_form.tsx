@@ -24,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Textarea } from '../ui/textarea';
 import { createOrder } from '@/app/(authed)/payment/list/actions';
 import { useAppDispatch } from '@/stores';
 import { addOrder } from '@/stores/reducers/orderReducer';
@@ -37,7 +36,6 @@ const formSchema = z.object({
     message: '発注予定日を入力してください',
   }),
   type: z.string().nonempty("タイプは必須項目です"),
-  description: z.string().nonempty("備考欄は必須項目です"),
 })
 
 export default function OrderForm({paymentOpen, setPaymentOpen}: {
@@ -58,7 +56,6 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
       supplier: "",
       type: "",
       orderPlanValue: "",
-      description: "",
     },
   })
 
@@ -72,7 +69,7 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
         orderPlanValue: Number(data.orderPlanValue),
         withdrawalPlanDate: format(data.withdrawalPlanDate, "yyyy-MM-dd"),
         type: data.type,
-        description: data.description,
+        description: "",
       });
 
       dispatch(addOrder({
@@ -80,7 +77,7 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
         orderPlanValue: Number(data.orderPlanValue),
         withdrawalPlanDate: data.withdrawalPlanDate,
         type: data.type,
-        description: data.description,
+        description: "",
         orderChecks: [],
         id: order.id
       }))
@@ -175,25 +172,6 @@ export default function OrderForm({paymentOpen, setPaymentOpen}: {
                           />
                         </PopoverContent>
                       </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      備考
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="備考を入力してください"
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
