@@ -306,7 +306,7 @@ export default function CreateIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={receptions} placeholder="受付を選択してください" label='担当者' onChange={field.onChange}/>
+                        <SelectField options={receptions} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
