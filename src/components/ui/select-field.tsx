@@ -25,8 +25,8 @@ export default function SelectField({
       {label && <FormLabel>{label}</FormLabel>}
       <select value={value} onChange={(e) => onChange?.(e.target.value)} className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
         {placeholder && <option value="">{placeholder}</option>}
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
+        {options.map((option, index) => (
+          <option key={index} value={option.value}>
             {option.label}
           </option>
         ))}
