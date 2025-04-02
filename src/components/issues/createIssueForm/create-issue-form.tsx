@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -21,7 +21,10 @@ import SelectField, { OptionFields } from '@/components/ui/select-field';
 import { useToast } from '@/hooks/use-toast';
 import RadioField from '@/components/ui/radio-field';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import ApiGet from '@/lib/useApi/get';
+import { Sale } from '@/types/Sale';
+import { Reception } from '@/types/Reception';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -63,6 +66,8 @@ export default function CreateIssueForm({
   const router = useRouter();
   const {toast} = useToast();
   const [disabled, setDisabled] = useState(false);
+  const [saleOptions, setSaleOptions] = useState<OptionFields>(sales);
+  const [receptionOptions, setReceptionOptions] = useState<OptionFields>(receptions);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,6 +90,19 @@ export default function CreateIssueForm({
     },
   })
 
+  const officeId = useWatch({ control: form.control, name: "officeId" });
+
+  async function fetchData() {
+    const sales = await ApiGet("/sales",{"officeId": officeId})
+    const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+    setSaleOptions(saleOption)
+    const receptions = await ApiGet("/receptions",{"officeId": officeId})
+    const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
+    setReceptionOptions(receptionOption)
+  }
+  useEffect(() => {
+    fetchData()
+  }, [officeId]);
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
@@ -299,7 +317,7 @@ export default function CreateIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={sales} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                        <SelectField options={saleOptions} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -311,7 +329,7 @@ export default function CreateIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={receptions} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
+                        <SelectField options={receptionOptions} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

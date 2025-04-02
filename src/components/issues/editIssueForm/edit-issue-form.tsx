@@ -13,6 +13,10 @@ import { Issue } from '@/types/Issue';
 import ApiPut from '@/lib/useApi/put';
 import { useToast } from '@/hooks/use-toast';
 import RadioField from '@/components/ui/radio-field';
+import ApiGet from '@/lib/useApi/get';
+import { useEffect, useState } from 'react';
+import { Sale } from '@/types/Sale';
+import { Reception } from '@/types/Reception';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -57,6 +61,9 @@ export default function EditIssueForm({
   const router = useRouter();
   const {toast} = useToast();
 
+  const [saleOptions, setSaleOptions] = useState<OptionFields>(sales);
+  const [receptionOptions, setReceptionOptions] = useState<OptionFields>(receptions);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,6 +89,18 @@ export default function EditIssueForm({
   const saleId = useWatch({ control: form.control, name: "saleId" });
   const receptionId = useWatch({ control: form.control, name: "receptionId" });
   const type = useWatch({ control: form.control, name: "type" });
+
+  async function fetchData() {
+    const sales = await ApiGet("/sales",{"officeId": officeId})
+    const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+    setSaleOptions(saleOption)
+    const receptions = await ApiGet("/receptions",{"officeId": officeId})
+    const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
+    setReceptionOptions(receptionOption)
+  }
+  useEffect(() => {
+    fetchData()
+  }, [officeId]);
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
@@ -288,7 +307,7 @@ export default function EditIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={sales} value={saleId} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                        <SelectField options={saleOptions} value={saleId} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -300,7 +319,7 @@ export default function EditIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={receptions} value={receptionId} placeholder="受付を選択してください" label='受付' onChange={field.onChange}/>
+                        <SelectField options={receptionOptions} value={receptionId} placeholder="受付を選択してください" label='受付' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
