@@ -35,7 +35,6 @@ export default function EditReceptionForm({
   const id = params.id;
   const idString: string = id as string;
   const {toast} = useToast();
-  console.log("===reception", reception.type)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
