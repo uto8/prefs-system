@@ -212,6 +212,9 @@ export default function IssueListTable({issues: issues}: {
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     受付
                   </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    店舗
+                  </th>
                   <th scope="col" className="px-1 py-3.5 text-left text-sm font-semibold text-gray-900">
                     打ち合わせ
                   </th>
@@ -249,6 +252,11 @@ export default function IssueListTable({issues: issues}: {
                       {issue.reception?<a href={`/receptions/${issue.reception.id}/show`} className="text-indigo-600 hover:text-indigo-900">
                         {issue.reception?issue.reception.name:null}
                       </a>: <>-</>}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <p className="ml-2">
+                      {issue.office?issue.office.name:null}
+                      </p>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Dialog>

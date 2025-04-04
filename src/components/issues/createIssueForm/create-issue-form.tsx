@@ -33,9 +33,7 @@ const formSchema = z.object({
     message: "160文字以内で入力してください",
   }).optional(),
   type: z.string().nonempty("種別を選択してください"),
-  contactContent: z.string().max(160, {
-    message: "160文字以内で入力してください",
-  }).optional(),
+  contactContent: z.string().optional(),
   constructionSite: z.string().optional(),
   budget: z.string().max(160, {
     message: "160文字以内で入力してください",

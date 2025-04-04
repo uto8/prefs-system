@@ -5,12 +5,12 @@ import { Suspense } from 'react'
 async function SaleDetails({ params }: { params: { id: string } }) {
 
   const { id } = params;
-  const sale = await ApiGet(`/sales/${id}`)
+  const sale = await ApiGet(`/offices/${id}`)
   console.log(sale)
 
   return (
     <div>
-      <TitleComponent title="営業詳細"/>
+      <TitleComponent title="店舗詳細"/>
       <div className="mt-6 border-t border-gray-100">
         <dl className="divide-y divide-gray-100">
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -20,6 +20,10 @@ async function SaleDetails({ params }: { params: { id: string } }) {
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">メールアドレス</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{sale.email}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm/6 font-medium text-gray-900">住所</dt>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{sale.address}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">電話番号</dt>
