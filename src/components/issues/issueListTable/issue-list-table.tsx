@@ -254,9 +254,9 @@ export default function IssueListTable({issues: issues}: {
                       </a>: <>-</>}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <a href={`/offices/${issue.office.name}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <p className="ml-2">
                       {issue.office?issue.office.name:null}
-                      </a>
+                      </p>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Dialog>
