@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { removeIssue, setValue, updateDatetimeValue, updateMemoValue } from '@/stores/reducers/issueReducer';
+import { removeIssue, setValue, updateDatetimeValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -296,13 +296,15 @@ export default function IssueListTable({issues: issues}: {
                         if(!issue)return
                         setEditModal(true)
                         setIssueContractData(issue)
+                        dispatch(updateStatusValue({id:issue.id, status:"確定済"}));
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       契約
                       </button>
-                      {issue.status === "完了済" ? <button onClick={()=>{
+                      {issue.status === "入金済" ? <button onClick={()=>{
                         if(!issue)return
                         setCompleteModal(true)
                         setIssueContractData(issue)
+                        dispatch(updateStatusValue({id:issue.id, status:"完了済"}));
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       完了
                       </button>: null}

@@ -33,6 +33,12 @@ const issueSlice = createSlice({
         state.value[index].memo = action.payload.memo;
       }
     },
+    updateStatusValue: (state, action: PayloadAction<{id: number, status: string}>) => {
+      const index = state.value.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.value[index].status = action.payload.status;
+      }
+    },
     updateDatetimeValue: (state, action: PayloadAction<{id: number, datetime: string}>) => {
       const index = state.value.findIndex(item => item.id === action.payload.id);
       if (index !== -1) {
@@ -102,7 +108,8 @@ export const {
   addValue,
   updateMemoValue,
   removeIssue,
-  updateDatetimeValue
+  updateDatetimeValue,
+  updateStatusValue
 } = issueSlice.actions;
 
 export const issueReducer = issueSlice.reducer;
