@@ -4,4 +4,5 @@ export type Session = {
   officeId: string | null;
   companyId: string | null;
   idToken: string | null;
+  receptionId: string | null;
 }

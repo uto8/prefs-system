@@ -45,6 +45,12 @@ const issueSlice = createSlice({
         state.value[index].datetime = action.payload.datetime;
       }
     },
+    updateEstimateDateValue: (state, action: PayloadAction<{id: number, date: string}>) => {
+      const index = state.value.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.value[index].estimateSubmissionDate = action.payload.date;
+      }
+    },
     // 発行の削除
     removeIssue: (state, action: PayloadAction<number>) => {
       state.value = state.value.filter(item => item.id !== action.payload);
@@ -109,7 +115,8 @@ export const {
   updateMemoValue,
   removeIssue,
   updateDatetimeValue,
-  updateStatusValue
+  updateStatusValue,
+  updateEstimateDateValue
 } = issueSlice.actions;
 
 export const issueReducer = issueSlice.reducer;

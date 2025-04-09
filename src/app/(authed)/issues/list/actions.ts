@@ -75,3 +75,14 @@ export const updateMemo = async ({id, memo}: {
     throw e;
   }
 }
+
+export const updateStatus = async ({id, memo}: {
+  id: number,
+  memo: string
+}) => {
+  try{
+    await ApiPut(`/issues/${id}/status`, {memo: memo})
+  }catch(e) {
+    throw e;
+  }
+}
