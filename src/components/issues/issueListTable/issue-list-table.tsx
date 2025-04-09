@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { removeIssue, setValue, updateDatetimeValue, updateMemoValue } from '@/stores/reducers/issueReducer';
+import { removeIssue, setValue, updateDatetimeValue, updateEstimateDateValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,6 +22,7 @@ import ApiPost from '@/lib/useApi/post';
 import ApiGet from '@/lib/useApi/get';
 import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import CompleteModal from '../complete_modal';
+import ApiPut from '@/lib/useApi/put';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -30,6 +31,7 @@ export default function IssueListTable({issues: issues}: {
   const [editModal, setEditModal] = useState(false)
   const [completeModal, setCompleteModal] = useState(false)
   const [datetime, setDatetime] = useState("")
+  const [estimateDate, setEstimateDatetime] = useState("")
   const [memo, setMemo] = useState("")
   const { toast } = useToast()
 
@@ -82,6 +84,7 @@ export default function IssueListTable({issues: issues}: {
           completeDate: input.completeDate,
           contractValue: input.contractValue,
         })
+        dispatch(updateStatusValue({id:issueId, status:"確定済"}));
         toast({
           variant: "success",
           title: "契約確定しました",
@@ -93,6 +96,41 @@ export default function IssueListTable({issues: issues}: {
     }
   }
 
+  const handleLost = async ({id, status}: {
+    id: number;
+    status: string
+  }) => {
+    const result = confirm("本当に失注にしますか？")
+    if(!result) return
+    console.log("===test")
+    try{
+      await ApiPut(`/issues/${id}/status`, {
+        status: status
+      })
+      dispatch(updateStatusValue({id:id, status:"失注"}));
+    }catch(e){
+      console.log("e", e)
+      throw e
+    }
+  }
+  const handleRemoveLost = async ({id, status}: {
+    id: number;
+    status: string
+  }) => {
+    const result = confirm("本当に失注解除にしますか？")
+    if(!result) return
+    try{
+      await ApiPut(`/issues/${id}/status`, {
+        status: status
+      })
+      dispatch(updateStatusValue({id:id, status:"失注解除"}));
+    }catch(e){
+      console.log("e", e)
+      throw e
+    }
+  }
+
+  // 打ち合わせ日登録
   const handleCreateMeeting = async (issueId: number, date: string) => {
     if(date === "") return
     await ApiPost("/meetings", {
@@ -101,6 +139,27 @@ export default function IssueListTable({issues: issues}: {
       description: ""
     })
     dispatch(updateDatetimeValue({id: issueId, datetime: date}));
+  }
+
+  // 見積もり提出日登録
+  const handleCreateEstimateDate = async ({id, date}: {
+    id: number;
+    date: string
+  }) => {
+    if(date === "") {
+      await ApiPut(`/issues/${id}/estimate_date`, {
+        date: date,
+        status: "提出済取消中"
+      })
+      dispatch(updateStatusValue({id:id, status:"提出済取消中"}));
+      return
+    }
+    await ApiPut(`/issues/${id}/estimate_date`, {
+      date: date,
+      status: "提出済返事待ち"
+    })
+    dispatch(updateEstimateDateValue({id:id, date: date}));
+    dispatch(updateStatusValue({id:id, status:"提出済返事待ち"}));
   }
 
   const getMeetings = async (issueId: number) => {
@@ -178,6 +237,10 @@ export default function IssueListTable({issues: issues}: {
       return <span className='rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20'>
         {status}
       </span>
+    }else if(status.includes("失注")){
+      return <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20">
+        {status}
+      </span>
     }
 
     return (
@@ -217,6 +280,9 @@ export default function IssueListTable({issues: issues}: {
                   </th>
                   <th scope="col" className="px-1 py-3.5 text-left text-sm font-semibold text-gray-900">
                     打ち合わせ
+                  </th>
+                  <th scope="col" className="px-1 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    見積提出日
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     メモ
@@ -277,6 +343,22 @@ export default function IssueListTable({issues: issues}: {
                         </DialogContent>
                       </Dialog>
                     </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <Dialog>
+                        <DialogTrigger onClick={()=> {getMeetings(issue.id)}}>
+                          {issue.estimateSubmissionDate?`${format(issue.estimateSubmissionDate, "MM月dd日 HH時mm分")}`:"未定"}
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogTitle>見積提出日</DialogTitle>
+                          <div>
+                            <input value={estimateDate} onChange={(e)=>setEstimateDatetime(e.target.value)} type='datetime-local' className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                            <DialogClose asChild>
+                              <Button onClick={()=>handleCreateEstimateDate({id: issue.id, date: estimateDate})} className='w-full'>保存</Button>
+                            </DialogClose>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </td>
                     <td className="truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       <Dialog>
                         <DialogTrigger onClick={()=>setMemo(issue.memo)}>{issue.memo?truncateText(issue.memo, 6):'なし'}</DialogTrigger>
@@ -299,7 +381,18 @@ export default function IssueListTable({issues: issues}: {
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       契約
                       </button>
-                      {issue.status === "完了済" ? <button onClick={()=>{
+                      {
+                        issue.status === "失注" ?<button onClick={()=>{
+                          handleRemoveLost({id:issue.id,status:"失注解除"})
+                        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                        失注解除
+                        </button>: <button onClick={()=>{
+                          handleLost({id:issue.id,status:"失注"})
+                        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                        失注
+                        </button>
+                      }
+                      {issue.status === "入金済" ? <button onClick={()=>{
                         if(!issue)return
                         setCompleteModal(true)
                         setIssueContractData(issue)

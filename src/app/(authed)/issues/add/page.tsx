@@ -9,6 +9,7 @@ import { OptionFields } from '@/components/ui/select-field'
 import TitleComponent from '@/components/layout/title'
 import { auth } from '@/auth'
 import { Reception } from '@/types/Reception'
+import { getCookieSession } from '@/lib/auth/get-cookie-session'
 
 export default async function Page() {
   const [offices, sales, receptions] = await Promise.all([
@@ -21,11 +22,12 @@ export default async function Page() {
   const session = await auth();
   const officeId: string | null = session?.user.officeId? String(session?.user.officeId): null
   const saleId: string | null = session?.user.saleId? String(session?.user.saleId): null
+  const receptionId: string | null = (await getCookieSession()).receptionId
   const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
   return (
     <>
       <TitleComponent title="案件追加"/>
-      <CreateIssueForm offices={officeOption} sales={saleOption} receptions={receptionOption} userOfficeId={officeId} userSaleId={saleId}/>
+      <CreateIssueForm offices={officeOption} sales={saleOption} receptionId={receptionId} receptions={receptionOption} userOfficeId={officeId} userSaleId={saleId}/>
     </>
   )
 }

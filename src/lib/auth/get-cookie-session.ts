@@ -11,12 +11,14 @@ export const getCookieSession = async (): Promise<Session> => {
   const companyId = cookieStore.get('companyId')
   const officeId = cookieStore.get('officeId')
   const saleId = cookieStore.get('saleId')
+  const receptionId = cookieStore.get('receptionId')
 
   const session = {
     role: role?.value ?? null,
     companyId: companyId?.value ?? null,
     officeId: officeId?.value ?? null,
     saleId: saleId?.value ?? null,
+    receptionId: receptionId?.value ?? null,
     idToken: ""
   }
 

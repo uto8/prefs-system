@@ -53,13 +53,15 @@ export default function CreateIssueForm({
   sales=[],
   receptions=[],
   userOfficeId,
-  userSaleId
+  userSaleId,
+  receptionId
 }: {
   offices: OptionFields,
   sales: OptionFields,
   receptions: OptionFields,
   userOfficeId: string | null,
   userSaleId: string | null,
+  receptionId: string | null,
 }) {
   const router = useRouter();
   const {toast} = useToast();
@@ -327,7 +329,7 @@ export default function CreateIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={receptionOptions} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
+                        <SelectField options={receptionOptions} value={receptionId??""} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

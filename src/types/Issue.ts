@@ -39,6 +39,7 @@ export type Issue = {
   memo: string;
   issueCode: string
   status: string;
+  estimateSubmissionDate: string;
   office: Office;
   isFranchise: boolean;
   datetime: string;
