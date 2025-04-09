@@ -4,6 +4,7 @@ import { Session } from "@/types/Session";
 import { getCookieSession } from "../auth/get-cookie-session";
 
 const ApiPut = async (url: string, body: object, reqHeader: Record<string, string> = {}) => {
+  console.log("==put")
   const cookie: Session = await getCookieSession()
   const header: HeadersInit = {
     ...(cookie.role && { "role": cookie.role }),
@@ -26,7 +27,9 @@ const ApiPut = async (url: string, body: object, reqHeader: Record<string, strin
       body: JSON.stringify(reqBody)
     });
 
+
     const data = await response.json();
+    console.log("===data", data)
 
     // ステータスコードを確認
     if (!response.ok) {

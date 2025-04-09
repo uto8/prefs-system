@@ -33,10 +33,22 @@ const issueSlice = createSlice({
         state.value[index].memo = action.payload.memo;
       }
     },
+    updateStatusValue: (state, action: PayloadAction<{id: number, status: string}>) => {
+      const index = state.value.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.value[index].status = action.payload.status;
+      }
+    },
     updateDatetimeValue: (state, action: PayloadAction<{id: number, datetime: string}>) => {
       const index = state.value.findIndex(item => item.id === action.payload.id);
       if (index !== -1) {
         state.value[index].datetime = action.payload.datetime;
+      }
+    },
+    updateEstimateDateValue: (state, action: PayloadAction<{id: number, date: string}>) => {
+      const index = state.value.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.value[index].estimateSubmissionDate = action.payload.date;
       }
     },
     // 発行の削除
@@ -102,7 +114,9 @@ export const {
   addValue,
   updateMemoValue,
   removeIssue,
-  updateDatetimeValue
+  updateDatetimeValue,
+  updateStatusValue,
+  updateEstimateDateValue
 } = issueSlice.actions;
 
 export const issueReducer = issueSlice.reducer;

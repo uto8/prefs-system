@@ -20,6 +20,8 @@ import { ja } from "date-fns/locale";
 import { Issue } from '@/types/Issue'
 import ApiPut from '@/lib/useApi/put'
 import { useToast } from '@/hooks/use-toast'
+import { useAppDispatch } from '@/stores'
+import { updateStatusValue } from '@/stores/reducers/issueReducer'
 
 
 const formSchema = z.object({
@@ -47,6 +49,8 @@ export default function CompleteModal({
     },
   })
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (issue?.issueConfirmed.id) {
       form.reset({
@@ -61,6 +65,7 @@ export default function CompleteModal({
       await ApiPut(`/issue_confirmed/${issue.issueConfirmed.id}/complete`, {
         finishDate: format(data.finishDate, "yyyy-MM-dd")
       })
+      dispatch(updateStatusValue({id:issue.id, status:"完了済"}));
       toast({
         variant: "success",
         title: "契約を完了しました",

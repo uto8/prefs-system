@@ -53,6 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             companyId: user.companyId || null,
             officeId: user.officeId || null,
             saleId: user.saleId || null,
+            receptionId: user.receptionId || null
           })
 
           return {
