@@ -28,7 +28,7 @@ export default async function Revenue() {
   return (
     <div>
       <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <TitleComponent title="契約額"/>
+        <TitleComponent title="入金額"/>
         <table className="min-w-full divide-y divide-gray-300">
           <thead>
             <tr className="divide-x divide-gray-200">
