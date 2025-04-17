@@ -137,6 +137,7 @@ export default function EditIssueForm({issue}: {issue: Issue}) {
                       <SelectGroup>
                         <SelectItem value="新築">新築</SelectItem>
                         <SelectItem value="リフォーム">リフォーム</SelectItem>
+                        <SelectItem value="不明">不明</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
