@@ -253,7 +253,7 @@ export default function EditIssueForm({
                 タイプ
                 </FormLabel>
                 <FormControl>
-                  <SelectField options={[{label: "新築", value:"新築"},{label: "リフォーム", value:"リフォーム"}]} value={type} placeholder="選択してください" onChange={field.onChange}/>
+                  <SelectField options={[{label: "新築", value:"新築"},{label: "リフォーム", value:"リフォーム"},{label: "不明", value:"不明"}]} value={type} placeholder="選択してください" onChange={field.onChange}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -274,7 +274,7 @@ export default function EditIssueForm({
                         className="flex flex-row items-start space-x-3 space-y-0"
                       >
                         <FormControl>
-                          <RadioField value={issue.isFranchise?"1": "0"} options={[{label: "自社", value: "0"}, {label: "別元請", value: "1"}]} onChange={field.onChange}/>
+                          <RadioField value={issue.isFranchise?"1": "0"} options={[{label: "SOTORIE", value: "0"}, {label: "別元請", value: "1"}]} onChange={field.onChange}/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

@@ -263,6 +263,7 @@ export default function CreateIssueForm({
                       <SelectGroup>
                         <SelectItem value="新築">新築</SelectItem>
                         <SelectItem value="リフォーム">リフォーム</SelectItem>
+                        <SelectItem value="不明">不明</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -286,7 +287,7 @@ export default function CreateIssueForm({
                         className="flex flex-row items-start space-x-3 space-y-0"
                       >
                         <FormControl>
-                          <RadioField options={[{label: "自社", value: "0"}, {label: "別元請", value: "1"}]} onChange={field.onChange}/>
+                          <RadioField options={[{label: "SOTORIE", value: "0"}, {label: "別元請", value: "1"}]} onChange={field.onChange}/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

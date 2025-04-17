@@ -49,6 +49,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
       ])
     }else if(role === "SALES"){
       setNavigations([
+        { name: 'トップページ', url: '/', icon: HomeIcon, current: currentUrl === '/' },
         { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
         { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
         { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
