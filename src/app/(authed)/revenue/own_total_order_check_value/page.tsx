@@ -1,6 +1,7 @@
 import React from 'react'
 import TitleComponent from '@/components/layout/title'
 import ApiGet from '@/lib/useApi/get'
+import { formatNumber } from '@/lib/format_number';
 
 export default async function Revenue() {
 
@@ -56,10 +57,10 @@ export default async function Revenue() {
                     .replace('月', '')
                     .replace(/-(\d)$/g, '-0$1'); // 月部分が1桁の場合に先頭にゼロを追加
 
-                  const issueCount = issuesMap[formattedMonth] || "";
+                  const issueCount = issuesMap[formattedMonth] || null;
                   return (
                     <td key={monthIndex} className="whitespace-nowrap pl-2 py-4 text-sm text-gray-500">
-                      {issueCount}
+                      {formatNumber(issueCount)}
                     </td>
                   );
                 })}

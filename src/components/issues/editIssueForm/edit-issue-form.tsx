@@ -16,7 +16,7 @@ import RadioField from '@/components/ui/radio-field';
 import ApiGet from '@/lib/useApi/get';
 import { useEffect, useState } from 'react';
 import { Sale } from '@/types/Sale';
-import { Reception } from '@/types/Reception';
+// import { Reception } from '@/types/Reception';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -60,7 +60,7 @@ export default function EditIssueForm({
   const {toast} = useToast();
 
   const [saleOptions, setSaleOptions] = useState<OptionFields>(sales);
-  const [receptionOptions, setReceptionOptions] = useState<OptionFields>(receptions);
+  const [receptionOptions] = useState<OptionFields>(receptions);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,9 +92,9 @@ export default function EditIssueForm({
     const sales = await ApiGet("/sales",{"officeId": officeId})
     const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
     setSaleOptions(saleOption)
-    const receptions = await ApiGet("/receptions",{"officeId": officeId})
-    const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
-    setReceptionOptions(receptionOption)
+    // const receptions = await ApiGet("/receptions",{"officeId": officeId})
+    // const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
+    // setReceptionOptions(receptionOption)
   }
   useEffect(() => {
     fetchData()

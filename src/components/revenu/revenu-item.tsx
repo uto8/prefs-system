@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { formatNumber } from '@/lib/format_number';
 
 export type RevenuData = {
   title: string;
@@ -38,7 +39,7 @@ export default function RevenuItem({
       </div>
       <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm/6">
         <div className="flex justify-between gap-x-4 py-3">
-          <dt className="text-gray-500">{data.count}{data.unit}</dt>
+          <dt className="text-gray-500">{formatNumber(data.count)}{data.unit}</dt>
           <dd className="text-gray-700">
 
           </dd>
