@@ -24,7 +24,7 @@ import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ApiGet from '@/lib/useApi/get';
 import { Sale } from '@/types/Sale';
-import { Reception } from '@/types/Reception';
+// import { Reception } from '@/types/Reception';
 
 const formSchema = z.object({
   currentAddress: z.string().optional(),
@@ -67,7 +67,7 @@ export default function CreateIssueForm({
   const {toast} = useToast();
   const [disabled, setDisabled] = useState(false);
   const [saleOptions, setSaleOptions] = useState<OptionFields>(sales);
-  const [receptionOptions, setReceptionOptions] = useState<OptionFields>(receptions);
+  const [receptionOptions] = useState<OptionFields>(receptions);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,18 +91,25 @@ export default function CreateIssueForm({
   })
 
   const officeId = useWatch({ control: form.control, name: "officeId" });
+  const receptionId2 = useWatch({ control: form.control, name: "receptionId" });
 
   async function fetchData() {
     const sales = await ApiGet("/sales",{"officeId": officeId})
     const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
     setSaleOptions(saleOption)
-    const receptions = await ApiGet("/receptions",{"officeId": officeId})
-    const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
-    setReceptionOptions(receptionOption)
+    // const receptions = await ApiGet("/receptions",{"officeId": officeId})
+    // const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
+    // setReceptionOptions(receptionOption)
   }
   useEffect(() => {
     fetchData()
   }, [officeId]);
+
+  useEffect(() => {
+    form.reset({
+      receptionId: receptionId?? ""
+    });
+  }, [receptionId])
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
@@ -330,7 +337,7 @@ export default function CreateIssueForm({
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
-                        <SelectField options={receptionOptions} value={receptionId??""} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
+                        <SelectField options={receptionOptions} value={receptionId2?? ""} placeholder="受付を選択してください" label='受付担当者' onChange={field.onChange}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
