@@ -173,7 +173,7 @@ export default function SearchModal({offset}: {offset: number}) {
                 />
                 <div className="mt-4">
                   <Button type="submit" className='w-full'>
-                    登録
+                    検索
                   </Button>
                 </div>
               </form>
