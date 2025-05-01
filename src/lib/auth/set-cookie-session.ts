@@ -18,11 +18,13 @@ export const setCookieSession = async ({
   idToken: string
 }) => {
   const useCookie = await cookies()
-  useCookie.set('name', 'lee', { secure: true })
-  useCookie.set("role", role)
-  useCookie.set("companyId", companyId)
-  useCookie.set("officeId", officeId)
-  useCookie.set("saleId", saleId)
-  useCookie.set("receptionId", receptionId)
-  useCookie.set("idToken", idToken)
+  const cookieOptions = { maxAge: 315360000, secure: true }
+
+  useCookie.set('name', 'lee', cookieOptions)
+  useCookie.set("role", role, cookieOptions)
+  useCookie.set("companyId", companyId, cookieOptions)
+  useCookie.set("officeId", officeId, cookieOptions)
+  useCookie.set("saleId", saleId, cookieOptions)
+  useCookie.set("receptionId", receptionId, cookieOptions)
+  useCookie.set("idToken", idToken, cookieOptions)
 }
