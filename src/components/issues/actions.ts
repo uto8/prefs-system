@@ -10,6 +10,8 @@ export const searchIssues = async ({
   status: status,
   issueCode: issueCode,
   offset,
+  createdAtFrom,
+  createdAtTo
 }: {
   client_name: string | null;
   type: string | null;
@@ -17,7 +19,9 @@ export const searchIssues = async ({
   office_name: string | null;
   status: string | null;
   issueCode: string | null;
-  offset: number
+  offset: number;
+  createdAtFrom: string | null;
+  createdAtTo: string | null;
 }) => {
   try{
     let url = '/issues?';
@@ -38,6 +42,12 @@ export const searchIssues = async ({
     }
     if (issueCode !== null) {
       url += `issue_code=${issueCode}&`;
+    }
+    if (createdAtFrom !== null) {
+      url += `created_at_from=${createdAtFrom}&`;
+    }
+    if (createdAtTo !== null) {
+      url += `created_at_to=${createdAtTo}&`;
     }
     url += `limit=20&offset=${offset}`
     const issues = await ApiGet(url);
