@@ -98,35 +98,6 @@ export default function IssueListTable({issues: issues}: {
     }
   }
 
-  const handleLost = async ({id, status}: {
-    id: number;
-    status: string;
-  }) => {
-    const input = prompt("失注の種類を入力してください（1: 打ち合わせ前失注, 2: 打ち合わせ後失注）");
-
-    if (!input) return;
-
-    let newStatus = "";
-
-    if (input === "1") {
-      newStatus = "打ち合わせ前失注";
-    } else if (input === "2") {
-      newStatus = "打ち合わせ後失注";
-    } else {
-      alert("無効な入力です。処理を中止します。");
-      return;
-    }
-    console.log(newStatus)
-    try{
-      await ApiPut(`/issues/${id}/status`, {
-        status: status
-      })
-      dispatch(updateStatusValue({id:id, status:"失注"}));
-    }catch(e){
-      console.log("e", e)
-      throw e
-    }
-  }
   const handleRemoveLost = async ({id, status}: {
     id: number;
     status: string
