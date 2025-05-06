@@ -29,6 +29,8 @@ const formSchema = z.object({
   saleName: z.string().optional(),
   officeName: z.string().optional(),
   status: z.string().optional(),
+  createdAtFrom: z.string().optional(),
+  createdAtTo: z.string().optional(),
 })
 
 export default function SearchModal({offset}: {offset: number}) {
@@ -48,7 +50,9 @@ export default function SearchModal({offset}: {offset: number}) {
         office_name: data.officeName ?? null,
         status: data.status ?? null,
         issueCode: data.issueCode ?? null,
-        offset: offset
+        offset: offset,
+        createdAtFrom: data.createdAtFrom ?? null,
+        createdAtTo: data.createdAtTo ?? null
       })
       dispatch(setValue(issues.data));
     }catch(e) {
@@ -171,6 +175,37 @@ export default function SearchModal({offset}: {offset: number}) {
                     </FormItem>
                   )}
                 />
+                <div className='flex gap-4'>
+                  <FormField
+                    control={form.control}
+                    name="createdAtFrom"
+                    render={({field}) => (
+                      <FormItem>
+                        <FormLabel>
+                        登録日
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} type="date" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="createdAtTo"
+                    render={({field}) => (
+                      <FormItem>
+                        <FormLabel>〜登録日
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} type="date" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <div className="mt-4">
                   <Button type="submit" className='w-full'>
                     検索
