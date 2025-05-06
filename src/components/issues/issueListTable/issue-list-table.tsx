@@ -23,6 +23,7 @@ import ApiGet from '@/lib/useApi/get';
 import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
+import LostModal from '../lost_modal';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -30,6 +31,7 @@ export default function IssueListTable({issues: issues}: {
   const [issueContractData, setIssueContractData] = useState<Issue | null>(null)
   const [editModal, setEditModal] = useState(false)
   const [completeModal, setCompleteModal] = useState(false)
+  const [lostModal, setLostModal] = useState(false)
   const [datetime, setDatetime] = useState("")
   const [estimateDate, setEstimateDatetime] = useState("")
   const [memo, setMemo] = useState("")
@@ -96,23 +98,6 @@ export default function IssueListTable({issues: issues}: {
     }
   }
 
-  const handleLost = async ({id, status}: {
-    id: number;
-    status: string
-  }) => {
-    const result = confirm("本当に失注にしますか？")
-    if(!result) return
-    console.log("===test")
-    try{
-      await ApiPut(`/issues/${id}/status`, {
-        status: status
-      })
-      dispatch(updateStatusValue({id:id, status:"失注"}));
-    }catch(e){
-      console.log("e", e)
-      throw e
-    }
-  }
   const handleRemoveLost = async ({id, status}: {
     id: number;
     status: string
@@ -387,8 +372,10 @@ export default function IssueListTable({issues: issues}: {
                         }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         失注解除
                         </button>: <button onClick={()=>{
-                          handleLost({id:issue.id,status:"失注"})
-                        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                          if(!issue)return
+                          setLostModal(true)
+                          setIssueContractData(issue)
+                        }}  className="ml-2 text-indigo-600 hover:text-indigo-900">
                         失注
                         </button>
                       }
@@ -431,6 +418,11 @@ export default function IssueListTable({issues: issues}: {
       <CompleteModal
         editModal={completeModal}
         setEditModal={()=>setCompleteModal(false)}
+        issue={issueContractData}
+      />
+      <LostModal
+        editModal={lostModal}
+        setEditModal={()=>setLostModal(false)}
         issue={issueContractData}
       />
   </>
