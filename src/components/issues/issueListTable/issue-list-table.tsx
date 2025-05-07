@@ -367,7 +367,7 @@ export default function IssueListTable({issues: issues}: {
                       契約
                       </button>
                       {
-                        issue.status === "失注" ?<button onClick={()=>{
+                        issue.status.includes("失注")?<button onClick={()=>{
                           handleRemoveLost({id:issue.id,status:"失注解除"})
                         }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         失注解除
