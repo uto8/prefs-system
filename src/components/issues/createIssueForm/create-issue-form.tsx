@@ -142,6 +142,42 @@ export default function CreateIssueForm({
     }
   }
 
+  // エンターを押すと次の項目へ移動
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        const target = e.target as HTMLElement;
+
+        // textarea など Enter 入力を期待する要素は除外
+        if (
+          target.tagName === "TEXTAREA" ||
+          target.getAttribute("type") === "submit"
+        ) {
+          return;
+        }
+
+        e.preventDefault();
+
+        // フォーカス可能な次の要素へ移動（Tabキーと同じ動作）
+        const form = target.closest("form");
+        if (!form) return;
+
+        const elements = Array.from(
+          form.querySelectorAll<HTMLElement>(
+            "input, select, textarea, button"
+          )
+        ).filter(el => !el.hasAttribute("disabled"));
+
+        const index = elements.indexOf(target);
+        const next = elements[index + 1];
+        next?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <>
       <Form {...form}>
@@ -157,7 +193,10 @@ export default function CreateIssueForm({
                   顧客名
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" />
+                  <Input
+                    {...field}
+                    type="text"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -172,7 +211,10 @@ export default function CreateIssueForm({
                 顧客名カナ
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" />
+                  <Input
+                    {...field}
+                    type="text"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,7 +229,10 @@ export default function CreateIssueForm({
                   案件番号
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" />
+                  <Input
+                    {...field}
+                    type="text"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
