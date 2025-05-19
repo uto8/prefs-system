@@ -5,8 +5,8 @@ import ApiGet from "@/lib/useApi/get";
 export const searchIssues = async ({
   client_name: clientName,
   type: type,
-  sale_name: saleName,
-  office_name: officeName,
+  sale_id: saleId,
+  office_id: officeId,
   status: status,
   issueCode: issueCode,
   offset,
@@ -15,8 +15,8 @@ export const searchIssues = async ({
 }: {
   client_name: string | null;
   type: string | null;
-  sale_name: string | null;
-  office_name: string | null;
+  sale_id: string | null;
+  office_id: string | null;
   status: string | null;
   issueCode: string | null;
   offset: number;
@@ -31,12 +31,12 @@ export const searchIssues = async ({
     if (type !== null) {
       url += `type=${type}&`;
     }
-    if (saleName !== null) {
-      url += `sale_name=${saleName}&`;
-    }
-    if (officeName !== null) {
-      url += `office_name=${officeName}&`;
-    }
+    // if (saleName !== null) {
+    //   url += `sale_name=${saleName}&`;
+    // }
+    // if (officeName !== null) {
+    //   url += `office_name=${officeName}&`;
+    // }
     if (status !== null) {
       url += `status=${status}&`;
     }
@@ -50,7 +50,14 @@ export const searchIssues = async ({
       url += `created_at_to=${createdAtTo}&`;
     }
     url += `limit=20&offset=${offset}`
-    const issues = await ApiGet(url);
+    let header = {}
+    if(officeId){
+      header = {...header, officeId: officeId}
+    }
+    if(saleId){
+      header = {...header, saleId: saleId}
+    }
+    const issues = await ApiGet(url, header);
     return issues;
   }catch(e) {
     throw e;

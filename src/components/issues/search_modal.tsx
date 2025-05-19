@@ -20,7 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import ApiGet from '@/lib/useApi/get';
+import SelectField, { OptionFields } from '../ui/select-field';
+import { Office } from '@/types/Office';
+import { Sale } from '@/types/Sale';
+import { auth } from '@/auth';
 
 const formSchema = z.object({
   issueCode: z.string().optional(),
@@ -28,6 +33,8 @@ const formSchema = z.object({
   type: z.string().optional(),
   saleName: z.string().optional(),
   officeName: z.string().optional(),
+  saleId: z.string().optional(),
+  officeId: z.string().optional(),
   status: z.string().optional(),
   createdAtFrom: z.string().optional(),
   createdAtTo: z.string().optional(),
@@ -39,15 +46,45 @@ export default function SearchModal({offset}: {offset: number}) {
     defaultValues: {
     },
   })
+  const [offices, setOffices] = useState<OptionFields>([]);
+  const [sales, setSales] = useState<OptionFields>([]);
+  const [userOfficeId, setUserOfficeId] = useState<string | null>(null);
+  const [userSaleId, setUserSaleId] = useState<string | null>(null);
+  const officeId = form.watch("officeId");
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await ApiGet("/offices");
+      const officeOption: OptionFields = res.map((office: Office) => {return {value: office.id, label: office.name}})
+      setOffices(officeOption)
+      const session = await auth();
+
+      const officeId: string | null = session?.user.officeId? String(session?.user.officeId): null
+      setUserOfficeId(officeId)
+      const saleId: string | null = session?.user.saleId? String(session?.user.saleId): null
+      setUserSaleId(saleId)
+    }
+    fetchData()
+  }, [])
+  useEffect(() => {
+    if (!officeId) return;
+    console.log("==useEffect sales")
+    const fetchData = async () => {
+      const res = await ApiGet("/sales", {officeId: officeId});
+      const saleOption: OptionFields = res.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+      setSales(saleOption)
+    }
+    fetchData()
+  }, [officeId])
   const [open, setOpen] = useState(false)
   const dispatch = useAppDispatch();
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       const issues = await searchIssues({
         client_name: data.clientName ?? null,
         type: data.type ?? null,
-        sale_name: data.saleName ?? null,
-        office_name: data.officeName ?? null,
+        sale_id: data.saleId ?? null,
+        office_id: data.officeId ?? null,
         status: data.status ?? null,
         issueCode: data.issueCode ?? null,
         offset: offset,
@@ -120,36 +157,36 @@ export default function SearchModal({offset}: {offset: number}) {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="saleName"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      担当者名
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="officeName"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      店舗名
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
+                {(() => {
+                  if(!userSaleId){
+                    return <>
+                      {!userOfficeId ?<FormField
+                        control={form.control}
+                        name="officeId"
+                        render={({field}) => (
+                          <FormItem>
+                            <FormControl>
+                              <SelectField options={offices} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />: null}
+                      <FormField
+                        control={form.control}
+                        name="saleId"
+                        render={({field}) => (
+                          <FormItem>
+                            <FormControl>
+                              <SelectField options={sales} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  }})()}
                 <FormField
                   control={form.control}
                   name="status"

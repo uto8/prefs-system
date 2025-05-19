@@ -20,7 +20,9 @@ export function DataPagination({ currentPage, totalPages, link, query="" }: { cu
     <Pagination className="mt-16">
       <PaginationContent>
         <PaginationItem aria-disabled={1 === currentPage}>
-          <PaginationPrevious href={`/${link}/list/?page=${1}${query}`} />
+          {(currentPage > 1)&&
+            <PaginationPrevious href={`/${link}/list/?page=${1}${query}`} />
+          }
         </PaginationItem>
         {[...Array(totalPages)].map((_, index) => {
           const page = index + 1;
@@ -31,7 +33,10 @@ export function DataPagination({ currentPage, totalPages, link, query="" }: { cu
           );
         })}
         <PaginationItem aria-disabled={totalPages === currentPage}>
-          <PaginationNext href={`/${link}/list/?page=${totalPages}${query}`} />
+          {(currentPage < totalPages)&&
+          <PaginationNext href={`/${link}/list/?page=${currentPage+1}${query}`} />
+          }
+
         </PaginationItem>
       </PaginationContent>
     </Pagination>
