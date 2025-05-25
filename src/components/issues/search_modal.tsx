@@ -8,9 +8,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Button } from '../ui/button'
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { searchIssues } from './actions';
-import { useAppDispatch } from '@/stores';
-import { setValue } from '@/stores/reducers/issueReducer';
 import {
   Select,
   SelectContent,
@@ -26,6 +23,7 @@ import SelectField, { OptionFields } from '../ui/select-field';
 import { Office } from '@/types/Office';
 import { Sale } from '@/types/Sale';
 import { auth } from '@/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const formSchema = z.object({
   issueCode: z.string().optional(),
@@ -41,9 +39,20 @@ const formSchema = z.object({
 })
 
 export default function SearchModal({offset}: {offset: number}) {
+  const searchParams = useSearchParams();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      issueCode: searchParams.get("issue_code") ?? undefined,
+      clientName: searchParams.get("client_name") ?? undefined,
+      type: searchParams.get("type") ?? undefined,
+      saleName: searchParams.get("sale_name") ?? undefined,
+      officeName: searchParams.get("office_name") ?? undefined,
+      saleId: searchParams.get("sale_id") ?? undefined,
+      officeId: searchParams.get("office_id") ?? undefined,
+      status: searchParams.get("status") ?? undefined,
+      createdAtFrom: searchParams.get("created_at_from") ?? undefined,
+      createdAtTo: searchParams.get("created_at_to") ?? undefined,
     },
   })
   const [offices, setOffices] = useState<OptionFields>([]);
@@ -51,6 +60,7 @@ export default function SearchModal({offset}: {offset: number}) {
   const [userOfficeId, setUserOfficeId] = useState<string | null>(null);
   const [userSaleId, setUserSaleId] = useState<string | null>(null);
   const officeId = form.watch("officeId");
+  const saleId = form.watch("saleId");
   useEffect(() => {
     const fetchData = async () => {
       const res = await ApiGet("/offices");
@@ -67,7 +77,6 @@ export default function SearchModal({offset}: {offset: number}) {
   }, [])
   useEffect(() => {
     if (!officeId) return;
-    console.log("==useEffect sales")
     const fetchData = async () => {
       const res = await ApiGet("/sales", {officeId: officeId});
       const saleOption: OptionFields = res.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
@@ -76,22 +85,45 @@ export default function SearchModal({offset}: {offset: number}) {
     fetchData()
   }, [officeId])
   const [open, setOpen] = useState(false)
-  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
-      const issues = await searchIssues({
-        client_name: data.clientName ?? null,
-        type: data.type ?? null,
-        sale_id: data.saleId ?? null,
-        office_id: data.officeId ?? null,
-        status: data.status ?? null,
-        issueCode: data.issueCode ?? null,
-        offset: offset,
-        createdAtFrom: data.createdAtFrom ?? null,
-        createdAtTo: data.createdAtTo ?? null
-      })
-      dispatch(setValue(issues.data));
+      let url = '/issues/list?';
+      if (data.clientName) {
+        url += `client_name=${data.clientName}&`;
+      }
+      if (data.type) {
+        url += `type=${data.type}&`;
+      }
+      // if (saleName !== null) {
+      //   url += `sale_name=${saleName}&`;
+      // }
+      // if (officeName !== null) {
+      //   url += `office_name=${officeName}&`;
+      // }
+      if (data.status) {
+        url += `status=${data.status}&`;
+      }
+      if (data.issueCode) {
+        url += `issue_code=${data.issueCode}&`;
+      }
+      if (data.createdAtFrom) {
+        url += `created_at_from=${data.createdAtFrom}&`;
+      }
+      if (data.createdAtTo) {
+        url += `created_at_to=${data.createdAtTo}&`;
+      }
+      if(data.officeId){
+        url += `office_id=${data.officeId}&`;
+      }
+      if(data.saleId){
+        url += `sale_id=${data.saleId}&`;
+      }
+      url += `limit=20&offset=${offset}`
+
+      router.push(url);
+
     }catch(e) {
       throw e;
     }
@@ -167,7 +199,7 @@ export default function SearchModal({offset}: {offset: number}) {
                         render={({field}) => (
                           <FormItem>
                             <FormControl>
-                              <SelectField options={offices} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
+                              <SelectField options={offices} value={officeId} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -179,7 +211,7 @@ export default function SearchModal({offset}: {offset: number}) {
                         render={({field}) => (
                           <FormItem>
                             <FormControl>
-                              <SelectField options={sales} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                              <SelectField options={sales} value={saleId} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
                             </FormControl>
                             <FormMessage />
                           </FormItem>

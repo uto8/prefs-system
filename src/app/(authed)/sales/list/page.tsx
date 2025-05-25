@@ -22,13 +22,21 @@ export default function IssueList() {
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
 
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
-        // sales, offices, session を並列で取得
+        // sales, offices, sessio
+        const officeId = searchParams.get("office_id") || null;
+        let header = {}
+        if(officeId){
+          header = {
+            officeId: officeId
+          }
+        }
         const [salesData, officesData] = await Promise.all([
-          ApiGet(`/sales?limit=${LIMIT}&offset=${offset}`),
+          ApiGet(`/sales?limit=${LIMIT}&offset=${offset}`,header),
           ApiGet("/offices"),
         ]);
         console.log(salesData)
@@ -53,7 +61,9 @@ export default function IssueList() {
       <SaleTitle isOffice={isOffice} offices={offices}/>
       <div className="mt-8 flow-root">
       {loading ? (
-        <></>
+        <div className="flex justify-center" aria-label="読み込み中">
+        <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+      </div>
       ) : (
         <>
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
