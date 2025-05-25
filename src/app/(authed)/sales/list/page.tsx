@@ -22,13 +22,21 @@ export default function IssueList() {
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
 
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
-        // sales, offices, session を並列で取得
+        // sales, offices, sessio
+        const officeId = searchParams.get("office_id") || null;
+        let header = {}
+        if(officeId){
+          header = {
+            officeId: officeId
+          }
+        }
         const [salesData, officesData] = await Promise.all([
-          ApiGet(`/sales?limit=${LIMIT}&offset=${offset}`),
+          ApiGet(`/sales?limit=${LIMIT}&offset=${offset}`,header),
           ApiGet("/offices"),
         ]);
         console.log(salesData)

@@ -102,6 +102,9 @@ export default function ShopList() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.phoneNumber}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{office.isFranchise? "✅": "❌"}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                        <Link href={`/sales/list?office_id=${office.id}`} className="text-indigo-600 hover:text-indigo-900 mr-2">
+                          営業一覧
+                        </Link>
                         <Link href={`/offices/${office.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-2">
                           編集
                         </Link>
