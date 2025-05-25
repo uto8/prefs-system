@@ -272,6 +272,9 @@ export default function IssueListTable({issues: issues}: {
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     メモ
                   </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    登録日
+                  </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                     <span className="sr-only">入金</span>
                   </th>
@@ -357,6 +360,9 @@ export default function IssueListTable({issues: issues}: {
                           </div>
                         </DialogContent>
                       </Dialog>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {format(issue.createdAt, "MM月dd日 HH時mm分")}
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <button onClick={()=>{

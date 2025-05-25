@@ -4,26 +4,61 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SearchModal from "@/components/issues/search_modal";
 import IssueListTable from "@/components/issues/issueListTable/issue-list-table";
-import ApiGet from "@/lib/useApi/get";
 import { DataPagination } from "@/components/layout/pagenation";
 import { Issue } from "@/types/Issue";
+import { useAppDispatch } from "@/stores";
+import { setValue } from "@/stores/reducers/issueReducer";
+import { searchIssues } from "@/components/issues/actions";
 
 export default function IssueListPage() {
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || "1";
+  const issueCode = searchParams.get("issue_code") || null;
+  const clientName = searchParams.get("client_name") || null;
+  const officeId = searchParams.get("office_id") || null;
+  const saleId = searchParams.get("sale_id") || null;
+  const status = searchParams.get("status") || null;
+  const createdAtFrom = searchParams.get("created_at_from") || null;
+  const createdAtTo = searchParams.get("created_at_to") || null;
   const currentPage = Number(page) || 1;
   const LIMIT = 20;
   const offset = (currentPage - 1) * LIMIT;
 
   const [issues, setIssues] = useState<{ data: Issue[]; totalCount: number } | null>(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setLoading(true);
-    ApiGet(`/issues?limit=${LIMIT}&offset=${offset}`)
-      .then((data) => setIssues(data))
-      .finally(() => setLoading(false));
-  }, [page]);
+    const fetchData = async () => {
+      const issues = await searchIssues({
+        client_name: clientName,
+        type: null,
+        sale_id: saleId,
+        office_id: officeId,
+        status: status,
+        issueCode: issueCode,
+        offset: offset,
+        createdAtFrom: createdAtFrom,
+        createdAtTo: createdAtTo,
+      })
+      console.log("==query", {
+        client_name: clientName,
+        type: null,
+        sale_id: saleId,
+        office_id: officeId,
+        status: status,
+        issueCode: issueCode,
+        offset: offset,
+        createdAtFrom: createdAtFrom,
+        createdAtTo: createdAtTo,
+      })
+      dispatch(setValue(issues.data));
+      setIssues(issues)
+      setLoading(false)
+    }
+    fetchData()
+  }, [page,searchParams]);
 
   const totalPages = issues ? Math.ceil(issues.totalCount / LIMIT) : 1;
 

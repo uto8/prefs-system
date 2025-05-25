@@ -11,7 +11,7 @@ export const searchIssues = async ({
   issueCode: issueCode,
   offset,
   createdAtFrom,
-  createdAtTo
+  createdAtTo,
 }: {
   client_name: string | null;
   type: string | null;
