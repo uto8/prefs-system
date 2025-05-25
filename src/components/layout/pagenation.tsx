@@ -10,11 +10,6 @@ import {
 } from "@/components/ui/pagination"
 
 export function DataPagination({ currentPage, totalPages, link, query="" }: { currentPage: number; totalPages: number, link: string, query?: string }) {
-  // const goToPage = (page: number) => {
-  //   const params = new URLSearchParams(searchParams);
-  //   params.set("page", page.toString());
-  //   router.push(`?${params.toString()}`);
-  // };
 
   return (
     <Pagination className="mt-16">

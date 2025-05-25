@@ -12,6 +12,7 @@ export const searchIssues = async ({
   offset,
   createdAtFrom,
   createdAtTo,
+  sortType
 }: {
   client_name: string | null;
   type: string | null;
@@ -22,6 +23,7 @@ export const searchIssues = async ({
   offset: number;
   createdAtFrom: string | null;
   createdAtTo: string | null;
+  sortType: string | null
 }) => {
   try{
     let url = '/issues?';
@@ -48,6 +50,23 @@ export const searchIssues = async ({
     }
     if (createdAtTo !== null) {
       url += `created_at_to=${createdAtTo}&`;
+    }
+    if(sortType === "issueCodeAscendingOrder"){
+      url += `issue_code_ascending_order=true&`
+    }else if(sortType === "issueCodeDescendingOrder"){
+      url += `issue_code_descending_order=true&`
+    }else if(sortType === "meetingAscendingOrder"){
+      url += `meeting_ascending_order=true&`
+    }else if(sortType === "meetingDescendingOrder"){
+      url += `meeting_descending_order=true&`
+    }else if(sortType === "estimateSubmissionDateAscendingOrder"){
+      url += `estimate_submission_date_ascending_order=true&`
+    }else if(sortType === "estimateSubmissionDateDescendingOrder"){
+      url += `estimate_submission_date_descending_order=true&`
+    }else if(sortType === "createdAtAscendingOrder"){
+      url += `created_at_ascending_order=true&`
+    }else if(sortType === "createdAtDescendingOrder"){
+      url += `created_at_descending_order=true&`
     }
     url += `limit=20&offset=${offset}`
     let header = {}

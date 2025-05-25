@@ -24,6 +24,7 @@ import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
 import LostModal from '../lost_modal';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -40,6 +41,7 @@ export default function IssueListTable({issues: issues}: {
   const { value } = useAppSelector((state) => state.issues);
   const dispatch = useAppDispatch();
   const { value: meetings } = useAppSelector((state) => state.meetings);
+  const router = useRouter()
 
   useEffect(() => {
     const fetch = async () => {
@@ -235,6 +237,42 @@ export default function IssueListTable({issues: issues}: {
     )
   }
 
+
+  const searchParams = useSearchParams();
+
+  const handleSort = (sortType: string) => {
+    let queryData = ""
+  const issueCode = searchParams.get("issue_code") || null;
+  const clientName = searchParams.get("client_name") || null;
+  const officeId = searchParams.get("office_id") || null;
+  const saleId = searchParams.get("sale_id") || null;
+  const status = searchParams.get("status") || null;
+  const createdAtFrom = searchParams.get("created_at_from") || null;
+  const createdAtTo = searchParams.get("created_at_to") || null;
+    if(issueCode){
+      queryData += `&issue_code=${issueCode}`
+    }
+    if(clientName){
+      queryData += `&client_name=${clientName}`
+    }
+    if(officeId){
+      queryData += `&office_id=${officeId}`
+    }
+    if(saleId){
+      queryData += `&sale_id=${saleId}`
+    }
+    if(status){
+      queryData += `&status=${status}`
+    }
+    if(createdAtFrom){
+      queryData += `&created_at_from=${createdAtFrom}`
+    }
+    if(createdAtTo){
+      queryData += `&created_at_to=${createdAtTo}`
+    }
+    router.push(`?page=1&sort_type=${sortType}${queryData}`)
+  }
+
   return <>
     <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto overflow-y-auto h-[70vh] sm:-mx-6 lg:-mx-8">
@@ -243,37 +281,91 @@ export default function IssueListTable({issues: issues}: {
               <thead>
                 <tr>
                   <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                    案件番号
+                    <div className='flex justify-between'>
+                      案件番号
+                      <div className='flex'>
+                        <svg onClick={()=>handleSort("issueCodeAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                        <svg onClick={()=>handleSort("issueCodeDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  </th>
+                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <div className='flex justify-between'>
+                      お客様名
+                    </div>
+                  </th>
+                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <div className='flex justify-between'>
+                      住所
+                    </div>
+                  </th>
+                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <div className='flex justify-between'>
+                      ステータス
+                    </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    お客様名
+                    <div className='flex justify-between'>
+                      担当者
+                    </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    住所
+                    <div className='flex justify-between'>
+                      受付
+                    </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    ステータス
+                    <div className='flex justify-between'>
+                      店舗
+                    </div>
+                  </th>
+                  <th scope="col" className="px-1 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <div className='flex justify-between'>
+                      打ち合わせ
+                      <div className='flex'>
+                        <svg onClick={()=>handleSort("meetingAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                        <svg onClick={()=>handleSort("meetingDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  </th>
+                  <th scope="col" className="px-1 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <div className='flex justify-between'>
+                      見積提出日
+                      <div className='flex'>
+                        <svg onClick={()=>handleSort("estimateSubmissionDateAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                        <svg onClick={()=>handleSort("estimateSubmissionDateDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  </th>
+                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <div className='flex justify-between'>
+                      メモ
+                    </div>
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    担当者
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    受付
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    店舗
-                  </th>
-                  <th scope="col" className="px-1 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    打ち合わせ
-                  </th>
-                  <th scope="col" className="px-1 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    見積提出日
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    メモ
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    登録日
+                    <div className='flex justify-between'>
+                      登録日
+                      <div className='flex'>
+                        <svg onClick={()=>handleSort("createdAtAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                        <svg onClick={()=>handleSort("createdAtDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
                   </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                     <span className="sr-only">入金</span>

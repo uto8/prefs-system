@@ -20,12 +20,14 @@ export default function IssueListPage() {
   const status = searchParams.get("status") || null;
   const createdAtFrom = searchParams.get("created_at_from") || null;
   const createdAtTo = searchParams.get("created_at_to") || null;
+  const sortType = searchParams.get("sort_type") || null;
   const currentPage = Number(page) || 1;
   const LIMIT = 20;
   const offset = (currentPage - 1) * LIMIT;
 
   const [issues, setIssues] = useState<{ data: Issue[]; totalCount: number } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -41,23 +43,39 @@ export default function IssueListPage() {
         offset: offset,
         createdAtFrom: createdAtFrom,
         createdAtTo: createdAtTo,
-      })
-      console.log("==query", {
-        client_name: clientName,
-        type: null,
-        sale_id: saleId,
-        office_id: officeId,
-        status: status,
-        issueCode: issueCode,
-        offset: offset,
-        createdAtFrom: createdAtFrom,
-        createdAtTo: createdAtTo,
+        sortType: sortType,
       })
       dispatch(setValue(issues.data));
       setIssues(issues)
       setLoading(false)
     }
     fetchData()
+    let queryData = ""
+    if(issueCode){
+      queryData += `&issue_code=${issueCode}`
+    }
+    if(clientName){
+      queryData += `&client_name=${clientName}`
+    }
+    if(officeId){
+      queryData += `&office_id=${officeId}`
+    }
+    if(saleId){
+      queryData += `&sale_id=${saleId}`
+    }
+    if(status){
+      queryData += `&status=${status}`
+    }
+    if(createdAtFrom){
+      queryData += `&created_at_from=${createdAtFrom}`
+    }
+    if(createdAtTo){
+      queryData += `&created_at_to=${createdAtTo}`
+    }
+    if(sortType){
+      queryData += `&sort_type=${sortType}`
+    }
+    setQuery(queryData)
   }, [page,searchParams]);
 
   const totalPages = issues ? Math.ceil(issues.totalCount / LIMIT) : 1;
@@ -87,7 +105,7 @@ export default function IssueListPage() {
         <>
           <IssueListTable issues={issues?.data || []} />
           {issues && LIMIT < issues.totalCount && (
-            <DataPagination currentPage={currentPage} totalPages={totalPages} link="issues" />
+            <DataPagination currentPage={currentPage} totalPages={totalPages} link="issues" query={query} />
           )}
         </>
       )}
