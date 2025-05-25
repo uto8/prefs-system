@@ -60,6 +60,7 @@ export default function SearchModal({offset}: {offset: number}) {
   const [userOfficeId, setUserOfficeId] = useState<string | null>(null);
   const [userSaleId, setUserSaleId] = useState<string | null>(null);
   const officeId = form.watch("officeId");
+  const saleId = form.watch("saleId");
   useEffect(() => {
     const fetchData = async () => {
       const res = await ApiGet("/offices");
@@ -114,10 +115,10 @@ export default function SearchModal({offset}: {offset: number}) {
         url += `created_at_to=${data.createdAtTo}&`;
       }
       if(data.officeId){
-        url += `office_id=${data.createdAtTo}&`;
+        url += `office_id=${data.officeId}&`;
       }
       if(data.saleId){
-        url += `sale_id=${data.createdAtTo}&`;
+        url += `sale_id=${data.saleId}&`;
       }
       url += `limit=20&offset=${offset}`
 
@@ -198,7 +199,7 @@ export default function SearchModal({offset}: {offset: number}) {
                         render={({field}) => (
                           <FormItem>
                             <FormControl>
-                              <SelectField options={offices} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
+                              <SelectField options={offices} value={officeId} placeholder="店舗を選択してください" label='店舗' onChange={field.onChange}/>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -210,7 +211,7 @@ export default function SearchModal({offset}: {offset: number}) {
                         render={({field}) => (
                           <FormItem>
                             <FormControl>
-                              <SelectField options={sales} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
+                              <SelectField options={sales} value={saleId} placeholder="担当者を選択してください" label='担当者' onChange={field.onChange}/>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
