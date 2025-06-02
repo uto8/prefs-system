@@ -183,7 +183,6 @@ export default function IssueListTable({issues: issues}: {
   };
 
   // PDF発行
-
   const handleGeneratePDF = async (issue: Issue) => {
     const pdfDoc = await PDFDocument.create();
 
@@ -193,32 +192,68 @@ export default function IssueListTable({issues: issues}: {
     const customFont = await pdfDoc.embedFont(fontBytes);
 
     const page = pdfDoc.addPage([600, 800]);
+    const fontSize = 12;
+    const lineHeight = 16; // 行間を設定
+    const margin = 50;
+    const maxWidth = 400; // テキストの最大横幅
     let yPosition = 750; // 初期のY位置
 
-    const drawText = (label: string, value: string) => {
-      page.drawText(`${label}: ${value}`, {
-        x: 50,
+    const splitText = (text: string, maxWidth: number, fontSize: number) => {
+      const lines: string[] = [];
+      let currentLine = '';
+      for (const char of text) {
+        const width = customFont.widthOfTextAtSize(currentLine + char, fontSize);
+        if (width > maxWidth) {
+          lines.push(currentLine);
+          currentLine = char;
+        } else {
+          currentLine += char;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+      return lines;
+    };
+
+    const drawRow = (label: string, value: string) => {
+      const rowHeight = lineHeight * 2; // ラベルと値の間隔を含む高さ
+
+      // ラベルを描画
+      page.drawText(label, {
+        x: margin,
         y: yPosition,
-        size: 12,
+        size: fontSize,
         font: customFont,
         color: rgb(0, 0, 0),
       });
-      yPosition -= 20; // 次の行に移動
+
+      // 値を描画（改行を考慮）
+      const wrappedText = splitText(value, maxWidth, fontSize);
+      wrappedText.forEach((line, index) => {
+        page.drawText(line, {
+          x: margin + 150, // ラベルの右側に配置
+          y: yPosition - index * lineHeight,
+          size: fontSize,
+          font: customFont,
+          color: rgb(0, 0, 0),
+        });
+      });
+
+      yPosition -= rowHeight + (wrappedText.length - 1) * lineHeight; // 次の行に移動
     };
 
     // PDFに情報を追加
-    drawText('現住所', issue.currentAddress || '未設定');
-    drawText('工事予定日', issue.preferredDate || '未設定');
-    drawText('タイプ', issue.type || '未設定');
-    drawText('備考', issue.contactContent || '未設定');
-    drawText('予算', issue.budget || '未設定');
-    drawText('工事住所', issue.constructionSite || '未設定');
-    drawText('加盟店', issue.isFranchise ? '別元請' : 'SOTORIE');
-    drawText('案件登録日', issue.createdAt ? format(issue.createdAt, 'yyyy年MM月dd日') : '未設定');
-    drawText('お客様名', issue.client?.name || '未設定');
-    drawText('お客様名かな', issue.client?.nameKana || '未設定');
-    drawText('メールアドレス', issue.client?.email || '未設定');
-    drawText('電話番号', issue.client?.phoneNumber || '未設定');
+    drawRow('現住所', issue.currentAddress || '未設定');
+    drawRow('工事予定日', issue.preferredDate || '未設定');
+    drawRow('タイプ', issue.type || '未設定');
+    drawRow('備考', issue.contactContent || '未設定');
+    drawRow('予算', issue.budget || '未設定');
+    drawRow('工事住所', issue.constructionSite || '未設定');
+    drawRow('加盟店', issue.isFranchise ? '別元請' : 'SOTORIE');
+    drawRow('案件登録日', issue.createdAt ? format(issue.createdAt, 'yyyy年MM月dd日') : '未設定');
+    drawRow('お客様名', issue.client?.name || '未設定');
+    drawRow('お客様名かな', issue.client?.nameKana || '未設定');
+    drawRow('メールアドレス', issue.client?.email || '未設定');
+    drawRow('電話番号', issue.client?.phoneNumber || '未設定');
 
     const pdfBytes = await pdfDoc.save();
 
@@ -534,7 +569,7 @@ export default function IssueListTable({issues: issues}: {
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       完了
                       </button>: null}
-                      <button onClick={() => handleGeneratePDF(issue)}>お客様シート発行</button>
+                      <button className="ml-2 text-indigo-600 hover:text-indigo-900" onClick={() => handleGeneratePDF(issue)}>お客様シート発行</button>
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
