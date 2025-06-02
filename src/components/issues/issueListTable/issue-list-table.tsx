@@ -25,6 +25,8 @@ import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
 import LostModal from '../lost_modal';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { PDFDocument, rgb } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -180,6 +182,54 @@ export default function IssueListTable({issues: issues}: {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
 
+  // PDF発行
+
+  const handleGeneratePDF = async (issue: Issue) => {
+    const pdfDoc = await PDFDocument.create();
+
+    // 日本語フォントを読み込む
+    pdfDoc.registerFontkit(fontkit);
+    const fontBytes = await fetch('/fonts/NotoSansJP-Bold.ttf').then((res) => res.arrayBuffer());
+    const customFont = await pdfDoc.embedFont(fontBytes);
+
+    const page = pdfDoc.addPage([600, 800]);
+    let yPosition = 750; // 初期のY位置
+
+    const drawText = (label: string, value: string) => {
+      page.drawText(`${label}: ${value}`, {
+        x: 50,
+        y: yPosition,
+        size: 12,
+        font: customFont,
+        color: rgb(0, 0, 0),
+      });
+      yPosition -= 20; // 次の行に移動
+    };
+
+    // PDFに情報を追加
+    drawText('現住所', issue.currentAddress || '未設定');
+    drawText('工事予定日', issue.preferredDate || '未設定');
+    drawText('タイプ', issue.type || '未設定');
+    drawText('備考', issue.contactContent || '未設定');
+    drawText('予算', issue.budget || '未設定');
+    drawText('工事住所', issue.constructionSite || '未設定');
+    drawText('加盟店', issue.isFranchise ? '別元請' : 'SOTORIE');
+    drawText('案件登録日', issue.createdAt ? format(issue.createdAt, 'yyyy年MM月dd日') : '未設定');
+    drawText('お客様名', issue.client?.name || '未設定');
+    drawText('お客様名かな', issue.client?.nameKana || '未設定');
+    drawText('メールアドレス', issue.client?.email || '未設定');
+    drawText('電話番号', issue.client?.phoneNumber || '未設定');
+
+    const pdfBytes = await pdfDoc.save();
+
+    // PDFをダウンロード
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `issue_${issue.client?.id || 'unknown'}.pdf`;
+    link.click();
+  };
+
   const handleDelete = async (id: number) => {
     const result = window.confirm('本当に削除しますか？');
     if(!result) return
@@ -280,7 +330,7 @@ export default function IssueListTable({issues: issues}: {
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
-                  <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                  <th scope="col" className="z-10 sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       案件番号
                       <div className='flex'>
@@ -293,37 +343,37 @@ export default function IssueListTable({issues: issues}: {
                       </div>
                     </div>
                   </th>
-                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       お客様名
                     </div>
                   </th>
-                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       住所
                     </div>
                   </th>
-                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       ステータス
                     </div>
                   </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       担当者
                     </div>
                   </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       受付
                     </div>
                   </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       店舗
                     </div>
                   </th>
-                  <th scope="col" className="px-1 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       打ち合わせ
                       <div className='flex'>
@@ -336,7 +386,7 @@ export default function IssueListTable({issues: issues}: {
                       </div>
                     </div>
                   </th>
-                  <th scope="col" className="px-1 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       見積提出日
                       <div className='flex'>
@@ -349,12 +399,12 @@ export default function IssueListTable({issues: issues}: {
                       </div>
                     </div>
                   </th>
-                  <th scope="col" className="px-3 whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                     <div className='flex justify-between'>
                       メモ
                     </div>
                   </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
                       登録日
                       <div className='flex'>
@@ -375,7 +425,7 @@ export default function IssueListTable({issues: issues}: {
               <tbody className="divide-y divide-gray-200">
                 {value.map((issue, index) => (
                   <tr key={index}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                    <td className="sticky_row whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 sticky">
                       <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       {issue.issueCode}
                       </a>
@@ -484,6 +534,7 @@ export default function IssueListTable({issues: issues}: {
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       完了
                       </button>: null}
+                      <button onClick={() => handleGeneratePDF(issue)}>お客様シート発行</button>
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
