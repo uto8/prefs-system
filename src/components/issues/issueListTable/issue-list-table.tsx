@@ -534,7 +534,7 @@ export default function IssueListTable({issues: issues}: {
                       }} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       完了
                       </button>: null}
-                      <button onClick={() => handleGeneratePDF(issue)}>お客様シート発行</button>
+                      <button className="ml-2 text-indigo-600 hover:text-indigo-900" onClick={() => handleGeneratePDF(issue)}>お客様シート発行</button>
                       <a href={`/payment/list?type=deposit&issue_id=${issue.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                         入金
                       </a>
