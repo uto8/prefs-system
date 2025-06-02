@@ -25,8 +25,7 @@ import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
 import LostModal from '../lost_modal';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { PDFDocument, rgb } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
+import html2pdf from 'html2pdf.js';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -183,86 +182,76 @@ export default function IssueListTable({issues: issues}: {
   };
 
   // PDF発行
+
   const handleGeneratePDF = async (issue: Issue) => {
-    const pdfDoc = await PDFDocument.create();
+    // HTMLコンテンツを作成
+    const content = document.createElement('div');
+    content.innerHTML = `
+      <dl class="divide-y divide-gray-100">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">現住所</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.currentAddress || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">工事予定日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.preferredDate || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">タイプ</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.type || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">備考</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.contactContent || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">予算</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.budget || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">工事住所</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.constructionSite || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">加盟店</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.isFranchise ? '別元請' : 'SOTORIE'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">案件登録日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.createdAt ? format(issue.createdAt, 'yyyy年MM月dd日') : '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">顧客番号</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.id || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">お客様名</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.name || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">お客様名かな</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.nameKana || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">メールアドレス</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.email || '未設定'}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">電話番号</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.phoneNumber || '未設定'}</dd>
+        </div>
+      </dl>
+    `;
 
-    // 日本語フォントを読み込む
-    pdfDoc.registerFontkit(fontkit);
-    const fontBytes = await fetch('/fonts/NotoSansJP-Bold.ttf').then((res) => res.arrayBuffer());
-    const customFont = await pdfDoc.embedFont(fontBytes);
-
-    const page = pdfDoc.addPage([600, 800]);
-    const fontSize = 12;
-    const lineHeight = 16; // 行間を設定
-    const margin = 50;
-    const maxWidth = 400; // テキストの最大横幅
-    let yPosition = 750; // 初期のY位置
-
-    const splitText = (text: string, maxWidth: number, fontSize: number) => {
-      const lines: string[] = [];
-      let currentLine = '';
-      for (const char of text) {
-        const width = customFont.widthOfTextAtSize(currentLine + char, fontSize);
-        if (width > maxWidth) {
-          lines.push(currentLine);
-          currentLine = char;
-        } else {
-          currentLine += char;
-        }
-      }
-      if (currentLine) lines.push(currentLine);
-      return lines;
+    // PDFを生成
+    const options = {
+      margin: 1,
+      filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
     };
 
-    const drawRow = (label: string, value: string) => {
-      const rowHeight = lineHeight * 2; // ラベルと値の間隔を含む高さ
-
-      // ラベルを描画
-      page.drawText(label, {
-        x: margin,
-        y: yPosition,
-        size: fontSize,
-        font: customFont,
-        color: rgb(0, 0, 0),
-      });
-
-      // 値を描画（改行を考慮）
-      const wrappedText = splitText(value, maxWidth, fontSize);
-      wrappedText.forEach((line, index) => {
-        page.drawText(line, {
-          x: margin + 150, // ラベルの右側に配置
-          y: yPosition - index * lineHeight,
-          size: fontSize,
-          font: customFont,
-          color: rgb(0, 0, 0),
-        });
-      });
-
-      yPosition -= rowHeight + (wrappedText.length - 1) * lineHeight; // 次の行に移動
-    };
-
-    // PDFに情報を追加
-    drawRow('現住所', issue.currentAddress || '未設定');
-    drawRow('工事予定日', issue.preferredDate || '未設定');
-    drawRow('タイプ', issue.type || '未設定');
-    drawRow('備考', issue.contactContent || '未設定');
-    drawRow('予算', issue.budget || '未設定');
-    drawRow('工事住所', issue.constructionSite || '未設定');
-    drawRow('加盟店', issue.isFranchise ? '別元請' : 'SOTORIE');
-    drawRow('案件登録日', issue.createdAt ? format(issue.createdAt, 'yyyy年MM月dd日') : '未設定');
-    drawRow('お客様名', issue.client?.name || '未設定');
-    drawRow('お客様名かな', issue.client?.nameKana || '未設定');
-    drawRow('メールアドレス', issue.client?.email || '未設定');
-    drawRow('電話番号', issue.client?.phoneNumber || '未設定');
-
-    const pdfBytes = await pdfDoc.save();
-
-    // PDFをダウンロード
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `issue_${issue.client?.id || 'unknown'}.pdf`;
-    link.click();
+    html2pdf().set(options).from(content).save();
   };
 
   const handleDelete = async (id: number) => {
