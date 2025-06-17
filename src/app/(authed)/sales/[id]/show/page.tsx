@@ -19,11 +19,11 @@ async function SaleDetails({ params }: { params: { id: string } }) {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">メールアドレス</dt>
-            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{sale.email}</dd>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><a href={`mailto:${sale.email}`} className="text-blue-500 underline">{sale.email}</a></dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">電話番号</dt>
-            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{sale.phoneNumber}</dd>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><a href={`tel:${sale.phoneNumber}`} className="text-blue-500 underline">{sale.phoneNumber}</a></dd>
           </div>
         </dl>
       </div>

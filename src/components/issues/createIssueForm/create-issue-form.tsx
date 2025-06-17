@@ -42,10 +42,11 @@ const formSchema = z.object({
   clientNameKana: z.string().nonempty("顧客名カナは必須項目です"),
   clientEmail: z.string().optional(),
   clientPhoneNumber: z.string().optional(),
-  officeId: z.string().nonempty("店舗を選択してください"),
-  saleId: z.string().nonempty("担当者を選択してください"),
+  officeId: z.string(),
+  saleId: z.string(),
   receptionId: z.string().optional(),
   isFranchise: z.string().optional(),
+  status: z.string().optional(),
 })
 
 export default function CreateIssueForm({
@@ -87,6 +88,7 @@ export default function CreateIssueForm({
       saleId: userSaleId ?? "",
       receptionId: "",
       isFranchise: "",
+      status: "お問い合わせ"
     },
   })
 
@@ -117,19 +119,20 @@ export default function CreateIssueForm({
       await createIssue({
         issueCode: data.issueCode ?? "",
         currentAddress: data.currentAddress ?? '',
-        officeId: Number(data.officeId),
+        officeId: Number(data.officeId) ?? null,
         preferredDate: data.preferredDate ?? '',
         type: data.type,
         contactContent: data.contactContent ?? '',
         budget: data.budget ?? '',
-        saleId: Number(data.saleId),
+        saleId: Number(data.saleId) ?? null,
         constructionSite: data.constructionSite ?? '',
         clientName: data.clientName,
         clientNameKana: data.clientNameKana,
         clientEmail: data.clientEmail ?? "",
         clientPhoneNumber: data.clientPhoneNumber ?? "",
         isFranchise: data.isFranchise === "1"? 1: 0,
-        receptionId: data.receptionId? Number(data.receptionId): null
+        receptionId: data.receptionId? Number(data.receptionId): null,
+        status: data.status ?? null
       })
       toast({
         variant: "success",
@@ -390,6 +393,32 @@ export default function CreateIssueForm({
                 />
               </>
           }})()}
+
+          <FormField
+            control={form.control}
+            name="status"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                ステータス
+                </FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="選択してください" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="お問い合わせ">お問い合わせ</SelectItem>
+                        <SelectItem value="未確定">未確定</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}

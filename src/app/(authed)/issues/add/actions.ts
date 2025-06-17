@@ -6,12 +6,12 @@ import ApiPost from "@/lib/useApi/post";
 export const createIssue = async (body: {
   issueCode: string;
   currentAddress: string;
-  officeId: number,
+  officeId: number | null,
   preferredDate: string;
   type: string;
   contactContent: string;
   budget: string;
-  saleId: number;
+  saleId: number | null;
   constructionSite: string;
   clientName: string;
   clientNameKana: string;
@@ -19,6 +19,7 @@ export const createIssue = async (body: {
   clientPhoneNumber: string;
   isFranchise: number;
   receptionId: number | null;
+  status: string | null;
 }) => {
   try{
     const session = await auth()

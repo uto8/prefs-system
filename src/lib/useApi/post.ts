@@ -28,6 +28,7 @@ const ApiPost = async (url: string, body: object, reqHeader: Record<string, stri
     });
 
     const data = await response.json();
+    console.log("====data", data)
 
     // ステータスコードを確認
     if (!response.ok) {

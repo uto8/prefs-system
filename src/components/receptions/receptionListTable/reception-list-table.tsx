@@ -66,8 +66,8 @@ export default function ReceptionListTable({
                 </a>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{reception.name}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{reception.email}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{reception.phoneNumber}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a href={`mailto:${reception.email}`} className="text-blue-500 underline">{reception.email}</a></td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a href={`tel:${reception.phoneNumber}`} className="text-blue-500 underline">{reception.phoneNumber}</a></td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{reception.officeName}</td>
               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                 <a href={`/receptions/${reception.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-2">

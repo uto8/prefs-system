@@ -25,7 +25,7 @@ import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
 import LostModal from '../lost_modal';
 import { useRouter, useSearchParams } from 'next/navigation';
-import html2pdf from 'html2pdf.js';
+// import html2pdf from 'html2pdf.js';
 
 export default function IssueListTable({issues: issues}: {
   issues: Issue[]
@@ -184,6 +184,9 @@ export default function IssueListTable({issues: issues}: {
   // PDF発行
 
   const handleGeneratePDF = async (issue: Issue) => {
+    if (typeof window === 'undefined') {
+        return
+    }
     // HTMLコンテンツを作成
     const content = document.createElement('div');
     content.innerHTML = `
@@ -244,14 +247,19 @@ export default function IssueListTable({issues: issues}: {
     `;
 
     // PDFを生成
-    const options = {
-      margin: 1,
-      filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    };
+    // const options = {
+    //   margin: 1,
+    //   filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
+    //   html2canvas: { scale: 2 },
+    //   jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    // };
 
-    html2pdf().set(options).from(content).save();
+    try{
+      // html2pdf().set(options).from(content).save();
+    }catch(e){
+      console.error('PDF生成中にエラーが発生しました:', e);
+    }
+
   };
 
   const handleDelete = async (id: number) => {
