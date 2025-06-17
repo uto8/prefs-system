@@ -184,9 +184,6 @@ export default function IssueListTable({issues: issues}: {
   // PDF発行
 
   const handleGeneratePDF = async (issue: Issue) => {
-    if (typeof window === 'undefined') {
-        return
-    }
     // HTMLコンテンツを作成
     const content = document.createElement('div');
     content.innerHTML = `
@@ -247,15 +244,16 @@ export default function IssueListTable({issues: issues}: {
     `;
 
     // PDFを生成
-    // const options = {
-    //   margin: 1,
-    //   filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
-    //   html2canvas: { scale: 2 },
-    //   jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    // };
+    const options = {
+      margin: 1,
+      filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
 
     try{
-      // html2pdf().set(options).from(content).save();
+      const html2pdf = (await import('html2pdf.js')).default;
+      html2pdf().set(options).from(content).save();
     }catch(e){
       console.error('PDF生成中にエラーが発生しました:', e);
     }
