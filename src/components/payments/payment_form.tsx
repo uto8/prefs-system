@@ -37,10 +37,7 @@ const formSchema = z.object({
     required_error: '必須',
     message: '入金予定日を入力してください',
   }),
-  billingDate: z.date({
-    required_error: '必須',
-    message: '請求日を入力してください',
-  })
+  billingDate: z.date().optional()
 })
 
 export default function PaymentForm({open, setOpen}: {
@@ -72,7 +69,7 @@ export default function PaymentForm({open, setOpen}: {
         paymentPlanValue: Number(data.paymentPlanValue),
         paymentPlanDate:  format(data.paymentPlanDate, "yyyy-MM-dd"),
         description: "",
-        billingDate:  format(data.billingDate, "yyyy-MM-dd"),
+        billingDate: data.billingDate? format(data.billingDate, "yyyy-MM-dd"): null,
       })
       dispatch(addPayment({
         type: data.type,
@@ -80,7 +77,7 @@ export default function PaymentForm({open, setOpen}: {
         paymentPlanDate: format(data.paymentPlanDate, "yyyy-MM-dd"),
         description: "",
         id: payment.id,
-        billingDate: data.billingDate,
+        billingDate: data.billingDate?? null,
         paymentChecks: []
       }));
       setOpen(false)

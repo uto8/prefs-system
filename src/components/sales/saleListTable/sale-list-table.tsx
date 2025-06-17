@@ -66,8 +66,8 @@ export default function SaleListTable({
                 </a>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.name}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.email}</td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.phoneNumber}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a href={`mailto:${sale.email}`} className="text-blue-500 underline">{sale.email}</a></td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a href={`tel:${sale.phoneNumber}`} className="text-blue-500 underline">{sale.phoneNumber}</a></td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{sale.officeName}</td>
               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                 <a href={`/sales/${sale.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-2">

@@ -40,11 +40,8 @@ const formSchema = z.object({
     required_error: '必須',
     message: '入金予定日を入力してください',
   }),
-  description: z.string().nonempty("備考欄は必須項目です"),
-  billingDate: z.date({
-    required_error: '必須',
-    message: '請求日を入力してください',
-  })
+  description: z.string().optional(),
+  billingDate: z.date().optional()
 })
 
 export default function PaymentEditForm({open, setOpen, payment}: {
@@ -67,7 +64,7 @@ export default function PaymentEditForm({open, setOpen, payment}: {
         type: payment.type,
         paymentPlanValue: String(payment.paymentPlanValue),
         paymentPlanDate: new Date(payment.paymentPlanDate),
-        billingDate: new Date(payment.billingDate),
+        billingDate: payment.billingDate? new Date(payment.billingDate): undefined,
         description: payment.description,
       });
     }
@@ -80,16 +77,16 @@ export default function PaymentEditForm({open, setOpen, payment}: {
           type: data.type,
           paymentPlanValue: Number(data.paymentPlanValue),
           paymentPlanDate:  format(data.paymentPlanDate, "yyyy-MM-dd"),
-          description: data.description,
-          billingDate:  format(data.billingDate, "yyyy-MM-dd"),
+          description: data.description ?? "",
+          billingDate: data.billingDate? format(data.billingDate, "yyyy-MM-dd"): null,
         }})
       dispatch(updatePayment({
         type: data.type,
         paymentPlanValue: data.paymentPlanValue,
         paymentPlanDate: format(data.paymentPlanDate, "yyyy-MM-dd"),
-        description: data.description,
+        description: data.description ?? "",
         id: payment.id,
-        billingDate: data.billingDate,
+        billingDate: data.billingDate?? null,
         paymentChecks: payment.paymentChecks
       }));
       setOpen(false)
