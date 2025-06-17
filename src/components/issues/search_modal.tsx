@@ -238,6 +238,9 @@ export default function SearchModal({offset}: {offset: number}) {
                             <SelectItem value="未入金">未入金</SelectItem>
                             <SelectItem value="入金済">入金済</SelectItem>
                             <SelectItem value="完了済">完了済</SelectItem>
+                            <SelectItem value="打ち合わせ前失注">打ち合わせ前失注</SelectItem>
+                            <SelectItem value="打ち合わせ後失注">打ち合わせ後失注</SelectItem>
+                            <SelectItem value="未確定">未確定</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

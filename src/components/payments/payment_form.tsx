@@ -37,10 +37,7 @@ const formSchema = z.object({
     required_error: '必須',
     message: '入金予定日を入力してください',
   }),
-  billingDate: z.date({
-    required_error: '必須',
-    message: '請求日を入力してください',
-  })
+  billingDate: z.date()
 })
 
 export default function PaymentForm({open, setOpen}: {

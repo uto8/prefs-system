@@ -61,11 +61,11 @@ async function IssueDetails({ params }: { params: { id: string } }) {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">メールアドレス</dt>
-            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue.client.email}</dd>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><a href={`mailto:${issue.client.email}`} className="text-blue-500 underline">{issue.client.email}</a></dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">電話番号</dt>
-            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue.client.phoneNumber}</dd>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><a href={`tel:${issue.client.phoneNumber}`} className="text-blue-500 underline">{issue.client.phoneNumber}</a></dd>
           </div>
         </dl>
       </div>
