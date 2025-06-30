@@ -21,6 +21,9 @@ export default function IssueListPage() {
   const createdAtFrom = searchParams.get("created_at_from") || null;
   const createdAtTo = searchParams.get("created_at_to") || null;
   const sortType = searchParams.get("sort_type") || null;
+  const clientNameKana = searchParams.get("client_name_kana") || null;
+  const address = searchParams.get("address") || null;
+  const constructionSite = searchParams.get("construction_site") || null;
   const currentPage = Number(page) || 1;
   const LIMIT = 20;
   const offset = (currentPage - 1) * LIMIT;
@@ -44,6 +47,9 @@ export default function IssueListPage() {
         createdAtFrom: createdAtFrom,
         createdAtTo: createdAtTo,
         sortType: sortType,
+        client_name_kana: clientNameKana,
+        address: address,
+        construction_site: constructionSite,
       })
       dispatch(setValue(issues.data));
       setIssues(issues)
