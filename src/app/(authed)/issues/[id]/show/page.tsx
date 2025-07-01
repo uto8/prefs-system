@@ -2,6 +2,7 @@ import TitleComponent from '@/components/layout/title';
 import ApiGet from '@/lib/useApi/get'
 import { format } from 'date-fns';
 import { Suspense } from 'react'
+import ShowButton from './ShowButton';
 
 async function IssueDetails({ params }: { params: { id: string } }) {
 
@@ -12,6 +13,37 @@ async function IssueDetails({ params }: { params: { id: string } }) {
   return (
     <div>
       <TitleComponent title="案件詳細"/>
+      <div>
+        <ShowButton issue={issue} />
+        {/* <button onClick={()=>{
+          if(!issue)return
+          setEditModal(true)
+          setIssueContractData(issue)
+        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+        契約
+        </button>
+        {
+          issue.status.includes("失注")?<button onClick={()=>{
+            handleRemoveLost({id:issue.id,status:"失注解除"})
+          }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+          失注解除
+          </button>: <button onClick={()=>{
+            if(!issue)return
+            setLostModal(true)
+            setIssueContractData(issue)
+          }}  className="ml-2 text-indigo-600 hover:text-indigo-900">
+          失注
+          </button>
+        }
+        {issue.status === "入金済" ? <button onClick={()=>{
+          if(!issue)return
+          setCompleteModal(true)
+          setIssueContractData(issue)
+        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+        完了
+        </button>: null} */}
+
+      </div>
       <div className="mt-6 border-t border-gray-100">
         <dl className="divide-y divide-gray-100">
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
