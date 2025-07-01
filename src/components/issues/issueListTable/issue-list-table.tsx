@@ -1,25 +1,13 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue, updateDatetimeValue, updateEstimateDateValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueReducer';
+import { setValue, updateStatusValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { useEffect, useState } from 'react';
 import { Issue } from '@/types/Issue';
-import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
+import { createIssueConfirmed, updateIssueConfirmed } from '@/app/(authed)/issues/list/actions';
 import { useToast } from '@/hooks/use-toast';
-import MeetingHistories from '../meeting-histories';
 import { format } from 'date-fns';
-import ApiPost from '@/lib/useApi/post';
-import ApiGet from '@/lib/useApi/get';
-import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
 import LostModal from '../lost_modal';
@@ -33,14 +21,10 @@ export default function IssueListTable({issues: issues}: {
   const [editModal, setEditModal] = useState(false)
   const [completeModal, setCompleteModal] = useState(false)
   const [lostModal, setLostModal] = useState(false)
-  const [datetime, setDatetime] = useState("")
-  const [estimateDate, setEstimateDatetime] = useState("")
-  const [memo, setMemo] = useState("")
   const { toast } = useToast()
 
   const { value } = useAppSelector((state) => state.issues);
   const dispatch = useAppDispatch();
-  const { value: meetings } = useAppSelector((state) => state.meetings);
   const router = useRouter()
 
   useEffect(() => {
@@ -116,69 +100,6 @@ export default function IssueListTable({issues: issues}: {
       throw e
     }
   }
-
-  // 打ち合わせ日登録
-  const handleCreateMeeting = async (issueId: number, date: string) => {
-    if(date === "") return
-    await ApiPost("/meetings", {
-      issueId: issueId,
-      datetime: date,
-      description: ""
-    })
-    dispatch(updateDatetimeValue({id: issueId, datetime: date}));
-  }
-
-  // 見積もり提出日登録
-  const handleCreateEstimateDate = async ({id, date}: {
-    id: number;
-    date: string
-  }) => {
-    if(date === "") {
-      await ApiPut(`/issues/${id}/estimate_date`, {
-        date: date,
-        status: "提出済取消中"
-      })
-      dispatch(updateStatusValue({id:id, status:"提出済取消中"}));
-      return
-    }
-    await ApiPut(`/issues/${id}/estimate_date`, {
-      date: date,
-      status: "提出済返事待ち"
-    })
-    dispatch(updateEstimateDateValue({id:id, date: date}));
-    dispatch(updateStatusValue({id:id, status:"提出済返事待ち"}));
-  }
-
-  const getMeetings = async (issueId: number) => {
-    try{
-      const meetings = await ApiGet(`/meetings/${issueId}`)
-      dispatch(setMeetingValue(meetings));
-    }catch(e) {
-      throw e
-    }
-  }
-
-  const handleUpdateMemo = async ({id, memo}: {
-    id: number;
-    memo: string
-  }) => {
-    try{
-      await updateMemo({
-        id: id,
-        memo: memo
-      })
-      dispatch(updateMemoValue({id, memo}));
-    }catch(e) {
-      throw e;
-    }
-  }
-
-  const truncateText = (text: string, maxLength: number) => {
-    if(!text){
-      return ""
-    }
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
 
   const status = (status: string) => {
     let statusColor = "yellow"
@@ -284,37 +205,6 @@ export default function IssueListTable({issues: issues}: {
                   </th>
                   <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
-                      打ち合わせ
-                      <div className='flex'>
-                        <svg onClick={()=>handleSort("meetingAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
-                        </svg>
-                        <svg onClick={()=>handleSort("meetingDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    </div>
-                  </th>
-                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
-                    <div className='flex justify-between'>
-                      見積提出日
-                      <div className='flex'>
-                        <svg onClick={()=>handleSort("estimateSubmissionDateAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
-                        </svg>
-                        <svg onClick={()=>handleSort("estimateSubmissionDateDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    </div>
-                  </th>
-                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    <div className='flex justify-between'>
-                      メモ
-                    </div>
-                  </th>
-                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
-                    <div className='flex justify-between'>
                       登録日
                       <div className='flex'>
                         <svg onClick={()=>handleSort("createdAtAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
@@ -346,55 +236,6 @@ export default function IssueListTable({issues: issues}: {
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       {status(issue.status)}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <Dialog>
-                        <DialogTrigger onClick={()=> {getMeetings(issue.id)}}>
-                          {issue.datetime?`${format(issue.datetime, "MM月dd日 HH時mm分")}`:"未定"}
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogTitle>打ち合わせ</DialogTitle>
-                          <div>
-                            <input value={datetime} onChange={(e)=>setDatetime(e.target.value)} type='datetime-local' className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                            <DialogClose asChild>
-                              <Button onClick={()=>handleCreateMeeting(issue.id, datetime)} className='w-full'>保存</Button>
-                            </DialogClose>
-                          </div>
-                          <div>
-                            <MeetingHistories meetings={meetings}/>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <Dialog>
-                        <DialogTrigger onClick={()=> {getMeetings(issue.id)}}>
-                          {issue.estimateSubmissionDate?`${format(issue.estimateSubmissionDate, "MM月dd日 HH時mm分")}`:"未定"}
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogTitle>見積提出日</DialogTitle>
-                          <div>
-                            <input value={estimateDate} onChange={(e)=>setEstimateDatetime(e.target.value)} type='datetime-local' className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                            <DialogClose asChild>
-                              <Button onClick={()=>handleCreateEstimateDate({id: issue.id, date: estimateDate})} className='w-full'>保存</Button>
-                            </DialogClose>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </td>
-                    <td className="truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <Dialog>
-                        <DialogTrigger onClick={()=>setMemo(issue.memo)}>{issue.memo?truncateText(issue.memo, 6):'なし'}</DialogTrigger>
-                        <DialogContent>
-                          <DialogTitle>メモ編集</DialogTitle>
-                          <div>
-                            <textarea value={memo} onChange={(e)=>setMemo(e.target.value)} className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                            <DialogClose asChild>
-                              <Button onClick={()=>handleUpdateMemo({id: issue.id, memo: memo})} className='w-full'>保存</Button>
-                            </DialogClose>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       {format(issue.createdAt, "MM月dd日 HH時mm分")}
