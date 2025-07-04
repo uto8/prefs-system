@@ -1,16 +1,18 @@
 import RevenuList from "@/components/revenu/revenu-list"
-import { OptionFields } from "@/components/ui/select-field"
 import ApiGet from "@/lib/useApi/get"
-import { Office } from "@/types/Office"
 
 export default async function Page() {
-  const offices = await ApiGet("/offices")
-  const officeOption: OptionFields = offices.map((office: Office) => {return {value: office.id, label: office.name}})
+  const revenus = await ApiGet("/revenus")
 
   return (
-    <div className="">
+    <div className="sm:px-6 lg:px-8">
+      <div className="sm:flex sm:items-center">
+         <div className="sm:flex-auto">
+           <h1 className="text-base font-semibold text-gray-900">売上管理</h1>
+         </div>
+       </div>
        <div className="mt-8 flow-root">
-          <RevenuList offices={officeOption}/>
+          <RevenuList revenus={revenus}/>
        </div>
     </div>
   )
