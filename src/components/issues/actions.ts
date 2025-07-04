@@ -12,10 +12,7 @@ export const searchIssues = async ({
   offset,
   createdAtFrom,
   createdAtTo,
-  sortType,
-  client_name_kana: clientNameKana,
-  address: address,
-  construction_site: constructionSite,
+  sortType
 }: {
   client_name: string | null;
   type: string | null;
@@ -26,10 +23,7 @@ export const searchIssues = async ({
   offset: number;
   createdAtFrom: string | null;
   createdAtTo: string | null;
-  sortType: string | null;
-  client_name_kana: string | null;
-  address: string | null;
-  construction_site: string | null;
+  sortType: string | null
 }) => {
   try{
     let url = '/issues?';
@@ -56,15 +50,6 @@ export const searchIssues = async ({
     }
     if (createdAtTo !== null) {
       url += `created_at_to=${createdAtTo}&`;
-    }
-    if (clientNameKana !== null) {
-      url += `client_name_kana=${clientNameKana}&`;
-    }
-    if (address !== null) {
-      url += `address=${address}&`;
-    }
-    if (constructionSite !== null) {
-      url += `construction_site=${constructionSite}&`;
     }
     if(sortType === "issueCodeAscendingOrder"){
       url += `issue_code_ascending_order=true&`

@@ -36,9 +36,6 @@ const formSchema = z.object({
   status: z.string().optional(),
   createdAtFrom: z.string().optional(),
   createdAtTo: z.string().optional(),
-  clientNameKana: z.string().optional(),
-  address: z.string().optional(),
-  constructionSite: z.string().optional(),
 })
 
 export default function SearchModal({offset}: {offset: number}) {
@@ -56,9 +53,6 @@ export default function SearchModal({offset}: {offset: number}) {
       status: searchParams.get("status") ?? undefined,
       createdAtFrom: searchParams.get("created_at_from") ?? undefined,
       createdAtTo: searchParams.get("created_at_to") ?? undefined,
-      clientNameKana: searchParams.get("client_name_kana") ?? undefined,
-      address: searchParams.get("address") ?? undefined,
-      constructionSite: searchParams.get("construction_site") ?? undefined,
     },
   })
   const [offices, setOffices] = useState<OptionFields>([]);
@@ -126,15 +120,6 @@ export default function SearchModal({offset}: {offset: number}) {
       if(data.saleId){
         url += `sale_id=${data.saleId}&`;
       }
-      if(data.clientNameKana){
-        url += `client_name_kana=${data.clientNameKana}&`;
-      }
-      if(data.address){
-        url += `address=${data.address}&`;
-      }
-      if(data.constructionSite){
-        url += `construction_site=${data.constructionSite}&`;
-      }
       url += `limit=20&offset=${offset}`
 
       router.push(url);
@@ -196,54 +181,6 @@ export default function SearchModal({offset}: {offset: number}) {
                     <FormItem>
                       <FormLabel>
                       お客様名
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="clientNameKana"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      お客様名カナ
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      現住所
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="constructionSite"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>
-                      工事住所
                       </FormLabel>
                       <FormControl>
                         <Input {...field} type="text" />
