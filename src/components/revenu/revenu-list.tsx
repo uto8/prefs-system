@@ -28,7 +28,7 @@ export default function RevenuList({
 }) {
   const [selectedMetric, setSelectedMetric] = React.useState("案件数");
   const [selectedYear, setSelectedYear] = React.useState(2025);
-  const [officeId, setOfficeId] = React.useState<string>(offices[0].value);
+  const [officeId, setOfficeId] = React.useState<string>(offices.length > 0 ? offices[0].value : "");
   const [data, setData] = React.useState<DataSets>([]);
 
   ChartJS.register(
