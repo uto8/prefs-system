@@ -188,55 +188,55 @@ export default function IssueListTable({issues: issues}: {
     const content = document.createElement('div');
     content.innerHTML = `
       <dl class="divide-y divide-gray-100">
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">現住所</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.currentAddress || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">工事予定日</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.preferredDate || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">タイプ</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.type || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">備考</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.contactContent || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">予算</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.budget || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">工事住所</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.constructionSite || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">加盟店</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.isFranchise ? '別元請' : 'SOTORIE'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">案件登録日</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.createdAt ? format(issue.createdAt, 'yyyy年MM月dd日') : '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">顧客番号</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.id || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">お客様名</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.name || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">お客様名かな</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.nameKana || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">メールアドレス</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.email || '未設定'}</dd>
         </div>
-        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">電話番号</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.phoneNumber || '未設定'}</dd>
         </div>
