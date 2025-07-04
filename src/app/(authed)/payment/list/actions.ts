@@ -21,7 +21,7 @@ export const createPayment = async (body: {
   paymentPlanValue: number;
   paymentPlanDate: string;
   description: string;
-  billingDate: string | null
+  billingDate: string
 }) => {
   try{
     const payment = await ApiPost("/payments", body)
@@ -38,7 +38,7 @@ export const editPayment = async ({paymentId, body}: {
     paymentPlanValue: number;
     paymentPlanDate: string;
     description: string;
-    billingDate: string | null
+    billingDate: string
   }
 }) => {
   try{

@@ -4,7 +4,7 @@ export type Payment = {
   paymentPlanValue: string;
   paymentPlanDate: string;
   description: string;
-  billingDate: Date | null;
+  billingDate: Date;
   paymentChecks: PaymentCheck[];
 }
 
