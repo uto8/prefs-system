@@ -189,6 +189,52 @@ export default function IssueDetail({
           <dt class="text-sm font-medium text-gray-900">電話番号</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.phoneNumber || '未設定'}</dd>
         </div>
+
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">申し込み日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">初回打ち合わせ</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">2回目</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">3回目</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">プラン提出日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">契約日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">着手金入金日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">着工日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">完工日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">引渡日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium text-gray-900">完工金入金日</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+        </div>
+
       </dl>
     `;
 
