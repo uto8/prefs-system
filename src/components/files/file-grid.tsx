@@ -31,6 +31,7 @@ interface FileGridProps {
   onPreview?: (file: FileInfo) => void;
   onEdit?: (file: FileInfo) => void;
   onDelete?: (file: FileInfo) => void;
+  onCardClick?: (file: FileInfo) => void;
   loading?: boolean;
   viewMode?: 'grid' | 'list';
   className?: string;
@@ -154,6 +155,7 @@ export function FileGrid({
   onPreview,
   onEdit,
   onDelete,
+  onCardClick,
   loading = false,
   viewMode = 'grid',
   className
@@ -206,7 +208,8 @@ export function FileGrid({
         {files.map((file) => (
           <div
             key={file.id}
-            className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+            onClick={() => onCardClick?.(file)}
+            className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
           >
             {/* サムネイル/アイコン */}
             <div className="p-4 pb-3">
@@ -236,32 +239,45 @@ export function FileGrid({
                       variant="ghost"
                       size="sm"
                       className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     {onPreview && (
-                      <DropdownMenuItem onClick={() => onPreview(file)}>
+                      <DropdownMenuItem onClick={(e) => {
+                        e.stopPropagation();
+                        onPreview(file);
+                      }}>
                         <Eye className="h-4 w-4 mr-2" />
                         プレビュー
                       </DropdownMenuItem>
                     )}
                     {onDownload && (
-                      <DropdownMenuItem onClick={() => onDownload(file)}>
+                      <DropdownMenuItem onClick={(e) => {
+                        e.stopPropagation();
+                        onDownload(file);
+                      }}>
                         <Download className="h-4 w-4 mr-2" />
                         ダウンロード
                       </DropdownMenuItem>
                     )}
                     {onEdit && (
-                      <DropdownMenuItem onClick={() => onEdit(file)}>
+                      <DropdownMenuItem onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(file);
+                      }}>
                         <Edit className="h-4 w-4 mr-2" />
                         編集
                       </DropdownMenuItem>
                     )}
                     {onDelete && (
                       <DropdownMenuItem
-                        onClick={() => onDelete(file)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(file);
+                        }}
                         className="text-red-600 focus:text-red-600"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
@@ -313,8 +329,6 @@ export function FileGrid({
                   )}
                 </div>
               )}
-
-
             </div>
           </div>
         ))}
@@ -328,7 +342,8 @@ export function FileGrid({
       {files.map((file) => (
         <div
           key={file.id}
-          className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4"
+          onClick={() => onCardClick?.(file)}
+          className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4 cursor-pointer"
         >
           <div className="flex items-center gap-4">
             {/* サムネイル/アイコン */}
@@ -382,32 +397,45 @@ export function FileGrid({
                     variant="ghost"
                     size="sm"
                     className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {onPreview && (
-                    <DropdownMenuItem onClick={() => onPreview(file)}>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      onPreview(file);
+                    }}>
                       <Eye className="h-4 w-4 mr-2" />
                       プレビュー
                     </DropdownMenuItem>
                   )}
                   {onDownload && (
-                    <DropdownMenuItem onClick={() => onDownload(file)}>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      onDownload(file);
+                    }}>
                       <Download className="h-4 w-4 mr-2" />
                       ダウンロード
                     </DropdownMenuItem>
                   )}
                   {onEdit && (
-                    <DropdownMenuItem onClick={() => onEdit(file)}>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(file);
+                    }}>
                       <Edit className="h-4 w-4 mr-2" />
                       編集
                     </DropdownMenuItem>
                   )}
                   {onDelete && (
                     <DropdownMenuItem
-                      onClick={() => onDelete(file)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(file);
+                      }}
                       className="text-red-600 focus:text-red-600"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />

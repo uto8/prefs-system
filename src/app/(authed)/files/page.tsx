@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Search, Grid, List } from 'lucide-react';
+import { Search, Grid, List, X } from 'lucide-react';
 import { FileUpload } from '@/components/files/file-upload';
 import { FileGrid } from '@/components/files/file-grid';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +17,15 @@ export default function FilesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<FileCategory | 'all'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [previewModal, setPreviewModal] = useState<{
+    isOpen: boolean;
+    file: FileInfo | null;
+    previewUrl: string | null;
+  }>({
+    isOpen: false,
+    file: null,
+    previewUrl: null,
+  });
   const { toast } = useToast();
   const { data: session } = useSession();
 
@@ -109,13 +118,16 @@ export default function FilesPage() {
     }
   };
 
-  // ファイルプレビュー
+  // ファイルプレビュー（モーダル表示）
   const handlePreview = async (file: FileInfo) => {
     try {
       const data = await ApiGet(`/files/${file.id}/preview`);
 
-      // 新しいタブでプレビューを開く
-      window.open(data.previewUrl, '_blank');
+      setPreviewModal({
+        isOpen: true,
+        file: file,
+        previewUrl: data.previewUrl,
+      });
     } catch (error) {
       console.error('プレビューエラー:', error);
       toast({
@@ -124,6 +136,15 @@ export default function FilesPage() {
         variant: "destructive",
       });
     }
+  };
+
+  // プレビューモーダルを閉じる
+  const closePreviewModal = () => {
+    setPreviewModal({
+      isOpen: false,
+      file: null,
+      previewUrl: null,
+    });
   };
 
   // ファイル削除
@@ -269,11 +290,81 @@ export default function FilesPage() {
                 onDownload={handleDownload}
                 onPreview={handlePreview}
                 onDelete={handleDelete}
+                onCardClick={handlePreview}
               />
             </div>
           </div>
         )}
       </div>
+
+      {/* プレビューモーダル */}
+      {previewModal.isOpen && previewModal.file && previewModal.previewUrl && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            {/* モーダルヘッダー */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div>
+                <h3 className="text-lg font-semibold leading-6 text-gray-900">
+                  {previewModal.file.fileName}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {Math.round(previewModal.file.fileSize / 1024)} KB
+                </p>
+              </div>
+              <button
+                onClick={closePreviewModal}
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <span className="sr-only">閉じる</span>
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* プレビューコンテンツ */}
+            <div className="p-4 max-h-[calc(90vh-120px)] overflow-auto">
+              {previewModal.file.fileType === 'image' ? (
+                <img
+                  src={previewModal.previewUrl}
+                  alt={previewModal.file.fileName}
+                  className="max-w-full h-auto mx-auto"
+                />
+              ) : previewModal.file.fileType === 'pdf' ? (
+                <iframe
+                  src={previewModal.previewUrl}
+                  className="w-full h-[600px] border-0"
+                  title={previewModal.file.fileName}
+                />
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">このファイル形式はプレビューできません</p>
+                  <button
+                    onClick={() => handleDownload(previewModal.file!)}
+                    className="mt-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                  >
+                    ダウンロード
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* モーダルフッター */}
+            <div className="flex justify-end gap-2 p-4 border-t border-gray-200">
+              <button
+                onClick={() => handleDownload(previewModal.file!)}
+                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+              >
+                ダウンロード
+              </button>
+              <button
+                onClick={closePreviewModal}
+                className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* アップロードモーダル */}
       {showUpload && (
