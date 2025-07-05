@@ -8,6 +8,7 @@ import {
   FolderIcon,
   HomeIcon,
   UsersIcon,
+  DocumentIcon,
 } from '@heroicons/react/24/outline'
 import TopBar from "./top-bar";
 import { logout } from "../actions";
@@ -33,6 +34,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
         { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
         { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/sales/') },
         { name: '受付管理', url: '/receptions/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/receptions/') },
+        { name: 'ファイル管理', url: '/files', icon: DocumentIcon, current: currentUrl.startsWith('/files') },
         { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
         { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
         { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
@@ -43,6 +45,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
         { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
         { name: '営業管理', url: '/sales/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/sales/') },
         { name: '受付管理', url: '/receptions/list', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/receptions/') },
+        { name: 'ファイル管理', url: '/files', icon: DocumentIcon, current: currentUrl.startsWith('/files') },
         { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
         { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
         { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
@@ -51,6 +54,7 @@ export default function AppSidebar ({role: role}:{role: string | null}){
       setNavigations([
         { name: 'トップページ', url: '/', icon: HomeIcon, current: currentUrl === '/' },
         { name: '案件管理', url: '/issues/list', icon: FolderIcon, current: currentUrl.startsWith('/issues/') },
+        { name: 'ファイル管理', url: '/files', icon: DocumentIcon, current: currentUrl.startsWith('/files') },
         { name: '入金一覧', url: '/payment/list?type=deposit', icon: FolderIcon, current: currentUrl.startsWith('/payment/list?type=deposit') },
         { name: '発注一覧', url: '/payment/list?type=payment', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=payment') },
         { name: '補修一覧', url: '/payment/list?type=repair', icon: DocumentDuplicateIcon, current: currentUrl.startsWith('/payment/list?type=repair') },
