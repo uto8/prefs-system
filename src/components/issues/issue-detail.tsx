@@ -33,13 +33,6 @@ export default function IssueDetail({
   const [datetime, setDatetime] = useState("")
   const [estimateDate, setEstimateDatetime] = useState("")
 
-  const truncateText = (text: string, maxLength: number) => {
-    if(!text){
-      return ""
-    }
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-
   const handleContract = async ({issueId: issueId, issueConfirmId: issueConfirmId, input: input}: {
     issueId: number,
     issueConfirmId: number | null,
@@ -392,7 +385,7 @@ export default function IssueDetail({
             <dt className="text-sm/6 font-medium text-gray-900">メモ</dt>
             <dd className="mt-1 text-sm/6 sm:col-span-2 sm:mt-0 text-indigo-600">
             <Dialog>
-              <DialogTrigger onClick={()=>setMemo(issue?.memo ?? "")}>{issue?.memo?truncateText(issue.memo, 6):"なし"}</DialogTrigger>
+              <DialogTrigger onClick={()=>setMemo(issue?.memo ?? "")}>{issue?.memo?issue.memo:"なし"}</DialogTrigger>
               <DialogContent>
                 <DialogTitle>メモ編集</DialogTitle>
                 <div>
