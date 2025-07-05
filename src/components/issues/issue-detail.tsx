@@ -190,6 +190,8 @@ export default function IssueDetail({
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client?.phoneNumber || '未設定'}</dd>
         </div>
 
+        <div style="page-break-before: always;"></div>
+
         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium text-gray-900">申し込み日</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
