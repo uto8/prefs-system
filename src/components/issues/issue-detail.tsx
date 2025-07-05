@@ -33,13 +33,6 @@ export default function IssueDetail({
   const [datetime, setDatetime] = useState("")
   const [estimateDate, setEstimateDatetime] = useState("")
 
-  const truncateText = (text: string, maxLength: number) => {
-    if(!text){
-      return ""
-    }
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-
   const handleContract = async ({issueId: issueId, issueConfirmId: issueConfirmId, input: input}: {
     issueId: number,
     issueConfirmId: number | null,
