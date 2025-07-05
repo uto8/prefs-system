@@ -4,7 +4,6 @@ import { toast } from '@/hooks/use-toast';
 import { useAppDispatch, useAppSelector } from '@/stores';
 import { setValue, updateEstimateDateValue, updateMemoValue } from '@/stores/reducers/issueDetailReducer';
 import { Issue } from '@/types/Issue'
-import { format } from 'date-fns';
 import React, { useEffect, useState } from 'react'
 import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
 import { updateDatetimeValue, updateStatusValue } from '@/stores/reducers/issueReducer';
@@ -282,27 +281,13 @@ export default function IssueDetail({
             handleGeneratePDF(issue)
           }}
           className="ml-2 text-indigo-600 hover:text-indigo-900">
-          PDF出力
+          お客様シート出力
         </button>
-        <button onClick={()=>{
-          if(!issue)return
-          setEditModal(true)
-        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
-        契約
-        </button>
-        <a href={`/payment/list?type=deposit&issue_id=${issueData.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-          入金
-        </a>
-        <a href={`/payment/list?type=payment&issue_id=${issueData.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-          発注
-        </a>
-        <a href={`/payment/list?type=repair&issue_id=${issueData.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-          補修
-        </a>
+
         <div className='ml-2 text-indigo-600 '>
           <Dialog>
             <DialogTrigger onClick={()=> {getMeetings(issueData.id)}}>
-              {issue?.datetime?`${format(issue.datetime, "MM月dd日 HH時mm分")}`:"打ち合わせ予定日"}
+              打ち合わせ日入力
             </DialogTrigger>
             <DialogContent>
               <DialogTitle>打ち合わせ</DialogTitle>
@@ -321,7 +306,7 @@ export default function IssueDetail({
         <div className='ml-2 text-indigo-600 '>
           <Dialog>
             <DialogTrigger onClick={()=> {getMeetings(issueData.id)}}>
-              {issue?.estimateSubmissionDate?`${format(issue.estimateSubmissionDate, "MM月dd日 HH時mm分")}`:"未定"}
+              見積もり提出日入力
             </DialogTrigger>
             <DialogContent>
               <DialogTitle>見積提出日</DialogTitle>
@@ -399,6 +384,23 @@ export default function IssueDetail({
             </dd>
           </div>
         </dl>
+      </div>
+      <div className='flex'>
+        <button onClick={()=>{
+          if(!issue)return
+          setEditModal(true)
+        }} className="ml-2 text-indigo-600 hover:text-indigo-900">
+        契約
+        </button>
+        <a href={`/payment/list?type=deposit&issue_id=${issueData.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+          入金
+        </a>
+        <a href={`/payment/list?type=payment&issue_id=${issueData.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+          発注
+        </a>
+        <a href={`/payment/list?type=repair&issue_id=${issueData.id}`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+          補修
+        </a>
       </div>
       {/* 契約ポップアップ */}
       <ContractModal
