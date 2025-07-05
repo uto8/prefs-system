@@ -392,7 +392,7 @@ export default function IssueDetail({
             <dt className="text-sm/6 font-medium text-gray-900">メモ</dt>
             <dd className="mt-1 text-sm/6 sm:col-span-2 sm:mt-0 text-indigo-600">
             <Dialog>
-              <DialogTrigger onClick={()=>setMemo(issue?.memo ?? "")}>{issue?.memo?truncateText(issue.memo, 6):"なし"}</DialogTrigger>
+              <DialogTrigger onClick={()=>setMemo(issue?.memo ?? "")}>{issue?.memo?issue.memo:"なし"}</DialogTrigger>
               <DialogContent>
                 <DialogTitle>メモ編集</DialogTitle>
                 <div>
