@@ -282,6 +282,7 @@ export default function FilesPage() {
         <FileGrid
           files={filteredFiles}
           loading={loading}
+          viewMode={viewMode}
           onDownload={handleDownload}
           onPreview={handlePreview}
           onDelete={handleDelete}

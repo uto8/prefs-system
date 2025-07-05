@@ -32,6 +32,7 @@ interface FileGridProps {
   onEdit?: (file: FileInfo) => void;
   onDelete?: (file: FileInfo) => void;
   loading?: boolean;
+  viewMode?: 'grid' | 'list';
   className?: string;
 }
 
@@ -154,16 +155,34 @@ export function FileGrid({
   onEdit,
   onDelete,
   loading = false,
+  viewMode = 'grid',
   className
 }: FileGridProps) {
   if (loading) {
     return (
-      <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6', className)}>
+      <div className={cn(
+        viewMode === 'grid'
+          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+          : 'space-y-2',
+        className
+      )}>
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="animate-pulse">
-            <div className="w-full h-32 bg-gray-200 rounded-lg mb-3"></div>
-            <div className="h-4 bg-gray-200 rounded mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+            {viewMode === 'grid' ? (
+              <>
+                <div className="w-full h-32 bg-gray-200 rounded-lg mb-3"></div>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+              </>
+            ) : (
+              <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                <div className="w-12 h-12 bg-gray-200 rounded mr-4"></div>
+                <div className="flex-1">
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -180,41 +199,201 @@ export function FileGrid({
     );
   }
 
+  // グリッド表示の場合
+  if (viewMode === 'grid') {
+    return (
+      <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6', className)}>
+        {files.map((file) => (
+          <div
+            key={file.id}
+            className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+          >
+            {/* サムネイル/アイコン */}
+            <div className="p-4 pb-3">
+              <FileThumbnail file={file} />
+            </div>
+
+            {/* ファイル情報 */}
+            <div className="px-4 pb-4">
+              {/* ファイル名 */}
+              <h3 className="text-sm font-medium text-gray-900 truncate mb-1">
+                {file.fileName}
+              </h3>
+
+              {/* カテゴリバッジ */}
+              <div className="flex items-center justify-between mb-2">
+                <span className={cn(
+                  'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
+                  getCategoryColor(file.category)
+                )}>
+                  {getCategoryLabel(file.category)}
+                </span>
+
+                {/* アクションメニュー */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {onPreview && (
+                      <DropdownMenuItem onClick={() => onPreview(file)}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        プレビュー
+                      </DropdownMenuItem>
+                    )}
+                    {onDownload && (
+                      <DropdownMenuItem onClick={() => onDownload(file)}>
+                        <Download className="h-4 w-4 mr-2" />
+                        ダウンロード
+                      </DropdownMenuItem>
+                    )}
+                    {onEdit && (
+                      <DropdownMenuItem onClick={() => onEdit(file)}>
+                        <Edit className="h-4 w-4 mr-2" />
+                        編集
+                      </DropdownMenuItem>
+                    )}
+                    {onDelete && (
+                      <DropdownMenuItem
+                        onClick={() => onDelete(file)}
+                        className="text-red-600 focus:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        削除
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              {/* ファイル詳細 */}
+              <div className="space-y-1 text-xs text-gray-500">
+                <div className="flex items-center">
+                  <Clock className="h-3 w-3 mr-1" />
+                  {formatDate(file.createdAt)}
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>{formatFileSize(file.fileSize)}</span>
+                  {file.uploadedByType && (
+                    <div className="flex items-center">
+                      <User className="h-3 w-3 mr-1" />
+                      <span className="capitalize">{file.uploadedByType}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 説明文 */}
+              {file.description && (
+                <p className="text-xs text-gray-600 mt-2 line-clamp-2">
+                  {file.description}
+                </p>
+              )}
+
+              {/* 関連情報 */}
+              {(file.issueCode || file.officeName || file.saleName || file.receptionName) && (
+                <div className="text-xs text-gray-500 mt-2 space-y-0.5">
+                  {file.issueCode && (
+                    <div>案件: {file.issueCode}</div>
+                  )}
+                  {file.officeName && (
+                    <div>店舗: {file.officeName}</div>
+                  )}
+                  {file.saleName && (
+                    <div>営業: {file.saleName}</div>
+                  )}
+                  {file.receptionName && (
+                    <div>受付: {file.receptionName}</div>
+                  )}
+                </div>
+              )}
+
+              {/* 公開/非公開表示 */}
+              {file.isPublic && (
+                <div className="flex items-center mt-2">
+                  <div className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                    公開
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // リスト表示の場合
   return (
-    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6', className)}>
+    <div className={cn('space-y-2', className)}>
       {files.map((file) => (
         <div
           key={file.id}
-          className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+          className="group bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4"
         >
-          {/* サムネイル/アイコン */}
-          <div className="p-4 pb-3">
-            <FileThumbnail file={file} />
-          </div>
+          <div className="flex items-center gap-4">
+            {/* サムネイル/アイコン */}
+            <div className="flex-shrink-0">
+              <FileTypeIcon fileType={file.fileType} className="w-8 h-8" />
+            </div>
 
-          {/* ファイル情報 */}
-          <div className="px-4 pb-4">
-            {/* ファイル名 */}
-            <h3 className="text-sm font-medium text-gray-900 truncate mb-1">
-              {file.fileName}
-            </h3>
+            {/* ファイル情報 */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-900 truncate">
+                  {file.fileName}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <span className={cn(
+                    'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
+                    getCategoryColor(file.category)
+                  )}>
+                    {getCategoryLabel(file.category)}
+                  </span>
+                  {file.isPublic && (
+                    <div className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      公開
+                    </div>
+                  )}
+                </div>
+              </div>
 
-            {/* カテゴリバッジ */}
-            <div className="flex items-center justify-between mb-2">
-              <span className={cn(
-                'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
-                getCategoryColor(file.category)
-              )}>
-                {getCategoryLabel(file.category)}
-              </span>
+              <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
+                <div className="flex items-center">
+                  <Clock className="h-3 w-3 mr-1" />
+                  {formatDate(file.createdAt)}
+                </div>
+                <span>{formatFileSize(file.fileSize)}</span>
+                {file.uploadedByType && (
+                  <div className="flex items-center">
+                    <User className="h-3 w-3 mr-1" />
+                    <span className="capitalize">{file.uploadedByType}</span>
+                  </div>
+                )}
+              </div>
 
-              {/* アクションメニュー */}
+              {/* 説明文 */}
+              {file.description && (
+                <p className="text-xs text-gray-600 mt-1 line-clamp-1">
+                  {file.description}
+                </p>
+              )}
+            </div>
+
+            {/* アクションメニュー */}
+            <div className="flex-shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                   >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
@@ -250,57 +429,6 @@ export function FileGrid({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-
-            {/* ファイル詳細 */}
-            <div className="space-y-1 text-xs text-gray-500">
-              <div className="flex items-center">
-                <Clock className="h-3 w-3 mr-1" />
-                {formatDate(file.createdAt)}
-              </div>
-              <div className="flex items-center justify-between">
-                <span>{formatFileSize(file.fileSize)}</span>
-                {file.uploadedByType && (
-                  <div className="flex items-center">
-                    <User className="h-3 w-3 mr-1" />
-                    <span className="capitalize">{file.uploadedByType}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* 説明文 */}
-            {file.description && (
-              <p className="text-xs text-gray-600 mt-2 line-clamp-2">
-                {file.description}
-              </p>
-            )}
-
-            {/* 関連情報 */}
-            {(file.issueCode || file.officeName || file.saleName || file.receptionName) && (
-              <div className="text-xs text-gray-500 mt-2 space-y-0.5">
-                {file.issueCode && (
-                  <div>案件: {file.issueCode}</div>
-                )}
-                {file.officeName && (
-                  <div>店舗: {file.officeName}</div>
-                )}
-                {file.saleName && (
-                  <div>営業: {file.saleName}</div>
-                )}
-                {file.receptionName && (
-                  <div>受付: {file.receptionName}</div>
-                )}
-              </div>
-            )}
-
-            {/* 公開/非公開表示 */}
-            {file.isPublic && (
-              <div className="flex items-center mt-2">
-                <div className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                  公開
-                </div>
-              </div>
-            )}
           </div>
         </div>
       ))}
