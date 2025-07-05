@@ -297,12 +297,12 @@ export default function IssueListTable({issues: issues}: {
                       </p>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <a href={`/sales/${issue.sale.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <a href="#" className="ml-2 hover:text-indigo-900">
                       {issue.sale?issue.sale.name:null}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <a href="#" className="ml-2 hover:text-indigo-900">
                       {issue.client?issue.client.name: null}
                       </a>
                     </td>
@@ -311,16 +311,16 @@ export default function IssueListTable({issues: issues}: {
                     </td>
 
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {format(issue.createdAt, "MM月dd日 HH時mm分")}
+                      {format(issue.createdAt, "MM月dd日")}
                     </td>
 
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {issue.reception?<a href={`/receptions/${issue.reception.id}/show`} className="text-indigo-600 hover:text-indigo-900">
+                      {issue.reception?<a href="#" className="hover:text-indigo-900">
                         {issue.reception?issue.reception.name:null}
                       </a>: <>-</>}
                     </td>
 
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-indigo-600">
                       <Dialog>
                         <DialogTrigger onClick={()=> {getMeetings(issue.id)}}>
                           {issue.datetime?`${format(issue.datetime, "MM月dd日 HH時mm分")}`:"未定"}
