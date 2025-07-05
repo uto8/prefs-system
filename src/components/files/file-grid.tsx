@@ -314,14 +314,7 @@ export function FileGrid({
                 </div>
               )}
 
-              {/* 公開/非公開表示 */}
-              {file.isPublic && (
-                <div className="flex items-center mt-2">
-                  <div className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                    公開
-                  </div>
-                </div>
-              )}
+
             </div>
           </div>
         ))}
@@ -356,11 +349,6 @@ export function FileGrid({
                   )}>
                     {getCategoryLabel(file.category)}
                   </span>
-                  {file.isPublic && (
-                    <div className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                      公開
-                    </div>
-                  )}
                 </div>
               </div>
 

@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import type { FileCategory, DragDropFile, FileUploadResponse } from '@/types/File';
 import type { Session } from 'next-auth';
@@ -70,7 +69,6 @@ export function FileUpload({
   const [isDragging, setIsDragging] = useState(false);
   const [category, setCategory] = useState<FileCategory>(defaultCategory);
   const [description, setDescription] = useState('');
-  const [isPublic, setIsPublic] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -161,7 +159,7 @@ export function FileUpload({
     if (issueId) formData.append('issueId', issueId.toString());
     if (saleId) formData.append('saleId', saleId.toString());
     if (receptionId) formData.append('receptionId', receptionId.toString());
-    formData.append('isPublic', isPublic.toString());
+    formData.append('isPublic', 'false');
 
     try {
       const response = await fetch('http://localhost:8000/files/upload', {
@@ -279,31 +277,20 @@ export function FileUpload({
       />
 
       {/* アップロード設定 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="category">カテゴリ</Label>
-          <Select value={category} onValueChange={(value) => setCategory(value as FileCategory)}>
-            <SelectTrigger>
-              <SelectValue placeholder="カテゴリを選択" />
-            </SelectTrigger>
-            <SelectContent>
-              {CATEGORY_OPTIONS.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="isPublic"
-            checked={isPublic}
-            onCheckedChange={(checked) => setIsPublic(!!checked)}
-          />
-          <Label htmlFor="isPublic">公開ファイル</Label>
-        </div>
+      <div>
+        <Label htmlFor="category">カテゴリ</Label>
+        <Select value={category} onValueChange={(value) => setCategory(value as FileCategory)}>
+          <SelectTrigger>
+            <SelectValue placeholder="カテゴリを選択" />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORY_OPTIONS.map(option => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>

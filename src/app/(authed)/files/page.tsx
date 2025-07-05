@@ -1,10 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Grid, List } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Grid, List } from 'lucide-react';
 import { FileUpload } from '@/components/files/file-upload';
 import { FileGrid } from '@/components/files/file-grid';
 import { useToast } from '@/hooks/use-toast';
@@ -155,119 +152,98 @@ export default function FilesPage() {
   };
 
   return (
-    <div className="container mx-auto py-6 px-4 space-y-6">
+    <div className="px-4 sm:px-6 lg:px-8">
       {/* ヘッダー */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">ファイル管理</h1>
-          <p className="text-gray-600">ファイルのアップロード、管理、共有ができます</p>
+      <div className="sm:flex sm:items-center mb-8">
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6 text-gray-900">ファイル管理</h1>
+          <p className="mt-2 text-sm text-gray-700">ファイルのアップロード、管理、共有ができます</p>
         </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-          >
-            {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
-          </Button>
-
-          <Button onClick={() => setShowUpload(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            ファイルアップロード
-          </Button>
+        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+              className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            >
+              {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+            </button>
+            <button
+              onClick={() => setShowUpload(true)}
+              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              ファイルアップロード
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* アップロードモーダル */}
-      {showUpload && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">ファイルアップロード</h2>
-              <Button
-                variant="ghost"
-                onClick={() => setShowUpload(false)}
-              >
-                ✕
-              </Button>
-            </div>
-
-            <FileUpload
-              onUploadComplete={handleUploadComplete}
-              onUploadError={handleUploadError}
-              session={session}
+      {/* フィルター・検索 */}
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <input
+              type="text"
+              placeholder="ファイル名や説明で検索..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
-        </div>
-      )}
 
-      {/* フィルター・検索 */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="ファイル名や説明で検索..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value as FileCategory | 'all')}
+            className="block w-full sm:w-48 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          >
+            <option value="all">すべて</option>
+            <option value="issue">案件ファイル</option>
+            <option value="office">店舗管理ファイル</option>
+            <option value="sales">営業資料ファイル</option>
+            <option value="reception">受付業務ファイル</option>
+            <option value="company">共通ファイル</option>
+          </select>
         </div>
-
-        <Select value={categoryFilter} onValueChange={(value) => setCategoryFilter(value as FileCategory | 'all')}>
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="カテゴリで絞り込み" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">すべて</SelectItem>
-            <SelectItem value="issue">案件ファイル</SelectItem>
-            <SelectItem value="office">店舗管理ファイル</SelectItem>
-            <SelectItem value="sales">営業資料ファイル</SelectItem>
-            <SelectItem value="reception">受付業務ファイル</SelectItem>
-            <SelectItem value="company">共通ファイル</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* ファイル統計 */}
       {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{files.length}</div>
-            <div className="text-sm text-gray-600">総ファイル数</div>
-          </div>
-
-          <div className="bg-white p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
-              {Math.round(files.reduce((sum, file) => sum + file.fileSize, 0) / 1024 / 1024 * 100) / 100}MB
+        <div className="mb-6">
+          <h3 className="text-base font-semibold leading-6 text-gray-900 mb-4">統計情報</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+              <dt className="truncate text-sm font-medium text-gray-500">総ファイル数</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{files.length}</dd>
             </div>
-            <div className="text-sm text-gray-600">総ファイルサイズ</div>
-          </div>
-
-          <div className="bg-white p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">
-              {files.filter(f => f.fileType === 'image').length}
+            <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+              <dt className="truncate text-sm font-medium text-gray-500">総ファイルサイズ</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                {Math.round(files.reduce((sum, file) => sum + file.fileSize, 0) / 1024 / 1024 * 100) / 100}MB
+              </dd>
             </div>
-            <div className="text-sm text-gray-600">画像ファイル</div>
-          </div>
-
-          <div className="bg-white p-4 border border-gray-200 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">
-              {files.filter(f => f.fileType === 'document' || f.fileType === 'pdf').length}
+            <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+              <dt className="truncate text-sm font-medium text-gray-500">画像ファイル</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                {files.filter(f => f.fileType === 'image').length}
+              </dd>
             </div>
-            <div className="text-sm text-gray-600">文書ファイル</div>
+            <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+              <dt className="truncate text-sm font-medium text-gray-500">文書ファイル</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                {files.filter(f => f.fileType === 'document' || f.fileType === 'pdf').length}
+              </dd>
+            </div>
           </div>
         </div>
       )}
 
       {/* ファイル一覧 */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="mt-8 flow-root">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">
+          <h3 className="text-base font-semibold leading-6 text-gray-900">
             ファイル一覧
             {searchQuery && ` (${filteredFiles.length}件の検索結果)`}
-          </h2>
-
+          </h3>
           {categoryFilter !== 'all' && (
             <div className="text-sm text-gray-600">
               カテゴリ: {categoryFilter === 'issue' ? '案件ファイル' :
@@ -279,15 +255,48 @@ export default function FilesPage() {
           )}
         </div>
 
-        <FileGrid
-          files={filteredFiles}
-          loading={loading}
-          viewMode={viewMode}
-          onDownload={handleDownload}
-          onPreview={handlePreview}
-          onDelete={handleDelete}
-        />
+        {loading ? (
+          <div className="flex justify-center" aria-label="読み込み中">
+            <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+          </div>
+        ) : (
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <FileGrid
+                files={filteredFiles}
+                loading={loading}
+                viewMode={viewMode}
+                onDownload={handleDownload}
+                onPreview={handlePreview}
+                onDelete={handleDelete}
+              />
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* アップロードモーダル */}
+      {showUpload && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold leading-6 text-gray-900">ファイルアップロード</h3>
+              <button
+                onClick={() => setShowUpload(false)}
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <span className="sr-only">閉じる</span>
+                ✕
+              </button>
+            </div>
+            <FileUpload
+              onUploadComplete={handleUploadComplete}
+              onUploadError={handleUploadError}
+              session={session}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
