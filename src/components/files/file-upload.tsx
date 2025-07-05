@@ -38,10 +38,10 @@ const ACCEPTED_FILE_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  // その他
+  // アーカイブファイル
   'application/zip',
   'application/x-rar-compressed',
-  'application/vnd.rar'
+  'application/x-zip-compressed'
 ];
 
 const CATEGORY_OPTIONS = [
@@ -164,7 +164,7 @@ export function FileUpload({
     formData.append('isPublic', isPublic.toString());
 
     try {
-      const response = await fetch('/api/files/upload', {
+      const response = await fetch('http://localhost:8000/files/upload', {
         method: 'POST',
         body: formData,
         headers: {
