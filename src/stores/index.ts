@@ -12,6 +12,7 @@ import { repairReducer } from "./reducers/repairReducer";
 import { notificationReducer } from "./reducers/notificationReducer";
 import { authReducer } from "./reducers/authReducer";
 import { meetingReducer } from "./reducers/meetingReducer";
+import { issueDetailReducer } from "./reducers/issueDetailReducer";
 // Configuration for redux-persist
 const persistConfig = {
   key: "root",
@@ -28,7 +29,8 @@ const rootReducer = {
   issues: issueReducer,
   repairs: repairReducer,
   notifications: notificationReducer,
-  meetings: meetingReducer
+  meetings: meetingReducer,
+  issue: issueDetailReducer
 };
 
 // Persist reducers
