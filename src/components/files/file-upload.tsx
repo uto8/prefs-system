@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import type { FileCategory, DragDropFile, FileUploadResponse } from '@/types/File';
-import type { Session } from 'next-auth';
 
 interface FileUploadProps {
   onUploadComplete?: (response: FileUploadResponse) => void;
@@ -21,7 +20,6 @@ interface FileUploadProps {
   issueId?: number;
   saleId?: number;
   receptionId?: number;
-  session?: Session | null;
   className?: string;
 }
 
@@ -62,7 +60,6 @@ export function FileUpload({
   issueId,
   saleId,
   receptionId,
-  session,
   className
 }: FileUploadProps) {
   const [files, setFiles] = useState<DragDropFile[]>([]);
@@ -147,37 +144,44 @@ export function FileUpload({
   }, []);
 
   const uploadFile = async (dragDropFile: DragDropFile): Promise<void> => {
-    if (!session?.user) {
-      throw new Error('ログインが必要です');
-    }
-
-    const formData = new FormData();
-    formData.append('file', dragDropFile.file);
-    formData.append('category', category);
-    if (description) formData.append('description', description);
-    if (officeId) formData.append('officeId', officeId.toString());
-    if (issueId) formData.append('issueId', issueId.toString());
-    if (saleId) formData.append('saleId', saleId.toString());
-    if (receptionId) formData.append('receptionId', receptionId.toString());
-    formData.append('isPublic', 'false');
-
     try {
-      const response = await fetch('http://localhost:8000/files/upload', {
+      // セッション情報を取得
+      const response = await fetch('/api/auth/session');
+      const sessionData = await response.json();
+
+      if (!sessionData?.user) {
+        throw new Error('ログインが必要です');
+      }
+
+      const formData = new FormData();
+      formData.append('file', dragDropFile.file);
+      formData.append('category', category);
+      if (description) formData.append('description', description);
+      if (officeId) formData.append('officeId', officeId.toString());
+      if (issueId) formData.append('issueId', issueId.toString());
+      if (saleId) formData.append('saleId', saleId.toString());
+      if (receptionId) formData.append('receptionId', receptionId.toString());
+      formData.append('isPublic', 'false');
+
+      const uploadResponse = await fetch('http://localhost:8000/files/upload', {
         method: 'POST',
         body: formData,
         headers: {
-          'companyId': session.user.companyId?.toString() || '',
-          'role': session.user.role || '',
-          'userId': session.user.id || '',
+          'companyId': sessionData.user.companyId?.toString() || '',
+          'officeId': sessionData.user.officeId?.toString() || '',
+          'saleId': sessionData.user.saleId?.toString() || '',
+          'receptionId': sessionData.user.receptionId?.toString() || '',
+          'role': sessionData.user.role || '',
+          'userId': sessionData.user.id || '',
         }
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
         throw new Error(errorData.message || 'アップロードに失敗しました');
       }
 
-      const result: FileUploadResponse = await response.json();
+      const result: FileUploadResponse = await uploadResponse.json();
 
       setFiles(prev => prev.map(f =>
         f.id === dragDropFile.id

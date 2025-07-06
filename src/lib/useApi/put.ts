@@ -11,12 +11,16 @@ const ApiPut = async (url: string, body: object, reqHeader: Record<string, strin
     ...(cookie.companyId && { "companyId": cookie.companyId }),
     ...(cookie.officeId && { "officeId": cookie.officeId }),
     ...(cookie.saleId && { "saleId": cookie.saleId }),
+    ...(cookie.receptionId && { "receptionId": cookie.receptionId }),
+    ...(cookie.userId && { "userId": cookie.userId }),
     ...reqHeader
   };
   // process.env.NEXT_PUBLIC_API_BASE_URL
   const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
   const reqBody = {
     ...(cookie.officeId && { "officeId": cookie.officeId }),
+    ...(cookie.saleId && { "saleId": cookie.saleId }),
+    ...(cookie.receptionId && { "receptionId": cookie.receptionId }),
     ...body
   }
 
