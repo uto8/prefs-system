@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Upload, X, AlertCircle, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -41,13 +41,32 @@ const ACCEPTED_FILE_TYPES = [
   'application/x-zip-compressed'
 ];
 
-const CATEGORY_OPTIONS = [
+const ALL_CATEGORY_OPTIONS = [
   { value: 'issue', label: '案件ファイル' },
   { value: 'office', label: '店舗管理ファイル' },
   { value: 'sales', label: '営業資料ファイル' },
   { value: 'reception', label: '受付業務ファイル' },
   { value: 'company', label: '共通ファイル' }
 ];
+
+// 役割に応じたカテゴリ制限
+const getCategoryOptionsByRole = (role: string): typeof ALL_CATEGORY_OPTIONS => {
+  switch (role) {
+    case 'ADMIN':
+    case 'OFFICE':
+      return ALL_CATEGORY_OPTIONS; // 全カテゴリ可能
+    case 'SALES':
+      return ALL_CATEGORY_OPTIONS.filter(option =>
+        ['company', 'issue', 'sales'].includes(option.value)
+      );
+    case 'RECEPTION':
+      return ALL_CATEGORY_OPTIONS.filter(option =>
+        ['company', 'reception', 'issue'].includes(option.value)
+      );
+    default:
+      return [{ value: 'company', label: '共通ファイル' }]; // デフォルトは共通ファイルのみ
+  }
+};
 
 export function FileUpload({
   onUploadComplete,
@@ -67,7 +86,37 @@ export function FileUpload({
   const [category, setCategory] = useState<FileCategory>(defaultCategory);
   const [description, setDescription] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState(ALL_CATEGORY_OPTIONS);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // セッション情報を取得してユーザー役割を設定
+  const fetchUserRole = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/session');
+      const sessionData = await response.json();
+
+      if (sessionData?.user?.role) {
+        const role = sessionData.user.role;
+        const allowedCategories = getCategoryOptionsByRole(role);
+        setCategoryOptions(allowedCategories);
+
+        // 現在選択されているカテゴリが許可されていない場合はデフォルトに変更
+        if (!allowedCategories.some(option => option.value === category)) {
+          setCategory(allowedCategories[0]?.value as FileCategory || 'company');
+        }
+      }
+    } catch (error) {
+      console.error('ユーザー役割の取得に失敗しました:', error);
+      // エラーの場合はデフォルトの制限を適用
+      setCategoryOptions([{ value: 'company', label: '共通ファイル' }]);
+      setCategory('company');
+    }
+  }, [category]);
+
+  // コンポーネントマウント時にユーザー役割を取得
+  useEffect(() => {
+    fetchUserRole();
+  }, [fetchUserRole]);
 
   const validateFile = useCallback((file: File): string | null => {
     // ファイルタイプチェック
@@ -288,7 +337,7 @@ export function FileUpload({
             <SelectValue placeholder="カテゴリを選択" />
           </SelectTrigger>
           <SelectContent>
-            {CATEGORY_OPTIONS.map(option => (
+            {categoryOptions.map(option => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
