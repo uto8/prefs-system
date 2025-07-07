@@ -2,11 +2,11 @@
 
 import { toast } from '@/hooks/use-toast';
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue, updateMemoValue } from '@/stores/reducers/issueDetailReducer';
+import { setValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueDetailReducer';
 import { Issue } from '@/types/Issue'
 import React, { useEffect, useState } from 'react'
 import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
-import { updateDatetimeValue, updateStatusValue } from '@/stores/reducers/issueReducer';
+import { updateDatetimeValue } from '@/stores/reducers/issueReducer';
 import ContractModal from './contract_modal';
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Button } from '../ui/button';
@@ -14,6 +14,7 @@ import ApiGet from '@/lib/useApi/get';
 import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import MeetingHistories from './meeting-histories';
 import ApiPost from '@/lib/useApi/post';
+import { format } from 'date-fns';
 
 export default function IssueDetail({
   issueData
@@ -32,6 +33,24 @@ export default function IssueDetail({
   const [time, setTime] = useState("00")
   const [hour, setHour] = useState("0")
   // const [estimateDate, setEstimateDatetime] = useState("")
+  const issueStatus = [
+    "問い合わせ",
+    "担当先確認中",
+    "アポイント確定",
+    "初回打合せ完了",
+    "FP提案済み",
+    "SP提案済み",
+    "TP提案済み",
+    "クロージング済み（返答待）",
+    "契約",
+    "着手金入金済み",
+    "着工済み",
+    "工事完了",
+    "引渡済み",
+    "完工入金済み",
+    "完了",
+    "保留",
+  ]
 
   const handleContract = async ({issueId: issueId, issueConfirmId: issueConfirmId, input: input}: {
     issueId: number,
@@ -143,6 +162,10 @@ export default function IssueDetail({
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">担当者</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.sale.name}</dd>
+        </div>
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">進捗</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.status}</dd>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -215,7 +238,7 @@ export default function IssueDetail({
           <dl class="divide-y">
             <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
               <dt class="text-sm px-2 py-2 text-gray-900 font-bold bg-slate-200">申し込み日</dt>
-              <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0"></dd>
+              <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${format(issue.createdAt, "yyyy年MM月dd日")}</dd>
             </div>
             <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
               <dt class="text-sm px-2 py-2 text-gray-900 font-bold bg-slate-200">初回打ち合わせ</dt>
@@ -402,7 +425,21 @@ export default function IssueDetail({
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">進捗</dt>
-            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue?.status}</dd>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+              <select
+                onChange={(e) => {
+                  console.log(e.target.value)
+                  dispatch(updateStatusValue({id: issueData.id, status: e.target.value}))}}
+                className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
+                {
+                  issueStatus.map((status, index) => (
+                    <option key={index} value={status}>
+                      {status}
+                    </option>
+                  ))
+                }
+              </select>
+            </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">お客様名</dt>
