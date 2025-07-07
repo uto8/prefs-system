@@ -76,12 +76,12 @@ export const updateMemo = async ({id, memo}: {
   }
 }
 
-export const updateStatus = async ({id, memo}: {
+export const updateStatus = async ({id, status}: {
   id: number,
-  memo: string
+  status: string
 }) => {
   try{
-    await ApiPut(`/issues/${id}/status`, {memo: memo})
+    await ApiPut(`/issues/${id}/status`, {status: status})
   }catch(e) {
     throw e;
   }

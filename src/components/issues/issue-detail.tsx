@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/stores';
 import { setValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueDetailReducer';
 import { Issue } from '@/types/Issue'
 import React, { useEffect, useState } from 'react'
-import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
+import { createIssueConfirmed, updateIssueConfirmed, updateMemo, updateStatus } from '@/app/(authed)/issues/list/actions';
 import { updateDatetimeValue } from '@/stores/reducers/issueReducer';
 import ContractModal from './contract_modal';
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
@@ -23,9 +23,14 @@ export default function IssueDetail({
 }) {
   const dispatch = useAppDispatch();
   const { value: issue } = useAppSelector((state) => state.issue);
+  const [selectIssueStatus, setSelectIssueStatus] = useState(issueData.status);
   useEffect(() => {
     dispatch(setValue(issueData));
   }, []);
+  useEffect(() => {
+    console.log("==issueData.status", issueData.status)
+    setSelectIssueStatus(issueData.status);
+  }, [issueData.status]);
   const [editModal, setEditModal] = useState(false)
   const [memo, setMemo] = useState("")
   const { value: meetings } = useAppSelector((state) => state.meetings);
@@ -43,13 +48,6 @@ export default function IssueDetail({
     "SP提案済み",
     "TP提案済み",
     "クロージング済み（返答待）",
-    "契約",
-    "着手金入金済み",
-    "着工済み",
-    "工事完了",
-    "引渡済み",
-    "完工入金済み",
-    "完了",
     "保留",
     "打合わせ前失注",
   ]
@@ -428,10 +426,16 @@ export default function IssueDetail({
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">進捗</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <select
-                onChange={(e) => {
-                  console.log(e.target.value)
-                  dispatch(updateStatusValue({id: issueData.id, status: e.target.value}))}}
+            {
+              issue && !issue.issueConfirmed.id?<select
+                defaultValue={selectIssueStatus}
+                onChange={async (e) => {
+                  const res = await updateStatus({ id: issueData.id, status: e.target.value })
+                  console.log("==-res-=", res)
+                  console.log("==e.target.value", e.target.value)
+                  setSelectIssueStatus(e.target.value)
+                  dispatch(updateStatusValue({id: issueData.id, status: e.target.value}))}
+                }
                 className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
                 {
                   issueStatus.map((status, index) => (
@@ -440,7 +444,9 @@ export default function IssueDetail({
                     </option>
                   ))
                 }
-              </select>
+              </select>:issue?.status
+            }
+
             </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
