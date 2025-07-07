@@ -81,6 +81,7 @@ export default function TopBar ({
               {value.length}
             </span>}
           </button>
+          <span className="text-gray-400">Ver 1.1</span>
 
 
           {/* Separator */}

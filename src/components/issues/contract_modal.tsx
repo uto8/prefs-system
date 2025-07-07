@@ -172,7 +172,7 @@ export default function ContractModal({
                     name="startDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>工事開始日</FormLabel>
+                        <FormLabel>着工日</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -211,7 +211,7 @@ export default function ContractModal({
                     name="completeDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>引き渡し予定日</FormLabel>
+                        <FormLabel>引渡日</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
