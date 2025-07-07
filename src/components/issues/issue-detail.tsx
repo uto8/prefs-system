@@ -2,11 +2,11 @@
 
 import { toast } from '@/hooks/use-toast';
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue, updateMemoValue } from '@/stores/reducers/issueDetailReducer';
+import { setValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueDetailReducer';
 import { Issue } from '@/types/Issue'
 import React, { useEffect, useState } from 'react'
 import { createIssueConfirmed, updateIssueConfirmed, updateMemo } from '@/app/(authed)/issues/list/actions';
-import { updateDatetimeValue, updateStatusValue } from '@/stores/reducers/issueReducer';
+import { updateDatetimeValue } from '@/stores/reducers/issueReducer';
 import ContractModal from './contract_modal';
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Button } from '../ui/button';
@@ -14,6 +14,7 @@ import ApiGet from '@/lib/useApi/get';
 import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import MeetingHistories from './meeting-histories';
 import ApiPost from '@/lib/useApi/post';
+import { format } from 'date-fns';
 
 export default function IssueDetail({
   issueData
@@ -161,6 +162,10 @@ export default function IssueDetail({
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">担当者</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.sale.name}</dd>
+        </div>
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">進捗</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.status}</dd>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -233,7 +238,7 @@ export default function IssueDetail({
           <dl class="divide-y">
             <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
               <dt class="text-sm px-2 py-2 text-gray-900 font-bold bg-slate-200">申し込み日</dt>
-              <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.createdAt}</dd>
+              <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${format(issue.createdAt, "yyyy年MM月dd日")}</dd>
             </div>
             <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
               <dt class="text-sm px-2 py-2 text-gray-900 font-bold bg-slate-200">初回打ち合わせ</dt>
@@ -422,7 +427,9 @@ export default function IssueDetail({
             <dt className="text-sm/6 font-medium text-gray-900">進捗</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
               <select
-                onChange={(e) => {dispatch(updateStatusValue({id: issueData.id, status: e.target.value}))}}
+                onChange={(e) => {
+                  console.log(e.target.value)
+                  dispatch(updateStatusValue({id: issueData.id, status: e.target.value}))}}
                 className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
                 {
                   issueStatus.map((status, index) => (
