@@ -30,6 +30,11 @@ const issueSlice = createSlice({
       if (state.value && state.value.id === action.payload.id) {
         state.value.estimateSubmissionDate = action.payload.date;
       }
+    },
+    updateStatusValue: (state, action: PayloadAction<{id: number, status: string}>) => {
+      if (state.value && state.value.id === action.payload.id) {
+        state.value.status = action.payload.status;
+      }
     }
   }
 });
@@ -37,7 +42,8 @@ const issueSlice = createSlice({
 export const {
   setValue,
   updateMemoValue,
-  updateEstimateDateValue
+  updateEstimateDateValue,
+  updateStatusValue,
 } = issueSlice.actions;
 
 export const issueDetailReducer = issueSlice.reducer;

@@ -421,7 +421,9 @@ export default function IssueDetail({
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">進捗</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <select className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
+              <select
+                onChange={(e) => {dispatch(updateStatusValue({id: issueData.id, status: e.target.value}))}}
+                className="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]">
                 {
                   issueStatus.map((status, index) => (
                     <option key={index} value={status}>
