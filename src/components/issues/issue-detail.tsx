@@ -36,6 +36,7 @@ export default function IssueDetail({
   const issueStatus = [
     "問い合わせ",
     "担当先確認中",
+    "担当確定",
     "アポイント確定",
     "初回打合せ完了",
     "FP提案済み",
@@ -50,6 +51,7 @@ export default function IssueDetail({
     "完工入金済み",
     "完了",
     "保留",
+    "打合わせ前失注",
   ]
 
   const handleContract = async ({issueId: issueId, issueConfirmId: issueConfirmId, input: input}: {
