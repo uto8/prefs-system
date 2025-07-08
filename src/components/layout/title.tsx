@@ -9,7 +9,7 @@ export default function TitleComponent({
   const router = useRouter()
 
   const goBack = () => {
-    router.back();  // 前のページに戻る
+    router.back();
   };
   return (
     <div className="px-4 sm:px-0 mb-8">

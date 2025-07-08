@@ -1,13 +1,25 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue, updateStatusValue } from '@/stores/reducers/issueReducer';
+import { setValue, updateDatetimeValue, updateStatusValue } from '@/stores/reducers/issueReducer';
 import ContractModal from '@/components/issues/contract_modal';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { useEffect, useState } from 'react';
 import { Issue } from '@/types/Issue';
 import { createIssueConfirmed, updateIssueConfirmed } from '@/app/(authed)/issues/list/actions';
 import { useToast } from '@/hooks/use-toast';
+import MeetingHistories from '../meeting-histories';
 import { format } from 'date-fns';
+import ApiPost from '@/lib/useApi/post';
+import ApiGet from '@/lib/useApi/get';
+import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import CompleteModal from '../complete_modal';
 import ApiPut from '@/lib/useApi/put';
 import LostModal from '../lost_modal';
@@ -21,10 +33,12 @@ export default function IssueListTable({issues: issues}: {
   const [editModal, setEditModal] = useState(false)
   const [completeModal, setCompleteModal] = useState(false)
   const [lostModal, setLostModal] = useState(false)
+  const [datetime, setDatetime] = useState("")
   const { toast } = useToast()
 
   const { value } = useAppSelector((state) => state.issues);
   const dispatch = useAppDispatch();
+  const { value: meetings } = useAppSelector((state) => state.meetings);
   const router = useRouter()
 
   useEffect(() => {
@@ -97,6 +111,26 @@ export default function IssueListTable({issues: issues}: {
       dispatch(updateStatusValue({id:id, status:"失注解除"}));
     }catch(e){
       console.log("e", e)
+      throw e
+    }
+  }
+
+  // 打ち合わせ日登録
+  const handleCreateMeeting = async (issueId: number, date: string) => {
+    if(date === "") return
+    await ApiPost("/meetings", {
+      issueId: issueId,
+      datetime: date,
+      description: ""
+    })
+    dispatch(updateDatetimeValue({id: issueId, datetime: date}));
+  }
+
+  const getMeetings = async (issueId: number) => {
+    try{
+      const meetings = await ApiGet(`/meetings/${issueId}`)
+      dispatch(setMeetingValue(meetings));
+    }catch(e) {
       throw e
     }
   }
@@ -195,12 +229,22 @@ export default function IssueListTable({issues: issues}: {
                   </th>
                   <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
+                      店舗
+                    </div>
+                  </th>
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
+                    <div className='flex justify-between'>
+                      担当者
+                    </div>
+                  </th>
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
+                    <div className='flex justify-between'>
                       お客様名
                     </div>
                   </th>
                   <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
                     <div className='flex justify-between'>
-                      ステータス
+                      進捗
                     </div>
                   </th>
                   <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
@@ -216,38 +260,87 @@ export default function IssueListTable({issues: issues}: {
                       </div>
                     </div>
                   </th>
-                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                    <span className="sr-only">入金</span>
+
+
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
+                    <div className='flex justify-between'>
+                      受付担当者
+                    </div>
+                  </th>
+
+                  <th scope="col" className="sticky_col px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-white">
+                    <div className='flex justify-between'>
+                      次回打ち合わせ日
+                      <div className='flex'>
+                        <svg onClick={()=>handleSort("meetingAscendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                        <svg onClick={()=>handleSort("meetingDescendingOrder")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                          <path fillRule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM14.78 11.47a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l.97.97V6.75a.75.75 0 0 1 1.5 0v5.69l.97-.97a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {value.map((issue, index) => (
                   <tr key={index}>
-                    <td className="z-10 sticky_row whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 sticky">
+                    <td className="sticky_row whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 sticky">
                       <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
                       {issue.issueCode}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
+                      <p className="ml-2">
+                      {issue.office?issue.office.name:null}
+                      </p>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <a href="#" className="ml-2 hover:text-indigo-900">
+                      {issue.sale?issue.sale.name:null}
+                      </a>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <a href="#" className="ml-2 hover:text-indigo-900">
                       {issue.client?issue.client.name: null}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                       {status(issue.status)}
                     </td>
+
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {format(issue.createdAt, "MM月dd日 HH時mm分")}
+                      {format(issue.createdAt, "MM月dd日")}
                     </td>
+
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {issue.reception?<a href="#" className="hover:text-indigo-900">
+                        {issue.reception?issue.reception.name:null}
+                      </a>: <>-</>}
+                    </td>
+
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-indigo-600">
+                      <Dialog>
+                        <DialogTrigger onClick={()=> {getMeetings(issue.id)}}>
+                          {issue.datetime?`${format(issue.datetime, "MM月dd日 HH時mm分")}`:"未定"}
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogTitle>打ち合わせ</DialogTitle>
+                          <div>
+                            <input value={datetime} onChange={(e)=>setDatetime(e.target.value)} type='datetime-local' className="w-full mb-4 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                            <DialogClose asChild>
+                              <Button onClick={()=>handleCreateMeeting(issue.id, datetime)} className='w-full'>保存</Button>
+                            </DialogClose>
+                          </div>
+                          <div>
+                            <MeetingHistories meetings={meetings}/>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </td>
+
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                      <button onClick={()=>{
-                        if(!issue)return
-                        setEditModal(true)
-                        setIssueContractData(issue)
-                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      契約
-                      </button>
                       {
                         issue.status.includes("失注")?<button onClick={()=>{
                           handleRemoveLost({id:issue.id,status:"失注解除"})
@@ -261,13 +354,9 @@ export default function IssueListTable({issues: issues}: {
                         失注
                         </button>
                       }
-                      {issue.status === "入金済" ? <button onClick={()=>{
-                        if(!issue)return
-                        setCompleteModal(true)
-                        setIssueContractData(issue)
-                      }} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      完了
-                      </button>: null}
+                      <a href={`/issues/${issue.id}/edit`} className="ml-2 text-indigo-600 hover:text-indigo-900 mr-2">
+                        編集
+                      </a>
                     </td>
                   </tr>
                 ))}

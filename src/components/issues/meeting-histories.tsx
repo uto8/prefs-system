@@ -26,16 +26,14 @@ export default function MeetingHistories({meetings}:{meetings: Meeting[]}) {
   return (
     <>
       <ul role="list" className="space-y-6">
-        {meetings.map((meeting) => (
+        {meetings.map((meeting, index) => (
           <li key={meeting.id} className="relative flex gap-x-4">
-            <div
-              className="absolute left-0 top-0 flex w-6 justify-center"
-            >
-              <div className="w-px bg-gray-200" />
-            </div>
             <>
               <div className="relative flex size-6 flex-none items-center justify-center bg-white">
                 <div className="size-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
+              </div>
+              <div className='text-xs/5 py-0.5 text-gray-500'>
+                {index === (meetings.length-1) ?"初回": `${meetings.length -index}回目`}
               </div>
               <p className="flex-auto py-0.5 text-xs/5 text-gray-500">
                 <span className="font-medium text-gray-900">{`${format(meeting.datetime, "MM月dd日 HH時mm分")}`}</span>
