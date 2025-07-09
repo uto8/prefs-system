@@ -383,7 +383,6 @@ export default function FilesPage() {
             <FileUpload
               onUploadComplete={handleUploadComplete}
               onUploadError={handleUploadError}
-              session={session}
             />
           </div>
         </div>
