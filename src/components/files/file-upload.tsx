@@ -53,8 +53,11 @@ const ALL_CATEGORY_OPTIONS = [
 const getCategoryOptionsByRole = (role: string): typeof ALL_CATEGORY_OPTIONS => {
   switch (role) {
     case 'ADMIN':
+      return ALL_CATEGORY_OPTIONS; // 管理者は全カテゴリ可能
     case 'OFFICE':
-      return ALL_CATEGORY_OPTIONS; // 全カテゴリ可能
+      return ALL_CATEGORY_OPTIONS.filter(option =>
+        ['company', 'office', 'issue', 'sales', 'reception'].includes(option.value)
+      );
     case 'SALES':
       return ALL_CATEGORY_OPTIONS.filter(option =>
         ['company', 'issue', 'sales'].includes(option.value)
@@ -200,6 +203,27 @@ export function FileUpload({
 
       if (!sessionData?.user) {
         throw new Error('ログインが必要です');
+      }
+
+      // 案件ファイルの権限チェック
+      if (category === 'issue') {
+        const userRole = sessionData.user.role;
+        const userOfficeId = sessionData.user.officeId;
+        const userSaleId = sessionData.user.saleId;
+        const userReceptionId = sessionData.user.receptionId;
+
+        // 案件ファイルのアップロード権限チェック
+        if (userRole === 'SALES' && (!userSaleId || (saleId && userSaleId !== saleId))) {
+          throw new Error('自分が担当する案件にのみファイルをアップロードできます');
+        }
+
+        if (userRole === 'RECEPTION' && (!userReceptionId || (receptionId && userReceptionId !== receptionId))) {
+          throw new Error('自分が対応する案件にのみファイルをアップロードできます');
+        }
+
+        if (userRole === 'OFFICE' && (!userOfficeId || (officeId && userOfficeId !== officeId))) {
+          throw new Error('自店舗の案件にのみファイルをアップロードできます');
+        }
       }
 
       const formData = new FormData();
