@@ -69,6 +69,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error("Invalid email or password");
         }
       }
-    }),
+    })
   ],
 })
