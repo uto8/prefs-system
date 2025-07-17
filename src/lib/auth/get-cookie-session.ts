@@ -12,6 +12,7 @@ export const getCookieSession = async (): Promise<Session> => {
   const officeId = cookieStore.get('officeId')
   const saleId = cookieStore.get('saleId')
   const receptionId = cookieStore.get('receptionId')
+  const userId = cookieStore.get('userId')
 
   const session = {
     role: role?.value ?? null,
@@ -19,7 +20,8 @@ export const getCookieSession = async (): Promise<Session> => {
     officeId: officeId?.value ?? null,
     saleId: saleId?.value ?? null,
     receptionId: receptionId?.value ?? null,
-    idToken: ""
+    idToken: "",
+    userId: userId?.value ?? null,
   }
 
   return session;

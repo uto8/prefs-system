@@ -8,6 +8,7 @@ export const setCookieSession = async ({
   officeId: officeId,
   saleId: saleId,
   receptionId: receptionId,
+  userId: userId,
   idToken: idToken
 }: {
   role:string,
@@ -15,6 +16,7 @@ export const setCookieSession = async ({
   officeId: string,
   saleId: string,
   receptionId: string,
+  userId: string,
   idToken: string
 }) => {
   const useCookie = await cookies()
@@ -26,5 +28,6 @@ export const setCookieSession = async ({
   useCookie.set("officeId", officeId, cookieOptions)
   useCookie.set("saleId", saleId, cookieOptions)
   useCookie.set("receptionId", receptionId, cookieOptions)
+  useCookie.set("userId", userId, cookieOptions)
   useCookie.set("idToken", idToken, cookieOptions)
 }
