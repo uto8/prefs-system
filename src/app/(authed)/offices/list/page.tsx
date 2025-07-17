@@ -90,8 +90,8 @@ export default function ShopList() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {
-                  value.map((office) => (
-                    <tr key={office.id}>
+                  value.map((office, index) => (
+                    <tr key={index}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                         {office.name}
                       </td>

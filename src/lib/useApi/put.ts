@@ -4,7 +4,6 @@ import { Session } from "@/types/Session";
 import { getCookieSession } from "../auth/get-cookie-session";
 
 const ApiPut = async (url: string, body: object, reqHeader: Record<string, string> = {}) => {
-  console.log("==put")
   const cookie: Session = await getCookieSession()
   const header: HeadersInit = {
     ...(cookie.role && { "role": cookie.role }),

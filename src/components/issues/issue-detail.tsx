@@ -15,12 +15,14 @@ import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import MeetingHistories from './meeting-histories';
 import ApiPost from '@/lib/useApi/post';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 export default function IssueDetail({
   issueData
 }:{
   issueData: Issue
 }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { value: issue } = useAppSelector((state) => state.issue);
   const [selectIssueStatus, setSelectIssueStatus] = useState(issueData.status);
@@ -28,7 +30,6 @@ export default function IssueDetail({
     dispatch(setValue(issueData));
   }, []);
   useEffect(() => {
-    console.log("==issueData.status", issueData.status)
     setSelectIssueStatus(issueData.status);
   }, [issueData.status]);
   const [editModal, setEditModal] = useState(false)
@@ -392,6 +393,14 @@ export default function IssueDetail({
             </DialogContent>
           </Dialog>
         </div>
+        <button
+          onClick={() => {
+            if(!issue)return
+            router.push(`/issues/${issue.id}/requests`)
+          }}
+          className="ml-2 text-indigo-600 hover:text-indigo-900">
+          リクエスト
+        </button>
         {/* <div className='ml-2 text-indigo-600 '>
           <Dialog>
             <DialogTrigger onClick={()=> {getMeetings(issueData.id)}}>

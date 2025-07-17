@@ -42,8 +42,8 @@ const formSchema = z.object({
   clientNameKana: z.string().nonempty("顧客名カナは必須項目です"),
   clientEmail: z.string().optional(),
   clientPhoneNumber: z.string().optional(),
-  officeId: z.string(),
-  saleId: z.string(),
+  officeId: z.string().optional(),
+  saleId: z.string().optional(),
   receptionId: z.string().optional(),
   isFranchise: z.string().optional(),
   status: z.string().optional(),
@@ -96,12 +96,14 @@ export default function CreateIssueForm({
   const receptionId2 = useWatch({ control: form.control, name: "receptionId" });
 
   async function fetchData() {
-    const sales = await ApiGet("/sales",{"officeId": officeId})
-    const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
-    setSaleOptions(saleOption)
-    // const receptions = await ApiGet("/receptions",{"officeId": officeId})
-    // const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
-    // setReceptionOptions(receptionOption)
+    if(officeId){
+      const sales = await ApiGet("/sales",{"officeId": officeId})
+      const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+      setSaleOptions(saleOption)
+      // const receptions = await ApiGet("/receptions",{"officeId": officeId})
+      // const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
+      // setReceptionOptions(receptionOption)
+    }
   }
   useEffect(() => {
     fetchData()
@@ -116,15 +118,16 @@ export default function CreateIssueForm({
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       setDisabled(true)
+      console.log("======",Number(data.officeId) ?? null);
       await createIssue({
         issueCode: data.issueCode ?? "",
         currentAddress: data.currentAddress ?? '',
-        officeId: Number(data.officeId) ?? null,
+        officeId: data.officeId? Number(data.officeId) : null,
         preferredDate: data.preferredDate ?? '',
         type: data.type,
         contactContent: data.contactContent ?? '',
         budget: data.budget ?? '',
-        saleId: Number(data.saleId) ?? null,
+        saleId: data.saleId? Number(data.saleId) : null,
         constructionSite: data.constructionSite ?? '',
         clientName: data.clientName,
         clientNameKana: data.clientNameKana,

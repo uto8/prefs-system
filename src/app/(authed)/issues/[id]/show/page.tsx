@@ -10,7 +10,6 @@ async function IssueDetails({ params }: { params: { id: string } }) {
 
   const { id } = params;
   const issue:Issue = await ApiGet(`/issues/${id}`)
-  console.log("=sale", issue.memo)
 
   return (
     <div>
