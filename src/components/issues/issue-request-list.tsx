@@ -29,10 +29,7 @@ export default function IssueRequestList({
   }
   const handleUpdateStatus = async (issueRequestId: number, status: string) => {
     try{
-      console.log("handleUpdateStatus", status)
       if(status === ""){ return }
-      console.log("`/issue_requests/${issueData.id}`,", `/issue_requests/${issueData.id}`,)
-      console.log("==status", status)
       await ApiPut(`/issue_requests/${issueRequestId}`, { status: status });
       toast({
         title: "ステータスの更新に成功しました",

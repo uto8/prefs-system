@@ -293,8 +293,11 @@ export default function IssueDetail({
     const content = document.createElement('div');
     content.innerHTML = `
       <dl class="divide-y divide-gray-100">
-        <div class="text-center w-full font-bold px-2 py-2 bg-slate-400">
+        <div class="text-center flex w-full justify-between font-bold pl-2 bg-slate-400">
           <p>お客様シート</p>
+          <div class="p-2 bg-white">
+            <img src="/logo.png" alt="Logo" class="object-contain w-24">
+          </div>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">案件番号</dt>
@@ -433,7 +436,7 @@ export default function IssueDetail({
     // PDFを生成
     const options = {
       margin: 0.2,
-      filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
+      filename: `お客様シート${issue.issueCode}.pdf`,
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
     };
