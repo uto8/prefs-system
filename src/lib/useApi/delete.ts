@@ -11,6 +11,8 @@ const ApiDelete = async (url: string, reqHeader: Record<string, string> = {}) =>
       ...(cookie.companyId && { "companyId": cookie.companyId }),
       ...(cookie.officeId && { "officeId": cookie.officeId }),
       ...(cookie.saleId && { "saleId": cookie.saleId }),
+      ...(cookie.receptionId && { "receptionId": cookie.receptionId }),
+      ...(cookie.userId && { "userId": cookie.userId }),
       ...reqHeader
     };
     const request_url = process.env.NEXT_PUBLIC_API_BASE_URL + url;

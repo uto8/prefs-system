@@ -288,7 +288,7 @@ export default function IssueListTable({issues: issues}: {
                   <tr key={index}>
                     <td className="sticky_row whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 sticky">
                       <a href={`/issues/${issue.id}/show`} className="ml-2 text-indigo-600 hover:text-indigo-900">
-                      {issue.issueCode}
+                      {issue.issueCode? issue.issueCode : "未登録"}
                       </a>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

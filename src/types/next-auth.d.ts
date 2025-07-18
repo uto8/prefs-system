@@ -13,6 +13,8 @@ declare module "next-auth" {
       saleId: number | null;
       officeId: number | null;
       companyId: number | null;
+      receptionId: number | null;
+      userId: string | null;
       idToken: string | null;
     };
   }
@@ -24,6 +26,8 @@ declare module "next-auth" {
     saleId: number | null;
     officeId: number | null;
     companyId: number | null;
+    receptionId: number | null;
+    userId: string | null;
     idToken: string | null;
   }
 }

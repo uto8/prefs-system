@@ -1,6 +1,6 @@
 "use server"
 
-import IssueDetail from '@/components/issues/issue-detail';
+import FileUploadForm from '@/components/issues/fileUploadForm/file-upload-form';
 import TitleComponent from '@/components/layout/title';
 import ApiGet from '@/lib/useApi/get'
 import { Issue } from '@/types/Issue';
@@ -10,12 +10,11 @@ async function IssueDetails({ params }: { params: { id: string } }) {
 
   const { id } = params;
   const issue:Issue = await ApiGet(`/issues/${id}`)
-  console.log(issue)
 
   return (
     <div>
-      <TitleComponent title="案件詳細"/>
-      <IssueDetail issueData={issue}/>
+      <TitleComponent title="ファイルアップロード詳細"/>
+      <FileUploadForm issueData={issue}/>
     </div>
   )
 }

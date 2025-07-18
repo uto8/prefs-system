@@ -42,11 +42,13 @@ const formSchema = z.object({
   clientNameKana: z.string().nonempty("顧客名カナは必須項目です"),
   clientEmail: z.string().optional(),
   clientPhoneNumber: z.string().optional(),
-  officeId: z.string(),
-  saleId: z.string(),
+  officeId: z.string().optional(),
+  saleId: z.string().optional(),
   receptionId: z.string().optional(),
   isFranchise: z.string().optional(),
   status: z.string().optional(),
+  houseMaker: z.string().optional(),
+  contactType: z.string().optional(),
 })
 
 export default function CreateIssueForm({
@@ -88,7 +90,9 @@ export default function CreateIssueForm({
       saleId: userSaleId ?? "",
       receptionId: "",
       isFranchise: "",
-      status: "お問い合わせ"
+      status: "お問い合わせ",
+      houseMaker: "",
+      contactType: "",
     },
   })
 
@@ -96,12 +100,14 @@ export default function CreateIssueForm({
   const receptionId2 = useWatch({ control: form.control, name: "receptionId" });
 
   async function fetchData() {
-    const sales = await ApiGet("/sales",{"officeId": officeId})
-    const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
-    setSaleOptions(saleOption)
-    // const receptions = await ApiGet("/receptions",{"officeId": officeId})
-    // const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
-    // setReceptionOptions(receptionOption)
+    if(officeId){
+      const sales = await ApiGet("/sales",{"officeId": officeId})
+      const saleOption: OptionFields = sales.data.map((sale: Sale) => {return {value: sale.id, label: sale.name}})
+      setSaleOptions(saleOption)
+      // const receptions = await ApiGet("/receptions",{"officeId": officeId})
+      // const receptionOption: OptionFields = receptions.data.map((reception: Reception) => {return {value: reception.id, label: reception.name}})
+      // setReceptionOptions(receptionOption)
+    }
   }
   useEffect(() => {
     fetchData()
@@ -119,12 +125,12 @@ export default function CreateIssueForm({
       await createIssue({
         issueCode: data.issueCode ?? "",
         currentAddress: data.currentAddress ?? '',
-        officeId: Number(data.officeId) ?? null,
+        officeId: data.officeId? Number(data.officeId) : null,
         preferredDate: data.preferredDate ?? '',
         type: data.type,
         contactContent: data.contactContent ?? '',
         budget: data.budget ?? '',
-        saleId: Number(data.saleId) ?? null,
+        saleId: data.saleId? Number(data.saleId) : null,
         constructionSite: data.constructionSite ?? '',
         clientName: data.clientName,
         clientNameKana: data.clientNameKana,
@@ -132,7 +138,9 @@ export default function CreateIssueForm({
         clientPhoneNumber: data.clientPhoneNumber ?? "",
         isFranchise: data.isFranchise === "1"? 1: 0,
         receptionId: data.receptionId? Number(data.receptionId): null,
-        status: data.status ?? null
+        status: data.status ?? null,
+        houseMaker: data.houseMaker ?? "",
+        contactType: data.contactType ?? "",
       })
       toast({
         variant: "success",
@@ -472,6 +480,59 @@ export default function CreateIssueForm({
                     className="resize-none"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="houseMaker"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                ハウスメーカー
+                </FormLabel>
+                <FormControl>
+                  <select className='flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]' onChange={field.onChange}>
+                    <option value="積水ハウス">積水ハウス</option>
+                    <option value="住友林業">住友林業</option>
+                    <option value="大和ハウス">大和ハウス</option>
+                    <option value="一条工務店">一条工務店</option>
+                    <option value="パナソニックホームズ">パナソニックホームズ</option>
+                    <option value="三井ホーム">三井ホーム</option>
+                    <option value="ミサワホーム">ミサワホーム</option>
+                    <option value="セキスイハイム">セキスイハイム</option>
+                    <option value="ヘーベルハウス">ヘーベルハウス</option>
+                    <option value="アイ工務店">アイ工務店</option>
+                    <option value="トヨタホーム">トヨタホーム</option>
+                    <option value="タマホーム">タマホーム</option>
+                    <option value="その他">その他</option>
+                  </select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="contactType"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                お問い合わせ種別
+                </FormLabel>
+                <FormControl>
+                  <select className='flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]' onChange={field.onChange}>
+                    <option value="メール">メール</option>
+                    <option value="電話">電話</option>
+                    <option value="飛び込み">飛び込み</option>
+                    <option value="リピーター">リピーター</option>
+                    <option value="紹介">紹介</option>
+                    <option value="INSTAGRAM">INSTAGRAM</option>
+                    <option value="LINE">LINE</option>
+                    <option value="その他">その他</option>
+                  </select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

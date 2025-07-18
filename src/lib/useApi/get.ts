@@ -12,6 +12,8 @@ const ApiGet = async (url: string, reqHeader: Record<string, string> = {}) => {
       ...(cookie.companyId && { "companyId": cookie.companyId }),
       ...(cookie.officeId && { "officeId": cookie.officeId }),
       ...(cookie.saleId && { "saleId": cookie.saleId }),
+      ...(cookie.receptionId && { "receptionId": cookie.receptionId }),
+      ...(cookie.userId && { "userId": cookie.userId }),
       ...reqHeader
     };
 

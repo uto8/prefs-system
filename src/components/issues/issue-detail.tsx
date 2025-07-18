@@ -2,7 +2,7 @@
 
 import { toast } from '@/hooks/use-toast';
 import { useAppDispatch, useAppSelector } from '@/stores';
-import { setValue, updateMemoValue, updateStatusValue } from '@/stores/reducers/issueDetailReducer';
+import { updateMemoValue, updateStatusValue } from '@/stores/reducers/issueDetailReducer';
 import { Issue } from '@/types/Issue'
 import React, { useEffect, useState } from 'react'
 import { createIssueConfirmed, updateIssueConfirmed, updateMemo, updateStatus } from '@/app/(authed)/issues/list/actions';
@@ -15,20 +15,19 @@ import { setMeetingValue } from '@/stores/reducers/meetingReducer';
 import MeetingHistories from './meeting-histories';
 import ApiPost from '@/lib/useApi/post';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 export default function IssueDetail({
   issueData
 }:{
   issueData: Issue
 }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { value: issue } = useAppSelector((state) => state.issue);
   const [selectIssueStatus, setSelectIssueStatus] = useState(issueData.status);
+
   useEffect(() => {
-    dispatch(setValue(issueData));
-  }, []);
-  useEffect(() => {
-    console.log("==issueData.status", issueData.status)
     setSelectIssueStatus(issueData.status);
   }, [issueData.status]);
   const [editModal, setEditModal] = useState(false)
@@ -149,8 +148,11 @@ export default function IssueDetail({
     const content = document.createElement('div');
     content.innerHTML = `
       <dl class="divide-y divide-gray-100">
-        <div class="text-center w-full font-bold px-2 py-2 bg-slate-400">
+        <div class="text-center flex w-full justify-between font-bold pl-2 bg-slate-400">
           <p>お客様シート</p>
+          <div class="p-2 bg-white">
+            <img src="/logo.png" alt="Logo" class="object-contain w-24">
+          </div>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">案件番号</dt>
@@ -195,6 +197,14 @@ export default function IssueDetail({
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">メールアドレス</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client.email}</dd>
+        </div>
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">ハウスメーカー</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issueData.houseMaker}</dd>
+        </div>
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">お問い合わせ種別</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issueData.contactType}</dd>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">備考(お問い合わせ内容)</dt>
@@ -289,7 +299,7 @@ export default function IssueDetail({
     // PDFを生成
     const options = {
       margin: 0.2,
-      filename: `issue_${issue.client?.id || 'unknown'}.pdf`,
+      filename: `お客様シート${issue.issueCode}.pdf`,
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
     };
@@ -337,6 +347,11 @@ export default function IssueDetail({
   return (
     <>
       <div className='flex flex-wrap'>
+        <a
+          href={`/issues/${issueData.id}/files`}
+          className="ml-2 text-indigo-600 hover:text-indigo-900">
+          ファイル管理
+        </a>
         <button
           onClick={() => {
             if(!issue)return
@@ -392,6 +407,14 @@ export default function IssueDetail({
             </DialogContent>
           </Dialog>
         </div>
+        <button
+          onClick={() => {
+            if(!issue)return
+            router.push(`/issues/${issue.id}/requests`)
+          }}
+          className="ml-2 text-indigo-600 hover:text-indigo-900">
+          リクエスト
+        </button>
         {/* <div className='ml-2 text-indigo-600 '>
           <Dialog>
             <DialogTrigger onClick={()=> {getMeetings(issueData.id)}}>
@@ -478,6 +501,14 @@ export default function IssueDetail({
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue?.client.email}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm/6 font-medium text-gray-900">ハウスメーカー</dt>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issueData?.houseMaker}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm/6 font-medium text-gray-900">お問い合わせ種別</dt>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issueData?.contactType}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">備考</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue?.contactContent}</dd>
           </div>
@@ -520,6 +551,7 @@ export default function IssueDetail({
           編集
         </a>
       </div>
+
       {/* 契約ポップアップ */}
       <ContractModal
         editModal={editModal}

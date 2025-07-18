@@ -13,6 +13,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.officeId = user.officeId || null;
         token.saleId = user.saleId || null;
         token.idToken = user.idToken || null;
+        token.receptionId = user.receptionId || null;
+        token.userId = user.userId || null;
       }
       return token
     },
@@ -25,6 +27,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         saleId: token.saleId as number | null,
         email: token.email as string,
         idToken: token.idToken as string | null,
+        receptionId: token.receptionId as number | null,
+        userId: token.userId as string | null,
         emailVerified: null,
       };
       return session
@@ -47,13 +51,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null
           }
 
+          // userIdを決定（役割に応じて適切なIDを設定）
+          let userId = null;
+          if (user.accountType === 'ADMIN') {
+            userId = user.companyId;
+          } else if (user.accountType === 'OFFICE') {
+            userId = user.officeId;
+          } else if (user.accountType === 'SALES') {
+            userId = user.saleId;
+          } else if (user.accountType === 'RECEPTION') {
+            userId = user.receptionId;
+          }
+
           setCookieSession({
             role: user.accountType,
             idToken: user.idToken,
             companyId: user.companyId || null,
             officeId: user.officeId || null,
             saleId: user.saleId || null,
-            receptionId: user.receptionId || null
+            receptionId: user.receptionId || null,
+            userId: userId ? userId.toString() : null
           })
 
           return {
@@ -64,12 +81,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             companyId: user.companyId || null,
             officeId: user.officeId || null,
             saleId: user.saleId || null,
+            receptionId: user.receptionId || null,
+            userId: userId ? userId.toString() : null,
           }
         }catch(e) {
           throw new Error("Invalid email or password");
         }
       }
-    }),
+    })
   ],
-  secret: process.env.NEXTAUTH_SECRET,
 })
