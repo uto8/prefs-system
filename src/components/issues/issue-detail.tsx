@@ -204,7 +204,7 @@ export default function IssueDetail({
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">お問い合わせ種別</dt>
-          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.contactType}</dd>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issueData.contactType}</dd>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">備考(お問い合わせ内容)</dt>
