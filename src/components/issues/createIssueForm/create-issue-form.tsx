@@ -47,6 +47,8 @@ const formSchema = z.object({
   receptionId: z.string().optional(),
   isFranchise: z.string().optional(),
   status: z.string().optional(),
+  houseMaker: z.string().optional(),
+  contactType: z.string().optional(),
 })
 
 export default function CreateIssueForm({
@@ -88,7 +90,9 @@ export default function CreateIssueForm({
       saleId: userSaleId ?? "",
       receptionId: "",
       isFranchise: "",
-      status: "お問い合わせ"
+      status: "お問い合わせ",
+      houseMaker: "",
+      contactType: "",
     },
   })
 
@@ -118,7 +122,6 @@ export default function CreateIssueForm({
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try{
       setDisabled(true)
-      console.log("======",Number(data.officeId) ?? null);
       await createIssue({
         issueCode: data.issueCode ?? "",
         currentAddress: data.currentAddress ?? '',
@@ -135,7 +138,9 @@ export default function CreateIssueForm({
         clientPhoneNumber: data.clientPhoneNumber ?? "",
         isFranchise: data.isFranchise === "1"? 1: 0,
         receptionId: data.receptionId? Number(data.receptionId): null,
-        status: data.status ?? null
+        status: data.status ?? null,
+        houseMaker: data.houseMaker ?? "",
+        contactType: data.contactType ?? "",
       })
       toast({
         variant: "success",
@@ -475,6 +480,59 @@ export default function CreateIssueForm({
                     className="resize-none"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="houseMaker"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                ハウスメーカー
+                </FormLabel>
+                <FormControl>
+                  <select className='flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]' onChange={field.onChange}>
+                    <option value="積水ハウス">積水ハウス</option>
+                    <option value="住友林業">住友林業</option>
+                    <option value="大和ハウス">大和ハウス</option>
+                    <option value="一条工務店">一条工務店</option>
+                    <option value="パナソニックホームズ">パナソニックホームズ</option>
+                    <option value="三井ホーム">三井ホーム</option>
+                    <option value="ミサワホーム">ミサワホーム</option>
+                    <option value="セキスイハイム">セキスイハイム</option>
+                    <option value="ヘーベルハウス">ヘーベルハウス</option>
+                    <option value="アイ工務店">アイ工務店</option>
+                    <option value="トヨタホーム">トヨタホーム</option>
+                    <option value="タマホーム">タマホーム</option>
+                    <option value="その他">その他</option>
+                  </select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="contactType"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                お問い合わせ種別
+                </FormLabel>
+                <FormControl>
+                  <select className='flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm w-[180px]' onChange={field.onChange}>
+                    <option value="メール">メール</option>
+                    <option value="電話">電話</option>
+                    <option value="飛び込み">飛び込み</option>
+                    <option value="リピーター">リピーター</option>
+                    <option value="紹介">紹介</option>
+                    <option value="INSTAGRAM">INSTAGRAM</option>
+                    <option value="LINE">LINE</option>
+                    <option value="その他">その他</option>
+                  </select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

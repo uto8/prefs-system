@@ -20,6 +20,8 @@ export const createIssue = async (body: {
   isFranchise: number;
   receptionId: number | null;
   status: string | null;
+  houseMaker: string | null;
+  contactType: string | null;
 }) => {
   try{
     const session = await auth()

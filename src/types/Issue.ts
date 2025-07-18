@@ -44,4 +44,6 @@ export type Issue = {
   isFranchise: boolean;
   datetime: string;
   reception: Reception;
+  houseMaker: string | null;
+  contactType: string | null;
 }

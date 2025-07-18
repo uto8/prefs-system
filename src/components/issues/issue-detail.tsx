@@ -199,6 +199,14 @@ export default function IssueDetail({
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.client.email}</dd>
         </div>
         <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">ハウスメーカー</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issueData.houseMaker}</dd>
+        </div>
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">お問い合わせ種別</dt>
+          <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.contactType}</dd>
+        </div>
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="px-2 py-2 text-sm font-bold bg-slate-200 text-gray-900">備考(お問い合わせ内容)</dt>
           <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">${issue.contactContent}</dd>
         </div>
@@ -491,6 +499,14 @@ export default function IssueDetail({
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">メールアドレス</dt>
             <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issue?.client.email}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm/6 font-medium text-gray-900">ハウスメーカー</dt>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issueData?.houseMaker}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm/6 font-medium text-gray-900">お問い合わせ種別</dt>
+            <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{issueData?.contactType}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm/6 font-medium text-gray-900">備考</dt>
